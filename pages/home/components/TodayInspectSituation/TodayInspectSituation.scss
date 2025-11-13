@@ -1,0 +1,39 @@
+.today-inspect-situation {
+  background-color: #fff;
+  border-radius: 18rpx;
+  padding: 32rpx;
+  .title {
+    margin-bottom: 24rpx;
+    font-size: 32rpx;
+    font-weight: 900;
+    color: #333;
+  }
+  .tis-container {
+    white-space: nowrap;
+    .item {
+      display: inline-block;
+      width: 250rpx;
+      margin-right: 16rpx;
+      padding: 16rpx 24rpx;
+      border-radius: 16rpx;
+      color: #fff;
+      &:nth-child(3n + 1) {
+        background-color: #3a7afe;
+      }
+      &:nth-child(3n + 2) {
+        background-color: #2ac86d;
+      }
+      &:nth-child(3n) {
+        background-color: #f56c6c;
+      }
+      .info {
+        font-size: 42rpx;
+        font-weight: 900;
+        margin-bottom: 16rpx;
+      }
+      .text {
+        font-size: 22rpx;
+      }
+    }
+  }
+}

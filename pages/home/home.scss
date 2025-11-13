@@ -1,0 +1,39 @@
+.top-area-blue {
+  width: 100%;
+  background-color: #457ff9;
+  border-radius: 0 0 40rpx 40rpx;
+  padding-bottom: 200rpx;
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .title {
+      color: #ffffff;
+      font-weight: bold;
+    }
+  }
+  .info {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    font-size: 35rpx;
+    font-weight: 900;
+    .left {
+      display: flex;
+      flex-direction: column;
+      gap: 24rpx;
+    }
+  }
+}
+.container {
+  width: 95%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+  margin-top: -160rpx;
+  padding-bottom: 32rpx;
+}

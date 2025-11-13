@@ -1,0 +1,57 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@vant/weapp':
+        specifier: ^1.11.7
+        version: 1.11.7
+      echarts:
+        specifier: ^6.0.0
+        version: 6.0.0
+      echarts-for-weixin:
+        specifier: ^1.0.2
+        version: 1.0.2(echarts@6.0.0)
+
+packages:
+
+  '@vant/weapp@1.11.7':
+    resolution: {integrity: sha512-Rwn9BBnb4kHSV4XmvBicwtd42J+amEUfnFDcXJsGNPNX4a9c/DoT6YLsm4X1wB2+sQbdiQsbFBLAvGRBxCkD8g==}
+
+  echarts-for-weixin@1.0.2:
+    resolution: {integrity: sha512-cEk4yFMCJDQpvAgVRKbGvMjXvuW965iEUootJffRFHwJwCq0/GIeoRTTAEuj50PKMMtLTW4DmBPmvPja3sH2jQ==}
+    peerDependencies:
+      echarts: ^5.1.2
+
+  echarts@6.0.0:
+    resolution: {integrity: sha512-Tte/grDQRiETQP4xz3iZWSvoHrkCQtwqd6hs+mifXcjrCuo2iKWbajFObuLJVBlDIJlOzgQPd1hsaKt/3+OMkQ==}
+
+  tslib@2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==}
+
+  zrender@6.0.0:
+    resolution: {integrity: sha512-41dFXEEXuJpNecuUQq6JlbybmnHaqqpGlbH1yxnA5V9MMP4SbohSVZsJIwz+zdjQXSSlR1Vc34EgH1zxyTDvhg==}
+
+snapshots:
+
+  '@vant/weapp@1.11.7': {}
+
+  echarts-for-weixin@1.0.2(echarts@6.0.0):
+    dependencies:
+      echarts: 6.0.0
+
+  echarts@6.0.0:
+    dependencies:
+      tslib: 2.3.0
+      zrender: 6.0.0
+
+  tslib@2.3.0: {}
+
+  zrender@6.0.0:
+    dependencies:
+      tslib: 2.3.0

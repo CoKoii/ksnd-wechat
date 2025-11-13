@@ -1,0 +1,181 @@
+/* pages/todoList/todoList.scss */
+page {
+  height: 100%;
+  overflow: hidden;
+}
+
+.todo-list-page {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+
+  .tabs {
+    flex-shrink: 0;
+    display: flex;
+    background-color: #fff;
+    padding: 0 32rpx;
+    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    z-index: 10;
+
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      padding: 32rpx 0;
+      font-size: 28rpx;
+      color: #666;
+      position: relative;
+      transition: all 0.3s;
+
+      &.active {
+        color: #3a7afe;
+        font-weight: 600;
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60rpx;
+          height: 6rpx;
+          background-color: #3a7afe;
+          border-radius: 3rpx;
+        }
+      }
+    }
+  }
+
+  .scroll-container {
+    flex: 1;
+    height: 0;
+    padding: 24rpx 32rpx;
+    box-sizing: border-box;
+
+    .todo-items {
+      .todo-item {
+        background-color: #fff;
+        border-radius: 16rpx;
+        padding: 32rpx;
+        margin-bottom: 24rpx;
+        box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+
+        .item-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 24rpx;
+          padding-bottom: 24rpx;
+          border-bottom: 1rpx solid #f0f0f0;
+
+          .title-row {
+            display: flex;
+            align-items: center;
+            flex: 1;
+
+            .title {
+              font-size: 32rpx;
+              font-weight: 600;
+              color: #333;
+              margin-right: 16rpx;
+            }
+
+            .badge {
+              font-size: 20rpx;
+              padding: 4rpx 12rpx;
+              border-radius: 4rpx;
+
+              &.urgent {
+                background-color: #ffeded;
+                color: #ff4d4f;
+              }
+            }
+          }
+
+          .date {
+            font-size: 24rpx;
+            color: #999;
+            white-space: nowrap;
+            margin-left: 16rpx;
+          }
+        }
+
+        .item-body {
+          margin-bottom: 24rpx;
+
+          .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16rpx;
+            font-size: 26rpx;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            .label {
+              color: #666;
+              margin-right: 8rpx;
+            }
+
+            .value {
+              color: #333;
+              font-weight: 500;
+            }
+          }
+        }
+
+        .item-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 24rpx;
+          border-top: 1rpx solid #f0f0f0;
+          font-size: 24rpx;
+
+          .footer-left {
+            display: flex;
+            align-items: center;
+
+            .label {
+              color: #999;
+              margin-right: 8rpx;
+            }
+
+            .value {
+              color: #333;
+            }
+          }
+
+          .footer-right {
+            display: flex;
+            align-items: center;
+
+            .label {
+              color: #999;
+              margin-right: 8rpx;
+            }
+
+            .deadline {
+              color: #3a7afe;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+
+    .loading-more,
+    .no-more,
+    .empty {
+      text-align: center;
+      padding: 40rpx 0;
+      font-size: 28rpx;
+      color: #999;
+    }
+
+    .empty {
+      padding-top: 200rpx;
+    }
+  }
+}

@@ -1,0 +1,72 @@
+<!--pages/todoList/todoList.wxml-->
+<view class="todo-list-page">
+  <!-- Tab切换栏 -->
+  <view class="tabs">
+    <view 
+      class="tab-item {{activeTab === index ? 'active' : ''}}" 
+      wx:for="{{tabs}}" 
+      wx:key="index"
+      data-index="{{index}}"
+      bindtap="onTabChange"
+    >
+      {{item}}
+    </view>
+  </view>
+
+  <!-- 待办列表 -->
+  <scroll-view 
+    class="scroll-container" 
+    scroll-y 
+    bindscrolltolower="onReachBottom"
+    lower-threshold="100"
+  >
+    <view class="todo-items">
+      <view class="todo-item" wx:for="{{todoList}}" wx:key="id" data-id="{{item.id}}" bindtap="goToDetail">
+        <view class="item-header">
+          <view class="title-row">
+            <text class="title">{{item.title}}</text>
+            <view class="badge urgent" wx:if="{{item.status === '已超时'}}">紧急</view>
+          </view>
+          <view class="date">{{item.publishDate}}</view>
+        </view>
+        
+        <view class="item-body">
+          <view class="info-row">
+            <text class="label">巡河范围：</text>
+            <text class="value">{{item.location}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">任务来源：</text>
+            <text class="value">{{item.taskSource}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">任务类型：</text>
+            <text class="value">{{item.taskType}}</text>
+          </view>
+        </view>
+        
+        <view class="item-footer">
+          <view class="footer-left">
+            <text class="label">发布人：</text>
+            <text class="value">{{item.issuer}}</text>
+          </view>
+          <view class="footer-right">
+            <text class="label">要求巡查日期：</text>
+            <text class="deadline">{{item.deadline}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-more" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    <view class="no-more" wx:if="{{!hasMore && todoList.length > 0}}">
+      <text>没有更多了</text>
+    </view>
+    <view class="empty" wx:if="{{!loading && todoList.length === 0}}">
+      <text>暂无数据</text>
+    </view>
+  </scroll-view>
+</view>

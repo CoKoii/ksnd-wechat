@@ -1,0 +1,22 @@
+<!-- 顶部蓝色区域 -->
+<view class="top-area-blue">
+  <view style="height: {{statusBarHeight}}px;"></view>
+  <view class="nav-bar" style="height: {{navBarHeight}}px;">
+    <view class="title">华远直巡</view>
+  </view>
+  <view class="info">
+    <view class="left">
+      <view class="title">招商花园</view>
+      <view class="welcome">欢迎您，某某</view>
+    </view>
+    <view class="right">
+      <van-icon name="arrow-down" />
+    </view>
+  </view>
+</view>
+
+<view class="container">
+  <ProjectOverview />
+  <TodayInspectSituation />
+  <MyTodo />
+</view>

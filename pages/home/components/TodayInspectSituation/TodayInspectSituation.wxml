@@ -1,0 +1,9 @@
+<view class="today-inspect-situation">
+  <view class="title">今日巡检情况</view>
+  <scroll-view class="tis-container" scroll-x>
+    <view class="item" wx:for="{{list}}" wx:key="index">
+      <view class="info">{{item.info}}</view>
+      <view class="text">{{item.text}}</view>
+    </view>
+  </scroll-view>
+</view>

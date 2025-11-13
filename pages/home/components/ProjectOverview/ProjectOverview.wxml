@@ -1,0 +1,34 @@
+<view class="project-overview">
+  <view class="title">项目概况</view>
+  <view class="po-content">
+    <view class="chart-container">
+      <view class="chart-wrapper">
+        <view class="chart-center">
+          <view class="rate">{{abnormalRate}}%</view>
+          <view class="label">异常率</view>
+        </view>
+        <ec-canvas class="ec-canvas" id="mychart-dom-pie" canvas-id="mychart-pie" ec="{{ chartOption }}"></ec-canvas>
+      </view>
+    </view>
+    <view class="stats-container">
+      <view class="stat-item">
+        <view class="dot abnormal"></view>
+        <view class="stat-label">异常点位</view>
+        <view class="stat-value">{{abnormalCount}}</view>
+      </view>
+      <view class="stat-item">
+        <view class="dot normal"></view>
+        <view class="stat-label">正常点位</view>
+        <view class="stat-value">{{normalCount}}</view>
+      </view>
+      <view class="stat-item">
+        <view class="dot position"></view>
+        <view class="stat-label">总点位数</view>
+        <view class="stat-value">{{positionCount}}</view>
+      </view>
+    </view>
+    <view class="arrow-icon">
+      <van-icon name="arrow" color="#999" size="20px" />
+    </view>
+  </view>
+</view>

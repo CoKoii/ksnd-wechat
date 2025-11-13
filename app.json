@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/workbench/workbench",
+    "pages/todoList/todoList",
+    "pages/checkInfo/checkInfo",
+    "pages/chat/chat"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "商贸领域安全隐患实时动态监管",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#1677ff",
+    "borderStyle": "white",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/home/home",
+        "iconPath": "/assets/home.png",
+        "selectedIconPath": "/assets/home-active.png"
+      },
+      {
+        "text": "工作台",
+        "pagePath": "pages/workbench/workbench",
+        "iconPath": "/assets/workbench.png",
+        "selectedIconPath": "/assets/workbench-active.png"
+      },
+      {
+        "text": "对话",
+        "pagePath": "pages/chat/chat",
+        "iconPath": "/assets/chat.png",
+        "selectedIconPath": "/assets/chat-active.png"
+      }
+    ]
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

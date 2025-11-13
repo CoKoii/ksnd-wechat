@@ -1,0 +1,131 @@
+<!--pages/checkInfo/checkInfo.wxml-->
+<scroll-view class="page-container" scroll-y>
+  <!-- 提示信息 -->
+  <view class="tip-box">
+    <view class="tip-bar" />
+    <view class="tip-text">请巡检人员按照要求认真巡检</view>
+  </view>
+
+  <!-- 巡检结果 -->
+  <view class="section">
+    <view class="section-title">巡检结果</view>
+    <van-radio-group value="{{checkResult}}" bind:change="onCheckResultChange" direction="horizontal">
+      <van-radio name="normal" checked-color="#3a7afe">正常</van-radio>
+      <van-radio name="abnormal" checked-color="#3a7afe">异常</van-radio>
+    </van-radio-group>
+  </view>
+
+  <!-- 检查项 -->
+  <view class="section">
+    <view class="section-title">检查项</view>
+    <view class="check-items">
+      <view class="check-item" wx:for="{{checkItems}}" wx:key="id">
+        <view class="check-item-header">
+          <text class="check-item-name">{{item.name}}</text>
+          <view class="check-item-actions">
+            <view 
+              class="action-btn {{item.status === true ? 'active' : ''}}" 
+              data-index="{{index}}"
+              bindtap="onCheckItemNormal">
+              <van-icon name="success" color="{{item.status === true ? '#52c41a' : '#ccc'}}" size="16" />
+            </view>
+            <view 
+              class="action-btn error {{item.status === false ? 'active' : ''}}" 
+              data-index="{{index}}"
+              bindtap="onCheckItemAbnormal">
+              <van-icon name="cross" color="{{item.status === false ? '#ff4d4f' : '#ccc'}}" size="16" />
+            </view>
+          </view>
+        </view>
+        
+        <!-- 异常信息显示 -->
+        <view class="abnormal-info" wx:if="{{item.status === false}}">
+          <view class="abnormal-desc">{{item.description}}</view>
+          <view class="abnormal-images" wx:if="{{item.images.length}}">
+            <image 
+              class="abnormal-image" 
+              wx:for="{{item.images}}" 
+              wx:key="index"
+              wx:for-item="img"
+              src="{{img}}" 
+              mode="aspectFill" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 情况说明 -->
+  <view class="section">
+    <view class="section-title">情况说明</view>
+    <textarea
+      class="textarea-input"
+      value="{{description}}"
+      placeholder="请输入说明"
+      maxlength="500"
+      show-confirm-bar="{{false}}"
+      bindinput="onDescriptionChange" />
+  </view>
+
+  <!-- 现场照片 -->
+  <view class="section">
+    <view class="section-title">现场照片（选填）</view>
+    <van-uploader
+      file-list="{{images}}"
+      bind:after-read="onUploadImage"
+      bind:delete="onDeleteImage"
+      max-count="9"
+      multiple />
+  </view>
+
+  <!-- 巡检人员姓名 -->
+  <view class="section">
+    <view class="section-title">巡检人员姓名</view>
+    <input
+      class="text-input"
+      value="{{inspector}}"
+      placeholder="请输入姓名"
+      bindinput="onInspectorChange" />
+  </view>
+  
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="submit-btn" bindtap="onSubmit">提交巡检结果</button>
+  </view>
+</scroll-view>
+
+<!-- 异常说明弹窗 -->
+<view class="modal-mask" wx:if="{{showAbnormalDialog}}" bindtap="onCancelAbnormal" />
+<view class="modal-dialog" wx:if="{{showAbnormalDialog}}">
+  <view class="modal-content">
+    <view class="modal-header">
+      <view class="modal-title">异常说明</view>
+      <view class="modal-close" bindtap="onCancelAbnormal">×</view>
+    </view>
+    
+    <view class="modal-body">
+      <textarea
+        class="form-textarea"
+        value="{{tempDescription}}"
+        placeholder="请输入说明"
+        maxlength="200"
+        show-confirm-bar="{{false}}"
+        bindinput="onAbnormalDescChange" />
+      
+      <view class="upload-section">
+        <view class="upload-label">上传照片（选填）</view>
+        <van-uploader
+          file-list="{{tempImages}}"
+          bind:after-read="onUploadAbnormalImage"
+          bind:delete="onDeleteAbnormalImage"
+          max-count="3"
+          multiple />
+      </view>
+    </view>
+
+    <view class="modal-footer">
+      <button class="modal-btn cancel" bindtap="onCancelAbnormal">取消</button>
+      <button class="modal-btn confirm" bindtap="onConfirmAbnormal">确认</button>
+    </view>
+  </view>
+</view>

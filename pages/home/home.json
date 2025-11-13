@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "van-icon": "@vant/weapp/icon/index",
+    "ProjectOverview": "./components/ProjectOverview/ProjectOverview",
+    "TodayInspectSituation": "./components/TodayInspectSituation/TodayInspectSituation",
+    "MyTodo": "./components/MyTodo/MyTodo"
+  },
+  "navigationStyle": "custom"
+}

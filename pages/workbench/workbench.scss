@@ -1,0 +1,52 @@
+/* pages/workbench/workbench.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+
+  .item {
+    background-color: #fff;
+    padding: 32rpx;
+
+    .title {
+      padding-bottom: 16rpx;
+      border-bottom: 1px solid #efefef;
+      position: relative;
+      padding-left: 24rpx;
+      display: flex;
+      align-items: center;
+
+      &::before {
+        content: '';
+        width: 6rpx;
+        height: 70%;
+        background-color: #457FF9;
+        position: absolute;
+        left: 0;
+      }
+    }
+    .childrens{
+      display: flex;
+      flex-wrap: wrap;
+      padding: 24rpx 0;
+      .item{
+        width: 25%;
+        font-size: 24rpx;
+        display: flex;
+        padding: 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1/1;
+        .icon{
+          width: 50%;
+          aspect-ratio: 1/1;
+          background-color: #D9F1FB;
+          margin-bottom: 12rpx;
+          border-radius: 16rpx;
+        }
+      }
+    }
+
+  }
+}
