@@ -1,6 +1,12 @@
 const { CHAT_CONFIG } = require('./chat.constants');
 const { requestChatCompletionStream } = require('./chat.api');
 
+const getFirstChoice = (data) => (data && data.choices && data.choices[0]) || null;
+const pickChatFields = (payload = {}) => ({
+  content: payload.content || '',
+  reasoning: payload.reasoning_content || '',
+});
+
 const buildChatPayload = ({ messages, stream = false }) => {
   const model = CHAT_CONFIG.modelChat;
   return {
@@ -13,22 +19,11 @@ const buildChatPayload = ({ messages, stream = false }) => {
   };
 };
 
-const parseChatResponse = (data) => {
-  const choice = data && data.choices && data.choices[0];
-  const message = choice && choice.message ? choice.message : {};
-  return {
-    content: message.content || '',
-    reasoning: message.reasoning_content || '',
-  };
-};
-
-const parseChatDelta = (data) => {
-  const choice = data && data.choices && data.choices[0];
-  const delta = choice && choice.delta ? choice.delta : {};
-  return {
-    content: delta.content || '',
-    reasoning: delta.reasoning_content || '',
-  };
+const parseChatEvent = (data) => {
+  const choice = getFirstChoice(data);
+  if (choice && choice.delta) return pickChatFields(choice.delta);
+  if (choice && choice.message) return pickChatFields(choice.message);
+  return pickChatFields();
 };
 
 const fetchAssistantReplyStream = ({ messages, onDelta }) => {
@@ -36,18 +31,7 @@ const fetchAssistantReplyStream = ({ messages, onDelta }) => {
   return requestChatCompletionStream({
     payload,
     onDelta: (data) => {
-      if (data && data.choices) {
-        const choice = data.choices[0];
-        if (choice && choice.delta) {
-          const delta = parseChatDelta(data);
-          if (delta.content || delta.reasoning) onDelta(delta);
-          return;
-        }
-        const parsed = parseChatResponse(data);
-        if (parsed.content || parsed.reasoning) onDelta(parsed);
-        return;
-      }
-      const parsed = parseChatResponse(data);
+      const parsed = parseChatEvent(data);
       if (parsed.content || parsed.reasoning) onDelta(parsed);
     },
   });

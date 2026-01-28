@@ -19,11 +19,10 @@ const sanitizeConversations = (conversations = []) =>
 const loadConversations = () => {
   try {
     const data = wx.getStorageSync(STORAGE_KEYS.conversations);
-    if (Array.isArray(data)) return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     return [];
   }
-  return [];
 };
 
 const saveConversations = (conversations = []) => {

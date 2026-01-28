@@ -1,6 +1,7 @@
 const createId = () => `msg_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
 
-const trimMessage = (value = '') => value.replace(/\s+/g, ' ').trim();
+const normalizeText = (value = '') => value.replace(/\s+/g, ' ').trim();
+const trimMessage = (value = '') => normalizeText(value);
 
 const getScrollTargetId = (messages = []) => {
   if (!messages.length) return '';
@@ -32,11 +33,12 @@ const buildSystemPrompt = (basePrompt = '', options = {}) => {
 };
 
 const buildTitleFromContent = (content = '', maxLength = 12) => {
-  const text = content.replace(/\s+/g, ' ').trim();
+  const text = normalizeText(content);
   if (!text) return '';
   return text.slice(0, maxLength);
 };
 
+const pad2 = (value) => `${value}`.padStart(2, '0');
 const formatTimeLabel = (timestamp) => {
   if (!timestamp) return '';
   const date = new Date(timestamp);
@@ -45,20 +47,10 @@ const formatTimeLabel = (timestamp) => {
     date.getFullYear() === now.getFullYear() &&
     date.getMonth() === now.getMonth() &&
     date.getDate() === now.getDate();
-  const pad = (value) => `${value}`.padStart(2, '0');
   if (sameDay) {
-    return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
   }
-  return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())}`;
-};
-
-const decodeChunk = (data) => {
-  if (!data) return '';
-  if (typeof data === 'string') return data;
-  if (typeof TextDecoder !== 'undefined') {
-    return new TextDecoder('utf-8').decode(data);
-  }
-  return '';
+  return `${date.getFullYear()}/${pad2(date.getMonth() + 1)}/${pad2(date.getDate())}`;
 };
 
 const decodeUtf8 = (bytes) => {
@@ -168,7 +160,6 @@ module.exports = {
   buildSystemPrompt,
   buildTitleFromContent,
   formatTimeLabel,
-  decodeChunk,
   createUtf8Decoder,
   limitMessages,
   getSafeAreaInsets,

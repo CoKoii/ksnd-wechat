@@ -70,10 +70,7 @@ Page({
   },
 
   onUnload() {
-    if (this.streamTimer) {
-      clearTimeout(this.streamTimer);
-      this.streamTimer = null;
-    }
+    this.clearStreamTimer();
   },
 
   updateLayout() {
@@ -81,13 +78,16 @@ Page({
       const systemInfo = wx.getSystemInfoSync();
       const windowHeight = systemInfo.windowHeight || systemInfo.screenHeight || 0;
       const query = wx.createSelectorQuery().in(this);
+      const getRect = (rects, index) => (rects && rects[index]) || { height: 0 };
+      const extraPadding = 16;
       query.select('.nav').boundingClientRect();
       query.select('.composer').boundingClientRect();
       query.exec((res) => {
-        const navRect = res && res[0] ? res[0] : { height: 0 };
-        const composerRect = res && res[1] ? res[1] : { height: 0 };
+        const navRect = getRect(res, 0);
+        const composerRect = getRect(res, 1);
         const contentHeight = Math.max(windowHeight - navRect.height - composerRect.height, 0);
-        const scrollSpacerHeight = Math.max(composerRect.height + 16, this.data.safeAreaBottom + 16);
+        const scrollSpacerHeight =
+          Math.max(composerRect.height, this.data.safeAreaBottom) + extraPadding;
         this.setData({ contentHeight, scrollSpacerHeight });
       });
     });
@@ -209,7 +209,7 @@ Page({
     const { id } = event.currentTarget.dataset || {};
     if (!id) return;
     this.activeConversationId = id;
-    this.setData({ sidebarOpen: false });
+    this.closeSidebar();
     this.syncConversationView({ scrollToBottom: true });
   },
 
@@ -218,7 +218,7 @@ Page({
     this.conversationStore.unshift(conversation);
     this.activeConversationId = conversation.id;
     this.sortConversations();
-    this.setData({ sidebarOpen: false });
+    this.closeSidebar();
     this.syncConversationView({ scrollToBottom: true });
   },
 
@@ -273,14 +273,24 @@ Page({
     });
   },
 
+  clearStreamTimer() {
+    if (!this.streamTimer) return;
+    clearTimeout(this.streamTimer);
+    this.streamTimer = null;
+  },
+
+  flushStreamBuffer(conversationId, assistantId, isFinal) {
+    if (!this.streamBuffer && !isFinal) return;
+    const delta = this.streamBuffer;
+    this.streamBuffer = '';
+    this.appendAssistantDelta(conversationId, assistantId, delta || '', isFinal);
+  },
+
   scheduleStreamFlush(conversationId, assistantId) {
     if (this.streamTimer) return;
     this.streamTimer = setTimeout(() => {
       this.streamTimer = null;
-      if (!this.streamBuffer) return;
-      const delta = this.streamBuffer;
-      this.streamBuffer = '';
-      this.appendAssistantDelta(conversationId, assistantId, delta, false);
+      this.flushStreamBuffer(conversationId, assistantId, false);
     }, UI_CONFIG.streamThrottleMs);
   },
 
@@ -354,13 +364,7 @@ Page({
         },
       });
 
-      if (this.streamBuffer) {
-        const remaining = this.streamBuffer;
-        this.streamBuffer = '';
-        this.appendAssistantDelta(conversationId, assistantMessage.id, remaining, true);
-      } else {
-        this.appendAssistantDelta(conversationId, assistantMessage.id, '', true);
-      }
+      this.flushStreamBuffer(conversationId, assistantMessage.id, true);
 
       const finalConversation = this.getConversationById(conversationId);
       this.updateConversationTitleIfNeeded(finalConversation, assistantMessage.id);

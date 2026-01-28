@@ -1,5 +1,5 @@
 const { CHAT_CONFIG } = require('./chat.constants');
-const { decodeChunk, createUtf8Decoder } = require('./chat.utils');
+const { createUtf8Decoder } = require('./chat.utils');
 
 const requestChatCompletion = (payload = {}) =>
   new Promise((resolve, reject) => {
@@ -56,14 +56,21 @@ const createStreamParser = (onMessage) => {
 const requestChatCompletionStream = ({ payload, onDelta }) =>
   new Promise((resolve, reject) => {
     let resolved = false;
+    const resolveOnce = (value) => {
+      if (resolved) return;
+      resolved = true;
+      resolve(value);
+    };
+    const rejectOnce = (error) => {
+      if (resolved) return;
+      resolved = true;
+      reject(error);
+    };
     const decoder = typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8') : null;
     const utf8Decoder = decoder ? null : createUtf8Decoder();
     const parser = createStreamParser((event) => {
       if (event.done) {
-        if (!resolved) {
-          resolved = true;
-          resolve();
-        }
+        resolveOnce();
         return;
       }
       if (event.error) return;
@@ -89,17 +96,9 @@ const requestChatCompletionStream = ({ payload, onDelta }) =>
           const tail = decoder.decode();
           if (tail) parser(tail);
         }
-        if (!resolved) {
-          resolved = true;
-          resolve();
-        }
+        resolveOnce();
       },
-      fail: (error) => {
-        if (!resolved) {
-          resolved = true;
-          reject(error);
-        }
-      },
+      fail: rejectOnce,
     });
 
     if (requestTask && requestTask.onChunkReceived) {
@@ -108,7 +107,7 @@ const requestChatCompletionStream = ({ payload, onDelta }) =>
           ? decoder.decode(res.data, { stream: true })
           : utf8Decoder
             ? utf8Decoder(res.data)
-            : decodeChunk(res.data);
+            : '';
         parser(chunkText);
       });
       return;
@@ -119,9 +118,9 @@ const requestChatCompletionStream = ({ payload, onDelta }) =>
         if (typeof onDelta === 'function') {
           onDelta(data);
         }
-        resolve();
+        resolveOnce();
       })
-      .catch(reject);
+      .catch(rejectOnce);
   });
 
 module.exports = {
