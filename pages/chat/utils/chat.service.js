@@ -1,6 +1,8 @@
-const { CHAT_CONFIG } = require('./chat.constants');
+// 组装请求与统一解析返回
+const { CHAT_CONFIG } = require('../chat.constants');
 const { requestChatCompletionStream } = require('./chat.api');
 
+// 兼容流式与非流式返回格式
 const getFirstChoice = (data) => (data && data.choices && data.choices[0]) || null;
 const pickChatFields = (payload = {}) => ({
   content: payload.content || '',

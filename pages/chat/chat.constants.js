@@ -1,3 +1,4 @@
+// 可调整的文案与配置集中在此文件
 const UI_TEXT = {
   title: '新对话',
   sidebarTitle: '历史对话',

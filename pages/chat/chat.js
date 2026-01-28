@@ -1,3 +1,4 @@
+// 聊天页面主逻辑
 const { UI_TEXT, CHAT_CONFIG, UI_CONFIG } = require('./chat.constants');
 const {
   createId,
@@ -9,10 +10,10 @@ const {
   getSafeAreaInsets,
   buildTitleFromContent,
   formatTimeLabel,
-} = require('./chat.utils');
-const { fetchAssistantReplyStream } = require('./chat.service');
-const { markdownToHtml } = require('./chat.markdown');
-const { loadConversations, saveConversations } = require('./chat.storage');
+} = require('./utils/chat.utils');
+const { fetchAssistantReplyStream } = require('./utils/chat.service');
+const { markdownToHtml } = require('./utils/chat.markdown');
+const { loadConversations, saveConversations } = require('./utils/chat.storage');
 
 const nextTick = (callback) => {
   if (typeof wx.nextTick === 'function') {

@@ -242,6 +242,20 @@ page {
   box-sizing: border-box;
 }
 
+.content,
+.sidebar-list {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.content::-webkit-scrollbar,
+.sidebar-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+  color: transparent;
+}
+
 .content-inner {
   min-height: 100%;
   display: flex;
@@ -495,7 +509,7 @@ page {
 }
 
 .composer-input-row {
-  padding: 0 6rpx 10rpx;
+  padding: 0 6rpx 16rpx;
 }
 
 .composer-input {
@@ -503,9 +517,9 @@ page {
   font-size: 30rpx;
   color: #111111;
   height: 72rpx;
-  line-height: 60rpx;
+  line-height: 56rpx;
   padding-top: 2rpx;
-  padding-bottom: 10rpx;
+  padding-bottom: 14rpx;
   box-sizing: border-box;
 }
 
@@ -515,7 +529,7 @@ page {
 }
 
 .composer-actions {
-  margin-top: 24rpx;
+  margin-top: 30rpx;
   display: flex;
   align-items: center;
 }

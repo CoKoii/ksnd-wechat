@@ -1,4 +1,5 @@
-const { CHAT_CONFIG } = require('./chat.constants');
+// 聊天接口请求与流式解析
+const { CHAT_CONFIG } = require('../chat.constants');
 const { createUtf8Decoder } = require('./chat.utils');
 
 const requestChatCompletion = (payload = {}) =>

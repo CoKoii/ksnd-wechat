@@ -1,3 +1,4 @@
+// 轻量 Markdown -> HTML（仅覆盖聊天场景）
 const escapeHtml = (value = '') =>
   value
     .replace(/&/g, '&amp;')
@@ -29,6 +30,7 @@ const markdownToHtml = (markdown = '') => {
   const html = [];
   let inCodeBlock = false;
   let codeBuffer = [];
+  // 使用栈支持有序/无序列表与嵌套
   const listStack = [];
   let paragraphBuffer = [];
 

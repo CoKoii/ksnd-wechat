@@ -1,5 +1,7 @@
-const { STORAGE_KEYS, UI_CONFIG } = require('./chat.constants');
+// 会话本地存储读写
+const { STORAGE_KEYS, UI_CONFIG } = require('../chat.constants');
 
+// 仅保存必要字段，避免膨胀
 const sanitizeMessages = (messages = []) =>
   messages.map((message) => ({
     id: message.id,

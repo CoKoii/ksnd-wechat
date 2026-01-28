@@ -1,3 +1,4 @@
+// 通用工具：ID、文本清洗、格式化等
 const createId = () => `msg_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
 
 const normalizeText = (value = '') => value.replace(/\s+/g, ' ').trim();
@@ -32,6 +33,7 @@ const buildSystemPrompt = (basePrompt = '', options = {}) => {
   return prompts.join('\n');
 };
 
+// 用于标题显示的轻量 Markdown 清理
 const stripMarkdown = (value = '') => {
   if (!value) return '';
   let text = value;
