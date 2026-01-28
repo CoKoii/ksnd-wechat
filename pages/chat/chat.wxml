@@ -11,7 +11,7 @@
         </view>
       </view>
     </view>
-    <scroll-view class="sidebar-list" scroll-y="true">
+    <scroll-view class="sidebar-list" scroll-y="true" show-scrollbar="false">
       <view class="sidebar-empty" wx:if="{{conversations.length === 0}}">{{uiText.sidebarEmpty}}</view>
       <block wx:for="{{conversations}}" wx:key="id">
         <view
@@ -47,6 +47,7 @@
     scroll-into-view="{{scrollTargetId}}"
     scroll-top="{{scrollTop}}"
     enable-flex="true"
+    show-scrollbar="false"
     style="height: {{contentHeight}}px;"
   >
     <view class="content-inner">

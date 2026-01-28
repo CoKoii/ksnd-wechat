@@ -160,9 +160,11 @@ Page({
       this.activeConversationId = activeConversation.id;
     }
 
+    const toDisplayTitle = (title) =>
+      buildTitleFromContent(title || UI_TEXT.title, UI_CONFIG.titleMaxLength) || UI_TEXT.title;
     const conversations = this.conversationStore.map((item) => ({
       id: item.id,
-      title: item.title || UI_TEXT.title,
+      title: toDisplayTitle(item.title),
       updatedAtText: formatTimeLabel(item.updatedAt),
     }));
 
@@ -170,7 +172,7 @@ Page({
       conversations,
       activeConversationId: this.activeConversationId,
       messages: activeConversation ? activeConversation.messages : [],
-      navTitle: activeConversation ? activeConversation.title : UI_TEXT.title,
+      navTitle: activeConversation ? toDisplayTitle(activeConversation.title) : UI_TEXT.title,
     });
 
     saveConversations(this.conversationStore);

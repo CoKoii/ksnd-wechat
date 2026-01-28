@@ -477,20 +477,25 @@ page {
   bottom: 0;
   z-index: 10;
   padding: 0 24rpx 24rpx;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 38%, #ffffff 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    #ffffff 38%,
+    #ffffff 100%
+  );
   box-sizing: border-box;
 }
 
 .composer-card {
   background: #ffffff;
   border-radius: 44rpx;
-  padding: 28rpx 24rpx 22rpx;
+  padding: 15rpx 24rpx 22rpx;
   box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.08);
   border: 1rpx solid #f1f1f1;
 }
 
 .composer-input-row {
-  padding: 0 6rpx;
+  padding: 0 6rpx 10rpx;
 }
 
 .composer-input {
@@ -498,7 +503,10 @@ page {
   font-size: 30rpx;
   color: #111111;
   height: 72rpx;
-  line-height: 72rpx;
+  line-height: 60rpx;
+  padding-top: 2rpx;
+  padding-bottom: 10rpx;
+  box-sizing: border-box;
 }
 
 .composer-placeholder {
@@ -507,7 +515,7 @@ page {
 }
 
 .composer-actions {
-  margin-top: 18rpx;
+  margin-top: 24rpx;
   display: flex;
   align-items: center;
 }
@@ -541,7 +549,7 @@ page {
 }
 
 .chip-icon--think::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 6rpx;
   height: 6rpx;
@@ -556,7 +564,7 @@ page {
 }
 
 .chip-icon--search::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 10rpx;
   height: 2rpx;

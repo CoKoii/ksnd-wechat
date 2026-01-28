@@ -32,8 +32,23 @@ const buildSystemPrompt = (basePrompt = '', options = {}) => {
   return prompts.join('\n');
 };
 
+const stripMarkdown = (value = '') => {
+  if (!value) return '';
+  let text = value;
+  text = text.replace(/```[\s\S]*?```/g, ' ');
+  text = text.replace(/`([^`]+)`/g, '$1');
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '$1');
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
+  text = text.replace(/<[^>]+>/g, ' ');
+  text = text.replace(/^\s{0,3}#{1,6}\s+/gm, '');
+  text = text.replace(/^\s*>\s?/gm, '');
+  text = text.replace(/^\s*([-*+]|\d+\.)\s+/gm, '');
+  text = text.replace(/[*_~]+/g, '');
+  return text;
+};
+
 const buildTitleFromContent = (content = '', maxLength = 12) => {
-  const text = normalizeText(content);
+  const text = normalizeText(stripMarkdown(content));
   if (!text) return '';
   return text.slice(0, maxLength);
 };
