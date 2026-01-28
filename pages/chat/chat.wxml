@@ -1,2 +1,115 @@
-<!--pages/chat/chat.wxml-->
-<text>pages/chat/chat.wxml</text>
+<!-- pages/chat/chat.wxml -->
+<view class="page">
+  <view class="sidebar-mask {{sidebarOpen ? 'sidebar-mask--show' : ''}}" bindtap="closeSidebar"></view>
+  <view class="sidebar {{sidebarOpen ? 'sidebar--open' : ''}}" style="padding-top: {{statusBarHeight}}px;">
+    <view class="sidebar-header">
+      <view class="sidebar-title">{{uiText.sidebarTitle}}</view>
+      <view class="sidebar-new" bindtap="onNewChat">
+        <view class="icon-circle icon-circle--small">
+          <view class="icon-plus icon-plus--h"></view>
+          <view class="icon-plus icon-plus--v"></view>
+        </view>
+      </view>
+    </view>
+    <scroll-view class="sidebar-list" scroll-y="true">
+      <view class="sidebar-empty" wx:if="{{conversations.length === 0}}">{{uiText.sidebarEmpty}}</view>
+      <block wx:for="{{conversations}}" wx:key="id">
+        <view
+          class="sidebar-item {{item.id === activeConversationId ? 'sidebar-item--active' : ''}}"
+          bindtap="onSelectConversation"
+          data-id="{{item.id}}"
+        >
+          <view class="sidebar-item-title">{{item.title}}</view>
+          <view class="sidebar-item-time">{{item.updatedAtText}}</view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <view class="nav" style="padding-top: {{statusBarHeight}}px; height: {{navHeight}}px;">
+    <view class="nav-left" style="width: {{navSideWidth}}px;" bindtap="onBack">
+      <view class="icon-back">
+        <view class="icon-back__line icon-back__line--top"></view>
+        <view class="icon-back__line icon-back__line--bottom"></view>
+      </view>
+    </view>
+    <view class="nav-title nav-title--clickable" bindtap="openSidebar">
+      <text class="nav-title__text">{{navTitle}}</text>
+      <view class="nav-title__chevron"></view>
+    </view>
+    <view class="nav-right nav-right--spacer" style="width: {{navSideWidth}}px;"></view>
+  </view>
+
+  <scroll-view
+    class="content"
+    scroll-y="true"
+    scroll-with-animation="true"
+    scroll-into-view="{{scrollTargetId}}"
+    scroll-top="{{scrollTop}}"
+    enable-flex="true"
+    style="height: {{contentHeight}}px;"
+  >
+    <view class="content-inner">
+      <view class="empty" wx:if="{{messages.length === 0}}">
+        <image class="empty-logo" src="./assets/whale.svg" mode="aspectFit" />
+        <view class="empty-text">{{uiText.emptyTitle}}</view>
+      </view>
+
+      <view class="message-list" wx:else>
+        <block wx:for="{{messages}}" wx:key="id">
+          <view class="message message--{{item.role}}" id="msg-{{item.id}}">
+            <view class="bubble">
+              <view wx:if="{{item.pending && !item.html}}" class="typing">
+                <view class="typing-dot"></view>
+                <view class="typing-dot typing-dot--middle"></view>
+                <view class="typing-dot"></view>
+              </view>
+              <rich-text wx:else class="markdown" nodes="{{item.html}}"></rich-text>
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <view class="scroll-spacer" style="height: {{scrollSpacerHeight}}px;"></view>
+    </view>
+  </scroll-view>
+
+  <view class="composer" style="padding-bottom: {{safeAreaBottom}}px;">
+    <view class="composer-card">
+      <view class="composer-input-row">
+        <input
+          class="composer-input"
+          value="{{inputValue}}"
+          placeholder="{{uiText.placeholder}}"
+          placeholder-class="composer-placeholder"
+          confirm-type="send"
+          bindinput="onInput"
+          bindconfirm="onConfirm"
+        />
+      </view>
+      <view class="composer-actions">
+        <view class="chip {{thinkEnabled ? 'chip--active' : ''}}" bindtap="toggleThink">
+          <view class="chip-icon chip-icon--think"></view>
+          <text>{{uiText.think}}</text>
+        </view>
+        <view class="chip {{searchEnabled ? 'chip--active' : ''}}" bindtap="toggleSearch">
+          <view class="chip-icon chip-icon--search"></view>
+          <text>{{uiText.search}}</text>
+        </view>
+        <view class="composer-spacer"></view>
+        <view class="action-btn" bindtap="onAttachTap">
+          <view class="icon-circle icon-circle--small">
+            <view class="icon-plus icon-plus--h"></view>
+            <view class="icon-plus icon-plus--v"></view>
+          </view>
+        </view>
+        <view class="action-btn" bindtap="onVoiceTap">
+          <view class="icon-voice">
+            <view class="icon-voice__ring"></view>
+            <view class="icon-voice__dot"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
