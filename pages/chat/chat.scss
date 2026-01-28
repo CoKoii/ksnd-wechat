@@ -143,9 +143,9 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34rpx;
+  font-size: 28rpx;
   font-weight: 600;
-  letter-spacing: 2rpx;
+  letter-spacing: 1rpx;
 }
 
 .nav-title--clickable {
@@ -295,10 +295,11 @@ page {
   max-width: 74%;
   padding: 18rpx 22rpx;
   font-size: 28rpx;
-  line-height: 40rpx;
+  line-height: 44rpx;
   border-radius: 22rpx;
   background: #f5f6f8;
   color: #111111;
+  box-sizing: border-box;
 }
 
 .message--user .bubble {
@@ -314,8 +315,13 @@ page {
 .markdown {
   display: block;
   font-size: 28rpx;
-  line-height: 40rpx;
+  line-height: 44rpx;
   color: inherit;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  font-weight: 400;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .markdown p {
@@ -332,30 +338,31 @@ page {
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-  margin: 12rpx 0;
+  margin: 16rpx 0 12rpx;
   font-weight: 600;
 }
 
 .markdown h1 {
-  font-size: 34rpx;
-}
-
-.markdown h2 {
   font-size: 32rpx;
 }
 
-.markdown h3 {
+.markdown h2 {
   font-size: 30rpx;
+}
+
+.markdown h3 {
+  font-size: 28rpx;
 }
 
 .markdown ul,
 .markdown ol {
-  margin: 8rpx 0 16rpx 32rpx;
-  padding: 0;
+  margin: 8rpx 0 18rpx 28rpx;
+  padding: 0 0 0 8rpx;
+  list-style-position: outside;
 }
 
 .markdown li {
-  margin-bottom: 8rpx;
+  margin-bottom: 10rpx;
 }
 
 .markdown blockquote {
@@ -372,6 +379,11 @@ page {
   background: rgba(0, 0, 0, 0.06);
   padding: 2rpx 8rpx;
   border-radius: 8rpx;
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .markdown pre {
@@ -379,7 +391,15 @@ page {
   padding: 16rpx;
   background: #0f172a;
   border-radius: 16rpx;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .markdown pre code {
@@ -387,6 +407,10 @@ page {
   color: #e2e8f0;
   padding: 0;
   font-size: 24rpx;
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .markdown a {
@@ -460,7 +484,7 @@ page {
 .composer-card {
   background: #ffffff;
   border-radius: 44rpx;
-  padding: 24rpx 24rpx 18rpx;
+  padding: 28rpx 24rpx 22rpx;
   box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.08);
   border: 1rpx solid #f1f1f1;
 }
@@ -473,7 +497,8 @@ page {
   width: 100%;
   font-size: 30rpx;
   color: #111111;
-  height: 56rpx;
+  height: 72rpx;
+  line-height: 72rpx;
 }
 
 .composer-placeholder {

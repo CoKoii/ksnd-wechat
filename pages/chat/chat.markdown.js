@@ -20,14 +20,16 @@ const formatInline = (value = '') => {
   return text;
 };
 
+const normalizeMarkdown = (markdown = '') =>
+  markdown.replace(/\r\n/g, '\n').replace(/<br\s*\/?>/gi, '\n');
+
 const markdownToHtml = (markdown = '') => {
   if (!markdown) return '';
-  const lines = markdown.replace(/\r\n/g, '\n').split('\n');
+  const lines = normalizeMarkdown(markdown).split('\n');
   const html = [];
   let inCodeBlock = false;
   let codeBuffer = [];
-  let listType = null;
-  let listBuffer = [];
+  const listStack = [];
   let paragraphBuffer = [];
 
   const flushParagraph = () => {
@@ -37,12 +39,37 @@ const markdownToHtml = (markdown = '') => {
     paragraphBuffer = [];
   };
 
-  const flushList = () => {
-    if (!listType || !listBuffer.length) return;
-    html.push(`<${listType}>${listBuffer.join('')}</${listType}>`);
-    listType = null;
-    listBuffer = [];
+  const flushListItem = (list) => {
+    if (!list || list.currentItem === null) return;
+    list.items.push(`<li>${list.currentItem}</li>`);
+    list.currentItem = null;
   };
+
+  const closeList = () => {
+    const list = listStack.pop();
+    if (!list) return;
+    flushListItem(list);
+    if (!list.items.length) return;
+    const markup = `<${list.type}>${list.items.join('')}</${list.type}>`;
+    const parent = listStack[listStack.length - 1];
+    if (parent) {
+      parent.currentItem = parent.currentItem ? `${parent.currentItem}${markup}` : markup;
+      return;
+    }
+    html.push(markup);
+  };
+
+  const closeListsToDepth = (depth) => {
+    while (listStack.length > depth) {
+      closeList();
+    }
+  };
+
+  const openList = (type) => {
+    listStack.push({ type, items: [], currentItem: null });
+  };
+
+  const flushAllLists = () => closeListsToDepth(0);
 
   const flushCode = () => {
     if (!codeBuffer.length) return;
@@ -59,7 +86,7 @@ const markdownToHtml = (markdown = '') => {
         flushCode();
       } else {
         flushParagraph();
-        flushList();
+        flushAllLists();
         inCodeBlock = true;
       }
       return;
@@ -72,50 +99,69 @@ const markdownToHtml = (markdown = '') => {
 
     if (line.trim() === '') {
       flushParagraph();
-      flushList();
+      flushAllLists();
       return;
     }
 
-    const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+    const headingMatch = line.match(/^\s{0,3}(#{1,6})\s+(.+)$/);
     if (headingMatch) {
       flushParagraph();
-      flushList();
+      flushAllLists();
       const level = headingMatch[1].length;
       html.push(`<h${level}>${formatInline(headingMatch[2])}</h${level}>`);
       return;
     }
 
-    const blockquoteMatch = line.match(/^>\s?(.+)$/);
+    const blockquoteMatch = line.match(/^\s*>\s?(.+)$/);
     if (blockquoteMatch) {
       flushParagraph();
-      flushList();
+      flushAllLists();
       html.push(`<blockquote>${formatInline(blockquoteMatch[1])}</blockquote>`);
       return;
     }
 
-    const unorderedMatch = line.match(/^[-*]\s+(.+)$/);
-    if (unorderedMatch) {
+    const unorderedMatch = line.match(/^\s*[-*]\s+(.+)$/);
+    const orderedMatch = unorderedMatch ? null : line.match(/^\s*\d+\.\s+(.+)$/);
+    if (unorderedMatch || orderedMatch) {
       flushParagraph();
-      if (listType && listType !== 'ul') flushList();
-      listType = 'ul';
-      listBuffer.push(`<li>${formatInline(unorderedMatch[1])}</li>`);
+      const content = unorderedMatch ? unorderedMatch[1] : orderedMatch[1];
+      const type = unorderedMatch ? 'ul' : 'ol';
+      const indentRaw = line.replace(/\t/g, '  ');
+      const leadingSpaces = (indentRaw.match(/^\s*/) || [''])[0].length;
+      const indentLevel = Math.max(0, Math.floor(leadingSpaces / 2));
+      const desiredDepth = Math.min(indentLevel + 1, listStack.length + 1);
+      closeListsToDepth(desiredDepth);
+      while (listStack.length < desiredDepth) {
+        openList(type);
+      }
+      let currentList = listStack[listStack.length - 1];
+      if (!currentList || currentList.type !== type) {
+        closeList();
+        openList(type);
+        currentList = listStack[listStack.length - 1];
+      }
+      flushListItem(currentList);
+      currentList.currentItem = formatInline(content);
       return;
     }
 
-    const orderedMatch = line.match(/^\d+\.\s+(.+)$/);
-    if (orderedMatch) {
-      flushParagraph();
-      if (listType && listType !== 'ol') flushList();
-      listType = 'ol';
-      listBuffer.push(`<li>${formatInline(orderedMatch[1])}</li>`);
-      return;
+    if (listStack.length) {
+      const indentedMatch = line.match(/^\s{2,}(.+)$/);
+      if (indentedMatch) {
+        const currentList = listStack[listStack.length - 1];
+        currentList.currentItem = currentList.currentItem
+          ? `${currentList.currentItem}<br/>${formatInline(indentedMatch[1])}`
+          : formatInline(indentedMatch[1]);
+        return;
+      }
+      flushAllLists();
     }
 
     paragraphBuffer.push(line);
   });
 
   flushParagraph();
-  flushList();
+  flushAllLists();
   flushCode();
 
   return html.join('');
