@@ -1,4 +1,4 @@
-const BASE_URL = "http://139.196.108.216/ksndsrv/";
+const BASE_URL = "https://ksnd.nexinfo.cn/ksndsrv";
 const TOKEN_KEY = "token";
 const LOGIN_PAGE_PATH = "/pages/login/login";
 
