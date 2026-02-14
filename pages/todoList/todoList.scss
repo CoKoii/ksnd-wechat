@@ -1,3 +1,5 @@
+@import "../../styles/theme/index.scss";
+
 /* pages/todoList/todoList.scss */
 page {
   height: 100%;
@@ -8,14 +10,14 @@ page {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f5f5f5;
+  background-color: $color-bg-page-alt;
 
   .tabs {
     flex-shrink: 0;
     display: flex;
-    background-color: #fff;
+    background-color: $color-bg-card;
     padding: 0 32rpx;
-    box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+    box-shadow: $shadow-nav;
     z-index: 10;
 
     .tab-item {
@@ -23,12 +25,12 @@ page {
       text-align: center;
       padding: 32rpx 0;
       font-size: 28rpx;
-      color: #666;
+      color: $color-text-sub;
       position: relative;
       transition: all 0.3s;
 
       &.active {
-        color: #3a7afe;
+        color: $color-primary-light;
         font-weight: 600;
 
         &::after {
@@ -39,8 +41,8 @@ page {
           transform: translateX(-50%);
           width: 60rpx;
           height: 6rpx;
-          background-color: #3a7afe;
-          border-radius: 3rpx;
+          background-color: $color-primary-light;
+          border-radius: $radius-xs;
         }
       }
     }
@@ -54,11 +56,11 @@ page {
 
     .todo-items {
       .todo-item {
-        background-color: #fff;
-        border-radius: 16rpx;
+        background-color: $color-bg-card;
+        border-radius: $radius-md;
         padding: 32rpx;
         margin-bottom: 24rpx;
-        box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+        box-shadow: $shadow-card;
 
         .item-header {
           display: flex;
@@ -66,7 +68,7 @@ page {
           align-items: flex-start;
           margin-bottom: 24rpx;
           padding-bottom: 24rpx;
-          border-bottom: 1rpx solid #f0f0f0;
+          border-bottom: 1rpx solid $color-border-base;
 
           .title-row {
             display: flex;
@@ -76,7 +78,7 @@ page {
             .title {
               font-size: 32rpx;
               font-weight: 600;
-              color: #333;
+              color: $color-text-body;
               margin-right: 16rpx;
             }
 
@@ -86,15 +88,15 @@ page {
               border-radius: 4rpx;
 
               &.urgent {
-                background-color: #ffeded;
-                color: #ff4d4f;
+                background-color: $color-danger-bg;
+                color: $color-danger;
               }
             }
           }
 
           .date {
             font-size: 24rpx;
-            color: #999;
+            color: $color-text-muted;
             white-space: nowrap;
             margin-left: 16rpx;
           }
@@ -114,12 +116,12 @@ page {
             }
 
             .label {
-              color: #666;
+              color: $color-text-sub;
               margin-right: 8rpx;
             }
 
             .value {
-              color: #333;
+              color: $color-text-body;
               font-weight: 500;
             }
           }
@@ -130,7 +132,7 @@ page {
           justify-content: space-between;
           align-items: center;
           padding-top: 24rpx;
-          border-top: 1rpx solid #f0f0f0;
+          border-top: 1rpx solid $color-border-base;
           font-size: 24rpx;
 
           .footer-left {
@@ -138,12 +140,12 @@ page {
             align-items: center;
 
             .label {
-              color: #999;
+              color: $color-text-muted;
               margin-right: 8rpx;
             }
 
             .value {
-              color: #333;
+              color: $color-text-body;
             }
           }
 
@@ -152,12 +154,12 @@ page {
             align-items: center;
 
             .label {
-              color: #999;
+              color: $color-text-muted;
               margin-right: 8rpx;
             }
 
             .deadline {
-              color: #3a7afe;
+              color: $color-primary-light;
               font-weight: 500;
             }
           }
@@ -171,7 +173,7 @@ page {
       text-align: center;
       padding: 40rpx 0;
       font-size: 28rpx;
-      color: #999;
+      color: $color-text-muted;
     }
 
     .empty {

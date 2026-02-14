@@ -1,18 +1,20 @@
+@import "../../styles/theme/index.scss";
+
 .login-page {
   min-height: 100vh;
-  background: #efefef;
+  background: $color-bg-page;
 }
 
 .top-area-blue {
-  background: #457ff9;
-  border-radius: 0 0 40rpx 40rpx;
+  background: $color-primary;
+  border-radius: 0 0 $radius-xl $radius-xl;
   padding: 96rpx 48rpx 220rpx;
 }
 
 .brand {
   font-size: 48rpx;
   font-weight: 700;
-  color: #ffffff;
+  color: $color-bg-card;
 }
 
 .brand-desc {
@@ -24,10 +26,10 @@
 
 .login-card {
   margin: -150rpx 32rpx 0;
-  background: #fff;
-  border-radius: 24rpx;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
   padding: 44rpx 32rpx 40rpx;
-  box-shadow: 0 12rpx 32rpx rgba(69, 127, 249, 0.14);
+  box-shadow: $shadow-floating-card;
 }
 
 .card-title {
@@ -35,7 +37,7 @@
   padding-left: 18rpx;
   font-size: 36rpx;
   font-weight: 600;
-  color: #1f2937;
+  color: $color-text-main;
 }
 
 .card-title::before {
@@ -45,15 +47,15 @@
   top: 10rpx;
   width: 6rpx;
   height: 30rpx;
-  border-radius: 3rpx;
-  background: #457ff9;
+  border-radius: $radius-xs;
+  background: $color-primary;
 }
 
 .subtitle {
   margin-top: 12rpx;
   margin-bottom: 30rpx;
   font-size: 28rpx;
-  color: #6b7280;
+  color: $color-text-weak;
 }
 
 .field {
@@ -64,27 +66,27 @@
   display: block;
   margin-bottom: 12rpx;
   font-size: 24rpx;
-  color: #6b7280;
+  color: $color-text-weak;
 }
 
 .input {
   height: 88rpx;
   padding: 0 24rpx;
-  border-radius: 12rpx;
-  border: 1px solid #d9e3f7;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border-input;
   font-size: 30rpx;
-  color: #111827;
+  color: $color-text-main;
   box-sizing: border-box;
-  background: #f7faff;
+  background: $color-input-bg;
 }
 
 .submit-btn {
   margin-top: 40rpx;
   height: 88rpx;
   line-height: 88rpx;
-  border-radius: 12rpx;
-  background: #457ff9;
-  color: #fff;
+  border-radius: $radius-sm;
+  background: $color-primary;
+  color: $color-bg-card;
   font-size: 30rpx;
   font-weight: 600;
 }

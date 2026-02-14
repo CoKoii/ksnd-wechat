@@ -1,7 +1,10 @@
 // pages/todoList/todoList.js
-const { getTaskList } = require("../../api/api");
-
-const TAB_STATE_MAP = [10018010, 10018020, undefined, 10018090];
+const { getTaskList } = require("../../api/task");
+const {
+  getStateByTab,
+  parseTaskListResponse,
+  calcHasMore,
+} = require("./utils");
 
 Page({
   data: {
@@ -36,7 +39,7 @@ Page({
     const { activeTab, page, pageSize, loading, hasMore, todoList } = this.data;
     if (loading || !hasMore) return;
 
-    const state = TAB_STATE_MAP[activeTab];
+    const state = getStateByTab(activeTab);
     if (!state) {
       this.setData({ todoList: [], hasMore: false, loading: false });
       return;
@@ -46,21 +49,16 @@ Page({
 
     try {
       const res = await getTaskList({ pageNum: page, pageSize, state });
-      if (String(res.code) !== "0") {
-        throw new Error(res.msg || "加载失败");
-      }
-
-      const payload = res.data || {};
-      const nextList = Array.isArray(payload.data) ? payload.data : [];
+      const { list: nextList, total, pageCount } = parseTaskListResponse(res);
       const mergedList = page === 1 ? nextList : todoList.concat(nextList);
-
-      const total = Number(payload.tcnt);
-      const pageCount = Number(payload.pcnt);
-      const nextHasMore = Number.isFinite(total)
-        ? mergedList.length < total
-        : Number.isFinite(pageCount)
-          ? page < pageCount
-          : nextList.length === pageSize;
+      const nextHasMore = calcHasMore({
+        mergedLength: mergedList.length,
+        listLength: nextList.length,
+        page,
+        pageSize,
+        total,
+        pageCount,
+      });
 
       this.setData({
         todoList: mergedList,

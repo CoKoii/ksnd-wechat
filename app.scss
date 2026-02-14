@@ -1,5 +1,7 @@
+@import "./styles/theme/index.scss";
+
 page {
-  background-color: #efefef;
+  background-color: $color-bg-page;
 }
 view {
   box-sizing: border-box;

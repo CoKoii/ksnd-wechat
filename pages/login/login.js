@@ -1,7 +1,11 @@
 const { login } = require("../../api/auth");
 const { getToken, setToken } = require("../../utils/http");
-
-const HOME_TAB_PATH = "/pages/home/home";
+const {
+  normalizeForm,
+  isFormValid,
+  parseLoginResponse,
+  goHome,
+} = require("./utils");
 
 Page({
   data: {
@@ -30,9 +34,8 @@ Page({
     const { submitting, form } = this.data;
     if (submitting) return;
 
-    const uname = String(form.uname || "").trim();
-    const pwd = String(form.pwd || "").trim();
-    if (!uname || !pwd) {
+    const normalizedForm = normalizeForm(form);
+    if (!isFormValid(normalizedForm)) {
       wx.showToast({
         title: "请输入账号和密码",
         icon: "none",
@@ -42,23 +45,23 @@ Page({
 
     this.setData({ submitting: true });
     try {
-      const res = await login({ uname, pwd });
-      const token = res && res.data ? res.data.tokenValue : "";
-      if (res && res.msg === "ok" && token) {
-        setToken(token);
-        if (res.data.loginId) {
-          wx.setStorageSync("loginId", res.data.loginId);
+      const res = await login(normalizedForm);
+      const result = parseLoginResponse(res);
+      if (result.ok) {
+        setToken(result.token);
+        if (result.loginId) {
+          wx.setStorageSync("loginId", result.loginId);
         }
         wx.showToast({
           title: "登录成功",
           icon: "success",
         });
-        this.goHome();
+        goHome();
         return;
       }
 
       wx.showToast({
-        title: (res && res.msg) || "登录失败",
+        title: result.message,
         icon: "none",
       });
     } catch (error) {
@@ -72,11 +75,6 @@ Page({
   },
 
   goHome() {
-    wx.switchTab({
-      url: HOME_TAB_PATH,
-      fail: () => {
-        wx.reLaunch({ url: HOME_TAB_PATH });
-      },
-    });
+    goHome();
   },
 });
