@@ -66,6 +66,29 @@ page {
     border-radius: 8rpx;
     padding: 0 16rpx;
   }
+
+  .task-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12rpx;
+  }
+
+  .task-row {
+    display: flex;
+    align-items: flex-start;
+    font-size: 26rpx;
+    line-height: 1.6;
+  }
+
+  .task-label {
+    color: #999;
+    flex-shrink: 0;
+  }
+
+  .task-value {
+    color: #333;
+    word-break: break-all;
+  }
 }
 
 .check-items {

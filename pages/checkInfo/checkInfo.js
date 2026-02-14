@@ -1,7 +1,17 @@
 // pages/checkInfo/checkInfo.js
+const { getTaskDetail } = require("../../api/task");
+
+const formatDate = (value) => {
+  const text = String(value || "").trim();
+  if (!text) return "--";
+  const datePart = text.split(" ")[0];
+  return datePart || "--";
+};
+
 Page({
   data: {
     id: null,
+    taskDetail: null,
     checkResult: "normal",
     checkItems: [
       { id: 1, name: "外观完整，无破损", status: null },
@@ -22,12 +32,37 @@ Page({
     if (options.id) {
       this.setData({ id: options.id });
       this.loadDetailData(options.id);
+      return;
     }
+
+    wx.showToast({
+      title: "缺少任务ID",
+      icon: "none",
+    });
   },
 
-  loadDetailData(id) {
-    console.log("加载详情数据，ID:", id);
-    // TODO: 从服务器加载数据
+  async loadDetailData(id) {
+    try {
+      const res = await getTaskDetail(id);
+      if (String((res && res.code) || "") !== "0") {
+        throw new Error((res && res.msg) || "加载详情失败");
+      }
+      const detail = (res && res.data) || {};
+      this.setData({
+        taskDetail: {
+          ...detail,
+          publisher: detail.pjname || detail.creator_fk || "--",
+          requiredDate: formatDate(detail.cktime || detail.create_time),
+        },
+        inspector: detail.checker || "",
+        description: detail.ckdesc || "",
+      });
+    } catch (error) {
+      wx.showToast({
+        title: (error && error.message) || "加载详情失败",
+        icon: "none",
+      });
+    }
   },
 
   onCheckResultChange(e) {

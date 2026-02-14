@@ -6,6 +6,36 @@
     <view class="tip-text">请巡检人员按照要求认真巡检</view>
   </view>
 
+  <view class="section" wx:if="{{taskDetail}}">
+    <view class="section-title">任务信息</view>
+    <view class="task-info">
+      <view class="task-row">
+        <text class="task-label">任务名称：</text>
+        <text class="task-value">{{taskDetail.name || '--'}}</text>
+      </view>
+      <view class="task-row">
+        <text class="task-label">计划名称：</text>
+        <text class="task-value">{{taskDetail.plname || '--'}}</text>
+      </view>
+      <view class="task-row">
+        <text class="task-label">商铺：</text>
+        <text class="task-value">{{taskDetail.coname || '--'}}</text>
+      </view>
+      <view class="task-row">
+        <text class="task-label">发布人：</text>
+        <text class="task-value">{{taskDetail.publisher || '--'}}</text>
+      </view>
+      <view class="task-row">
+        <text class="task-label">状态：</text>
+        <text class="task-value">{{taskDetail.stname || '--'}}</text>
+      </view>
+      <view class="task-row">
+        <text class="task-label">要求巡查日期：</text>
+        <text class="task-value">{{taskDetail.requiredDate || '--'}}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- 巡检结果 -->
   <view class="section">
     <view class="section-title">巡检结果</view>

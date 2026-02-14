@@ -6,6 +6,12 @@ const getTaskList = async (data) =>
     data: data || {},
   });
 
+const getTaskDetail = async (id) =>
+  request(`/api/tm/task/get?id=${encodeURIComponent(id)}`, {
+    method: "GET",
+  });
+
 module.exports = {
   getTaskList,
+  getTaskDetail,
 };
