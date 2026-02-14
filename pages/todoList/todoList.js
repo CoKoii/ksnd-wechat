@@ -1,15 +1,28 @@
 // pages/todoList/todoList.js
 const { getTaskList } = require("../../api/task");
 const {
-  getStateByTab,
   parseTaskListResponse,
   calcHasMore,
+  formatDateToYmd,
+  pickTaskDateValue,
 } = require("./utils");
+
+const TAB_CONFIG = [
+  { label: "待检查", state: 10018010 },
+  // { label: "进行中", state: 10018020 },
+  // { label: "已超时", state: undefined },
+  { label: "已检查", state: 10018090 },
+];
+
+const getStateByTab = (tabIndex) => {
+  const tab = TAB_CONFIG[tabIndex];
+  return tab ? tab.state : undefined;
+};
 
 Page({
   data: {
     activeTab: 0,
-    tabs: ["待进行", "进行中", "已超时", "已完成"],
+    tabs: TAB_CONFIG.map((item) => item.label),
     todoList: [],
     page: 1,
     pageSize: 10,
@@ -40,7 +53,7 @@ Page({
     if (loading || !hasMore) return;
 
     const state = getStateByTab(activeTab);
-    if (!state) {
+    if (state === undefined || state === null) {
       this.setData({ todoList: [], hasMore: false, loading: false });
       return;
     }
@@ -50,10 +63,15 @@ Page({
     try {
       const res = await getTaskList({ pageNum: page, pageSize, state });
       const { list: nextList, total, pageCount } = parseTaskListResponse(res);
-      const mergedList = page === 1 ? nextList : todoList.concat(nextList);
+      const normalizedList = nextList.map((item) => ({
+        ...item,
+        createDate: formatDateToYmd(pickTaskDateValue(item)),
+      }));
+      const mergedList =
+        page === 1 ? normalizedList : todoList.concat(normalizedList);
       const nextHasMore = calcHasMore({
         mergedLength: mergedList.length,
-        listLength: nextList.length,
+        listLength: normalizedList.length,
         page,
         pageSize,
         total,

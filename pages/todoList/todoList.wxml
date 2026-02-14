@@ -24,35 +24,30 @@
       <view class="todo-item" wx:for="{{todoList}}" wx:key="id" data-id="{{item.id}}" bindtap="goToDetail">
         <view class="item-header">
           <view class="title-row">
-            <text class="title">{{item.pjname || item.name || '--'}}</text>
+            <text class="title">{{item.name || '--'}}</text>
             <view class="badge urgent" wx:if="{{activeTab === 2}}">紧急</view>
           </view>
-          <view class="date">{{item.create_time || item.createTime || '--'}}</view>
         </view>
         
         <view class="item-body">
           <view class="info-row">
-            <text class="label">巡河范围：</text>
-            <text class="value">{{item.coname || '--'}}</text>
-          </view>
-          <view class="info-row">
-            <text class="label">任务来源：</text>
+            <text class="label">计划名称:</text>
             <text class="value">{{item.plname || '--'}}</text>
           </view>
           <view class="info-row">
-            <text class="label">任务类型：</text>
-            <text class="value">{{item.stname || '--'}}</text>
+            <text class="label">商铺:</text>
+            <text class="value">{{item.coname || '--'}}</text>
           </view>
         </view>
         
         <view class="item-footer">
           <view class="footer-left">
             <text class="label">发布人：</text>
-            <text class="value">{{item.urname || item.creator_fk || '--'}}</text>
+            <text class="value">{{item.pjname || item.creator_fk || '--'}}</text>
           </view>
           <view class="footer-right">
             <text class="label">要求巡查日期：</text>
-            <text class="deadline">{{item.cktime || '--'}}</text>
+            <text class="deadline">{{item.createDate || '--'}}</text>
           </view>
         </view>
       </view>
