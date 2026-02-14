@@ -1,24 +1,111 @@
 // pages/checkInfo/checkInfo.js
-const { getTaskDetail } = require("../../api/task");
+const { getTaskDetail, saveTaskForm } = require("../../api/task");
+const { BASE_URL } = require("../../utils/http");
+
+const NO_VALUE = "--";
+
+const showToast = (title) => wx.showToast({ title, icon: "none" });
 
 const formatDate = (value) => {
-  const text = String(value || "").trim();
-  if (!text) return "--";
-  const datePart = text.split(" ")[0];
-  return datePart || "--";
+  const date = String(value || "").trim().split(" ")[0];
+  return date || NO_VALUE;
+};
+
+const toCheckResult = (value) => {
+  if (value === null || value === undefined || value === "") return "";
+  return String(value) === "1" ? "normal" : "abnormal";
+};
+
+const toItemStatus = (value) => {
+  if (value === null || value === undefined || value === "") return null;
+  return String(value) === "1";
+};
+
+const normalizeImageUrl = (value) => {
+  const url = String(value || "").trim();
+  if (!url) return "";
+  if (/^(https?:\/\/|wxfile:\/\/|data:)/i.test(url)) return url;
+
+  const base = String(BASE_URL || "").replace(/\/+$/, "");
+  const path = url.replace(/^\/+/, "").replace(/^ksndsrv\/+/i, "");
+  return base ? `${base}/${path}` : path;
+};
+
+const toRawImageValue = (item) => {
+  if (!item) return "";
+  if (typeof item === "string") return item;
+  return item.url || item.path || "";
+};
+
+const toImageUrls = (value) => {
+  const source = Array.isArray(value) ? value : String(value || "").split(",");
+  return source
+    .map(toRawImageValue)
+    .map((item) => String(item || "").trim())
+    .filter(Boolean)
+    .map(normalizeImageUrl)
+    .filter(Boolean);
+};
+
+const toUploaderFiles = (value) =>
+  toImageUrls(value).map((url, index) => ({
+    url,
+    name: `image-${index + 1}`,
+  }));
+
+const toCsv = (value) => toImageUrls(value).join(",");
+
+const buildCheckItems = (fields = [], vals = []) => {
+  const latestVals = (Array.isArray(vals) && vals[0]) || {};
+  return (Array.isArray(fields) ? fields : [])
+    .slice()
+    .sort((a, b) => Number(a.snum || 0) - Number(b.snum || 0))
+    .map((field, index) => {
+      const seq = index + 1;
+      return {
+        id: field.id || String(seq),
+        name: field.name || `检查项${seq}`,
+        status: toItemStatus(latestVals[`value${seq}`]),
+        description: String(latestVals[`memo${seq}`] || ""),
+        images: toImageUrls(latestVals[`file${seq}`]),
+      };
+    });
+};
+
+const buildSubmitPayload = ({
+  taskDetail,
+  checkResult,
+  checkItems,
+  description,
+  images,
+  inspector,
+}) => {
+  const payload = {
+    task: taskDetail.id || "",
+    table: taskDetail.table || "",
+    ckrs: checkResult === "normal" ? "1" : "0",
+    ckdesc: String(description || "").trim(),
+    cdpics: toCsv(images),
+    cssign: String(inspector || "").trim(),
+  };
+
+  checkItems.forEach((item, index) => {
+    const seq = index + 1;
+    payload[`value${seq}`] = item.status ? "1" : "0";
+    payload[`memo${seq}`] = String(item.description || "").trim();
+    payload[`file${seq}`] = toCsv(item.images);
+  });
+
+  return payload;
 };
 
 Page({
   data: {
     id: null,
     taskDetail: null,
-    checkResult: "normal",
-    checkItems: [
-      { id: 1, name: "外观完整，无破损", status: null },
-      { id: 2, name: "配件齐全", status: null },
-      { id: 3, name: "功能运行正常", status: null },
-      { id: 4, name: "设备所在位置是否正确", status: null },
-    ],
+    submitting: false,
+    checkResult: "",
+    checkItems: [],
     description: "",
     images: [],
     inspector: "",
@@ -29,16 +116,9 @@ Page({
   },
 
   onLoad(options) {
-    if (options.id) {
-      this.setData({ id: options.id });
-      this.loadDetailData(options.id);
-      return;
-    }
-
-    wx.showToast({
-      title: "缺少任务ID",
-      icon: "none",
-    });
+    if (!options.id) return showToast("缺少任务ID");
+    this.setData({ id: options.id });
+    this.loadDetailData(options.id);
   },
 
   async loadDetailData(id) {
@@ -47,21 +127,22 @@ Page({
       if (String((res && res.code) || "") !== "0") {
         throw new Error((res && res.msg) || "加载详情失败");
       }
+
       const detail = (res && res.data) || {};
       this.setData({
         taskDetail: {
           ...detail,
-          publisher: detail.pjname || detail.creator_fk || "--",
+          publisher: detail.pjname || detail.creator_fk || NO_VALUE,
           requiredDate: formatDate(detail.cktime || detail.create_time),
         },
-        inspector: detail.checker || "",
+        checkResult: toCheckResult(detail.ckrs),
+        checkItems: buildCheckItems(detail.fields, detail.vals),
+        inspector: detail.cssign || detail.cksign || detail.checker || "",
         description: detail.ckdesc || "",
+        images: toUploaderFiles(detail.cdpics || detail.ckpics),
       });
     } catch (error) {
-      wx.showToast({
-        title: (error && error.message) || "加载详情失败",
-        icon: "none",
-      });
+      showToast((error && error.message) || "加载详情失败");
     }
   },
 
@@ -69,25 +150,30 @@ Page({
     this.setData({ checkResult: e.detail });
   },
 
-  onCheckItemNormal(e) {
-    const { index } = e.currentTarget.dataset;
-    const { checkItems } = this.data;
+  setCheckItem(index, patch) {
+    const checkItems = this.data.checkItems.slice();
     checkItems[index] = {
       ...checkItems[index],
-      status: true,
-      description: "",
-      images: [],
+      ...patch,
     };
     this.setData({ checkItems });
   },
 
+  onCheckItemNormal(e) {
+    this.setCheckItem(Number(e.currentTarget.dataset.index), {
+      status: true,
+      description: "",
+      images: [],
+    });
+  },
+
   onCheckItemAbnormal(e) {
-    const { index } = e.currentTarget.dataset;
-    const item = this.data.checkItems[index];
+    const index = Number(e.currentTarget.dataset.index);
+    const item = this.data.checkItems[index] || {};
     this.setData({
       currentAbnormalItem: index,
       tempDescription: item.description || "",
-      tempImages: item.images || [],
+      tempImages: toUploaderFiles(item.images),
       showAbnormalDialog: true,
     });
   },
@@ -96,22 +182,24 @@ Page({
     this.setData({ tempDescription: e.detail.value || e.detail });
   },
 
-  handleImageUpload(file, targetField) {
-    const files = Array.isArray(file) ? file : [file];
-    const newImages = files.map((f) => ({ url: f.url || f.path }));
-    const currentImages = this.data[targetField];
-    this.setData({ [targetField]: [...currentImages, ...newImages] });
+  appendUploaderFiles(targetField, file) {
+    const incoming = Array.isArray(file) ? file : [file];
+    const next = incoming.map((item) => ({ url: item.url || item.path }));
+    this.setData({ [targetField]: [...this.data[targetField], ...next] });
+  },
+
+  removeUploaderFile(targetField, index) {
+    this.setData({
+      [targetField]: this.data[targetField].filter((_, i) => i !== index),
+    });
   },
 
   onUploadAbnormalImage(e) {
-    this.handleImageUpload(e.detail.file, "tempImages");
+    this.appendUploaderFiles("tempImages", e.detail.file);
   },
 
   onDeleteAbnormalImage(e) {
-    const tempImages = this.data.tempImages.filter(
-      (_, i) => i !== e.detail.index
-    );
-    this.setData({ tempImages });
+    this.removeUploaderFile("tempImages", e.detail.index);
   },
 
   onCancelAbnormal() {
@@ -124,23 +212,18 @@ Page({
   },
 
   onConfirmAbnormal() {
-    const { currentAbnormalItem, tempDescription, tempImages, checkItems } =
-      this.data;
-
-    if (!tempDescription.trim()) {
-      wx.showToast({ title: "请填写异常说明", icon: "none" });
-      return;
+    const { currentAbnormalItem, tempDescription, tempImages } = this.data;
+    if (!String(tempDescription || "").trim()) {
+      return showToast("请填写异常说明");
     }
 
-    checkItems[currentAbnormalItem] = {
-      ...checkItems[currentAbnormalItem],
+    this.setCheckItem(currentAbnormalItem, {
       status: false,
       description: tempDescription,
-      images: tempImages.map((img) => img.url),
-    };
+      images: toImageUrls(tempImages),
+    });
 
     this.setData({
-      checkItems,
       showAbnormalDialog: false,
       currentAbnormalItem: null,
       tempDescription: "",
@@ -153,36 +236,34 @@ Page({
   },
 
   onUploadImage(e) {
-    this.handleImageUpload(e.detail.file, "images");
+    this.appendUploaderFiles("images", e.detail.file);
   },
 
   onDeleteImage(e) {
-    const images = this.data.images.filter((_, i) => i !== e.detail.index);
-    this.setData({ images });
+    this.removeUploaderFile("images", e.detail.index);
   },
 
   onInspectorChange(e) {
     this.setData({ inspector: e.detail.value });
   },
 
-  onSubmit() {
-    const { checkResult, checkItems, description, images, inspector } =
+  async onSubmit() {
+    const { taskDetail, checkResult, checkItems, description, images, inspector, submitting } =
       this.data;
+    if (submitting) return;
 
-    // 验证检查项
+    if (!checkItems.length) return showToast("暂无检查项");
+    if (!taskDetail || !taskDetail.id || !taskDetail.table) {
+      return showToast("任务信息不完整");
+    }
+    if (!checkResult) return showToast("请选择巡检结果");
     if (checkItems.some((item) => item.status === null)) {
-      wx.showToast({ title: "请完成所有检查项", icon: "none" });
-      return;
+      return showToast("请完成所有检查项");
     }
+    if (!String(inspector || "").trim()) return showToast("请输入巡检人员姓名");
 
-    // 验证巡检人员
-    if (!inspector.trim()) {
-      wx.showToast({ title: "请输入巡检人员姓名", icon: "none" });
-      return;
-    }
-
-    // 提交数据
-    console.log("提交巡检结果:", {
+    const payload = buildSubmitPayload({
+      taskDetail,
       checkResult,
       checkItems,
       description,
@@ -190,7 +271,18 @@ Page({
       inspector,
     });
 
-    wx.showToast({ title: "提交成功", icon: "success" });
-    setTimeout(() => wx.navigateBack(), 1500);
+    this.setData({ submitting: true });
+    try {
+      const res = await saveTaskForm(payload);
+      if (String((res && res.code) || "") !== "0") {
+        throw new Error((res && res.msg) || "提交失败");
+      }
+      wx.showToast({ title: "提交成功", icon: "success" });
+      setTimeout(() => wx.navigateBack(), 1200);
+    } catch (error) {
+      showToast((error && error.message) || "提交失败");
+    } finally {
+      this.setData({ submitting: false });
+    }
   },
 });

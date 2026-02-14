@@ -11,7 +11,14 @@ const getTaskDetail = async (id) =>
     method: "GET",
   });
 
+const saveTaskForm = async (data) =>
+  request("/api/ct/form/save", {
+    method: "POST",
+    data: data || {},
+  });
+
 module.exports = {
   getTaskList,
   getTaskDetail,
+  saveTaskForm,
 };
