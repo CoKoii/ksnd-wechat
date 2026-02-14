@@ -1,0 +1,43 @@
+<view class="login-page">
+  <view class="top-area-blue">
+    <view class="brand">华远直巡</view>
+    <view class="brand-desc">商贸领域安全隐患实时动态监管</view>
+  </view>
+
+  <view class="login-card">
+    <view class="card-title">账号登录</view>
+    <view class="subtitle">请输入账号和密码</view>
+
+    <view class="field">
+      <text class="label">账号</text>
+      <input
+        class="input"
+        placeholder="请输入账号"
+        value="{{form.uname}}"
+        data-field="uname"
+        bindinput="onInput"
+      />
+    </view>
+
+    <view class="field">
+      <text class="label">密码</text>
+      <input
+        class="input"
+        password
+        placeholder="请输入密码"
+        value="{{form.pwd}}"
+        data-field="pwd"
+        bindinput="onInput"
+      />
+    </view>
+
+    <button
+      class="submit-btn"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="onSubmit"
+    >
+      登录
+    </button>
+  </view>
+</view>

@@ -1,4 +1,8 @@
 // pages/todoList/todoList.js
+const { getTaskList } = require("../../api/api");
+
+const TAB_STATE_MAP = [10018010, 10018020, undefined, 10018090];
+
 Page({
   data: {
     activeTab: 0,
@@ -10,105 +14,84 @@ Page({
     loading: false,
   },
 
-  onLoad(options) {
+  onLoad() {
     this.loadTodoList();
   },
 
-  onTabChange(e) {
-    const index = e.currentTarget.dataset.index;
+  resetList(activeTab = this.data.activeTab) {
     this.setData({
-      activeTab: index,
+      activeTab,
       todoList: [],
       page: 1,
       hasMore: true,
     });
+  },
+
+  onTabChange(e) {
+    this.resetList(Number(e.currentTarget.dataset.index));
     this.loadTodoList();
   },
 
-  loadTodoList() {
-    if (this.data.loading || !this.data.hasMore) {
+  async loadTodoList() {
+    const { activeTab, page, pageSize, loading, hasMore, todoList } = this.data;
+    if (loading || !hasMore) return;
+
+    const state = TAB_STATE_MAP[activeTab];
+    if (!state) {
+      this.setData({ todoList: [], hasMore: false, loading: false });
       return;
     }
 
     this.setData({ loading: true });
 
-    setTimeout(() => {
-      const newData = this.generateMockData(this.data.page, this.data.pageSize);
+    try {
+      const res = await getTaskList({ pageNum: page, pageSize, state });
+      if (String(res.code) !== "0") {
+        throw new Error(res.msg || "加载失败");
+      }
+
+      const payload = res.data || {};
+      const nextList = Array.isArray(payload.data) ? payload.data : [];
+      const mergedList = page === 1 ? nextList : todoList.concat(nextList);
+
+      const total = Number(payload.tcnt);
+      const pageCount = Number(payload.pcnt);
+      const nextHasMore = Number.isFinite(total)
+        ? mergedList.length < total
+        : Number.isFinite(pageCount)
+          ? page < pageCount
+          : nextList.length === pageSize;
 
       this.setData({
-        todoList: [...this.data.todoList, ...newData],
-        page: this.data.page + 1,
-        loading: false,
-        hasMore: newData.length === this.data.pageSize,
+        todoList: mergedList,
+        page: page + 1,
+        hasMore: nextHasMore,
       });
-    }, 500);
-  },
-
-  generateMockData(page, pageSize) {
-    const data = [];
-    const statusMap = ["待进行", "进行中", "已超时", "已完成"];
-    const taskNames = [
-      "巡逻大通河",
-      "设备维护任务",
-      "安全检查",
-      "日常巡检",
-      "故障维修",
-    ];
-    const sources = ["通道监测", "设备巡检", "安全管理"];
-    const types = ["事件处理", "日常巡检", "设备维护"];
-    const locations = ["大通河北岸", "南区设备间", "东区监控室", "西区配电房"];
-
-    const start = (page - 1) * pageSize;
-    const maxItems = 30;
-
-    if (start >= maxItems) {
-      return [];
-    }
-
-    const itemsToGenerate = Math.min(pageSize, maxItems - start);
-
-    for (let i = 0; i < itemsToGenerate; i++) {
-      const index = start + i;
-      const status = statusMap[this.data.activeTab];
-
-      data.push({
-        id: index,
-        title: taskNames[index % taskNames.length],
-        status: status,
-        badge: status === "已超时" ? "紧急" : "",
-        location: locations[index % locations.length],
-        source: sources[index % sources.length],
-        taskSource: sources[index % sources.length],
-        taskType: types[index % types.length],
-        issuer: "刘大可",
-        deadline: "2019-04-09",
-        publishDate: "2019-03-30",
+    } catch (error) {
+      if (page === 1) this.setData({ todoList: [] });
+      this.setData({ hasMore: false });
+      wx.showToast({
+        title: (error && error.message) || "加载失败",
+        icon: "none",
       });
+    } finally {
+      this.setData({ loading: false });
     }
-
-    return data;
   },
 
   onReachBottom() {
     this.loadTodoList();
   },
 
-  onPullDownRefresh() {
-    this.setData({
-      todoList: [],
-      page: 1,
-      hasMore: true,
-    });
-    this.loadTodoList();
-    setTimeout(() => {
-      wx.stopPullDownRefresh();
-    }, 1000);
+  async onPullDownRefresh() {
+    this.resetList();
+    await this.loadTodoList();
+    wx.stopPullDownRefresh();
   },
 
   goToDetail(e) {
-    const id = e.currentTarget.dataset.id;
     wx.navigateTo({
-      url: `/pages/checkInfo/checkInfo?id=${id}`,
+      url: `/pages/checkInfo/checkInfo?id=${e.currentTarget.dataset.id}`,
     });
   },
 });
