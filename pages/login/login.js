@@ -7,6 +7,9 @@ const {
   goHome,
 } = require("./utils");
 
+const CHECKER_ID_KEY = "checkerId";
+const LOGIN_ID_KEY = "loginId";
+
 Page({
   data: {
     form: {
@@ -50,7 +53,8 @@ Page({
       if (result.ok) {
         setToken(result.token);
         if (result.loginId) {
-          wx.setStorageSync("loginId", result.loginId);
+          wx.setStorageSync(CHECKER_ID_KEY, result.loginId);
+          wx.setStorageSync(LOGIN_ID_KEY, result.loginId);
         }
         wx.showToast({
           title: "登录成功",

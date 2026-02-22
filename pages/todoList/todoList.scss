@@ -48,6 +48,54 @@ page {
     }
   }
 
+  .search-bar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 16rpx;
+    padding: 20rpx 32rpx;
+    background-color: $color-bg-card;
+    border-top: 1rpx solid $color-border-base;
+    border-bottom: 1rpx solid $color-border-base;
+
+    .search-input {
+      flex: 1;
+      height: 72rpx;
+      border-radius: $radius-lg;
+      border: 1rpx solid $color-border-input;
+      background-color: $color-input-bg;
+      box-sizing: border-box;
+      padding: 0 24rpx;
+      font-size: 26rpx;
+      color: $color-text-main;
+    }
+
+    .search-placeholder {
+      color: $color-text-muted;
+    }
+
+    .search-action,
+    .search-reset {
+      height: 72rpx;
+      line-height: 72rpx;
+      padding: 0 24rpx;
+      border-radius: $radius-lg;
+      font-size: 26rpx;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .search-action {
+      color: #fff;
+      background-color: $color-primary-light;
+    }
+
+    .search-reset {
+      color: $color-text-sub;
+      background-color: $color-bg-page;
+    }
+  }
+
   .scroll-container {
     flex: 1;
     height: 0;

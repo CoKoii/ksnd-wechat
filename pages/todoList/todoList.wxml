@@ -13,6 +13,20 @@
     </view>
   </view>
 
+  <view class="search-bar">
+    <input
+      class="search-input"
+      value="{{searchValue}}"
+      placeholder="请输入任务名称"
+      placeholder-class="search-placeholder"
+      confirm-type="search"
+      bindinput="onSearchInput"
+      bindconfirm="onSearchConfirm"
+    />
+    <view class="search-action" bindtap="onSearchTap">搜索</view>
+    <view class="search-reset" wx:if="{{keyword}}" bindtap="onSearchReset">重置</view>
+  </view>
+
   <!-- 待办列表 -->
   <scroll-view 
     class="scroll-container" 

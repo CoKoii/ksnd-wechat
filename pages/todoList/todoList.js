@@ -19,10 +19,50 @@ const getStateByTab = (tabIndex) => {
   return tab ? tab.state : undefined;
 };
 
+const CHECKER_ID_KEY = "checkerId";
+const LEGACY_LOGIN_ID_KEY = "loginId";
+
+const normalizeStorageValue = (value) => {
+  if (value === undefined || value === null || value === "") return "";
+  return String(value);
+};
+
+const safeGetStorageSync = (key) => {
+  try {
+    return wx.getStorageSync(key);
+  } catch (error) {
+    return "";
+  }
+};
+
+const safeSetStorageSync = (key, value) => {
+  try {
+    wx.setStorageSync(key, value);
+  } catch (error) {
+    // ignore storage write failures
+  }
+};
+
+const getPersistedCheckerId = () => {
+  const loginId = normalizeStorageValue(safeGetStorageSync(LEGACY_LOGIN_ID_KEY));
+  if (loginId) {
+    safeSetStorageSync(CHECKER_ID_KEY, loginId);
+    return loginId;
+  }
+
+  const checkerId = normalizeStorageValue(safeGetStorageSync(CHECKER_ID_KEY));
+  if (checkerId) {
+    safeSetStorageSync(LEGACY_LOGIN_ID_KEY, checkerId);
+  }
+  return checkerId;
+};
+
 Page({
   data: {
     activeTab: 0,
     tabs: TAB_CONFIG.map((item) => item.label),
+    keyword: "",
+    searchValue: "",
     todoList: [],
     page: 1,
     pageSize: 10,
@@ -34,9 +74,20 @@ Page({
     this.loadTodoList();
   },
 
-  resetList(activeTab = this.data.activeTab) {
+  resetList(options = {}) {
+    const activeTab =
+      options.activeTab === undefined ? this.data.activeTab : options.activeTab;
+    const keyword =
+      options.keyword === undefined ? this.data.keyword : options.keyword;
+    const searchValue =
+      options.searchValue === undefined
+        ? this.data.searchValue
+        : options.searchValue;
+
     this.setData({
       activeTab,
+      keyword,
+      searchValue,
       todoList: [],
       page: 1,
       hasMore: true,
@@ -44,12 +95,59 @@ Page({
   },
 
   onTabChange(e) {
-    this.resetList(Number(e.currentTarget.dataset.index));
+    this.resetList({
+      activeTab: Number(e.currentTarget.dataset.index),
+    });
+    this.loadTodoList();
+  },
+
+  onSearchInput(e) {
+    const value = (e.detail && e.detail.value) || "";
+    this.setData({
+      searchValue: value,
+    });
+  },
+
+  onSearchConfirm(e) {
+    const value =
+      (e && e.detail && e.detail.value !== undefined
+        ? e.detail.value
+        : this.data.searchValue) || "";
+    const keyword = String(value).trim();
+
+    this.resetList({
+      keyword,
+      searchValue: keyword,
+    });
+    this.loadTodoList();
+  },
+
+  onSearchTap() {
+    this.onSearchConfirm({
+      detail: {
+        value: this.data.searchValue,
+      },
+    });
+  },
+
+  onSearchReset() {
+    this.resetList({
+      keyword: "",
+      searchValue: "",
+    });
     this.loadTodoList();
   },
 
   async loadTodoList() {
-    const { activeTab, page, pageSize, loading, hasMore, todoList } = this.data;
+    const {
+      activeTab,
+      page,
+      pageSize,
+      loading,
+      hasMore,
+      todoList,
+      keyword,
+    } = this.data;
     if (loading || !hasMore) return;
 
     const state = getStateByTab(activeTab);
@@ -61,7 +159,16 @@ Page({
     this.setData({ loading: true });
 
     try {
-      const res = await getTaskList({ pageNum: page, pageSize, state });
+      const checker = getPersistedCheckerId();
+      const res = await getTaskList({
+        pno: page,
+        psize: pageSize,
+        params: {
+          state,
+          checker,
+          name: keyword || "",
+        },
+      });
       const { list: nextList, total, pageCount } = parseTaskListResponse(res);
       const normalizedList = nextList.map((item) => ({
         ...item,

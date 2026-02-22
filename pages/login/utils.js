@@ -7,12 +7,19 @@ const normalizeForm = (form = {}) => ({
 
 const isFormValid = (form = {}) => Boolean(form.uname && form.pwd);
 
+const toIdString = (value) => {
+  if (value === undefined || value === null || value === "") return "";
+  return String(value);
+};
+
 const parseLoginResponse = (response = {}) => {
   const data = response.data || {};
+  const loginId = toIdString(data.loginId);
   return {
     ok: response.msg === "ok" && Boolean(data.tokenValue),
     token: data.tokenValue || "",
-    loginId: data.loginId || "",
+    checkerId: loginId,
+    loginId,
     message: response.msg || "登录失败",
   };
 };

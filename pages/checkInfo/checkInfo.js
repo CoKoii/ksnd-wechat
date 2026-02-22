@@ -7,7 +7,9 @@ const NO_VALUE = "--";
 const showToast = (title) => wx.showToast({ title, icon: "none" });
 
 const formatDate = (value) => {
-  const date = String(value || "").trim().split(" ")[0];
+  const date = String(value || "")
+    .trim()
+    .split(" ")[0];
   return date || NO_VALUE;
 };
 
@@ -85,7 +87,7 @@ const buildSubmitPayload = ({
     table: taskDetail.table || "",
     ckrs: checkResult === "normal" ? "1" : "0",
     ckdesc: String(description || "").trim(),
-    cdpics: toCsv(images),
+    ckpics: toCsv(images),
     cssign: String(inspector || "").trim(),
   };
 
@@ -139,7 +141,7 @@ Page({
         checkItems: buildCheckItems(detail.fields, detail.vals),
         inspector: detail.cssign || detail.cksign || detail.checker || "",
         description: detail.ckdesc || "",
-        images: toUploaderFiles(detail.cdpics || detail.ckpics),
+        images: toUploaderFiles(detail.ckpics || detail.ckpics),
       });
     } catch (error) {
       showToast((error && error.message) || "加载详情失败");
@@ -248,8 +250,15 @@ Page({
   },
 
   async onSubmit() {
-    const { taskDetail, checkResult, checkItems, description, images, inspector, submitting } =
-      this.data;
+    const {
+      taskDetail,
+      checkResult,
+      checkItems,
+      description,
+      images,
+      inspector,
+      submitting,
+    } = this.data;
     if (submitting) return;
 
     if (!checkItems.length) return showToast("暂无检查项");
