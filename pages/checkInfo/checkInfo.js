@@ -128,10 +128,7 @@ Page({
     description: "",
     images: [],
     inspector: "",
-    showAbnormalDialog: false,
-    currentAbnormalItem: null,
-    tempDescription: "",
-    tempImages: [],
+    ...createEmptyAbnormalState(),
   },
 
   onLoad(options) {
@@ -183,6 +180,16 @@ Page({
     this.setData({ checkItems });
   },
 
+  openAbnormalDialog(index, item = {}) {
+    this.setData({
+      ...createEmptyAbnormalState(),
+      currentAbnormalItem: index,
+      tempDescription: item.description || "",
+      tempImages: toUploaderFiles(item.images),
+      showAbnormalDialog: true,
+    });
+  },
+
   onCheckItemNormal: editable(function (e) {
     this.setCheckItem(Number(e.currentTarget.dataset.index), {
       status: true,
@@ -193,13 +200,7 @@ Page({
 
   onCheckItemAbnormal: editable(function (e) {
     const index = Number(e.currentTarget.dataset.index);
-    const item = this.data.checkItems[index] || {};
-    this.setData({
-      currentAbnormalItem: index,
-      tempDescription: item.description || "",
-      tempImages: toUploaderFiles(item.images),
-      showAbnormalDialog: true,
-    });
+    this.openAbnormalDialog(index, this.data.checkItems[index]);
   }),
 
   onAbnormalDescChange: editable(function (e) {
@@ -232,13 +233,14 @@ Page({
 
   onConfirmAbnormal: editable(function () {
     const { currentAbnormalItem, tempDescription, tempImages } = this.data;
-    if (!String(tempDescription || "").trim()) {
+    const descriptionText = String(tempDescription || "").trim();
+    if (!descriptionText) {
       return showToast("请填写异常说明");
     }
 
     this.setCheckItem(currentAbnormalItem, {
       status: false,
-      description: tempDescription,
+      description: descriptionText,
       images: toImageUrls(tempImages),
     });
 
