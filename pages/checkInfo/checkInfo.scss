@@ -89,6 +89,34 @@ page {
     color: #333;
     word-break: break-all;
   }
+
+  .result-label {
+    color: #333;
+
+    &.is-normal {
+      color: #52c41a;
+      font-weight: 600;
+    }
+
+    &.is-abnormal {
+      color: #ff4d4f;
+      font-weight: 600;
+    }
+  }
+
+  .result-group {
+    position: relative;
+  }
+
+  .result-group-mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    background-color: transparent;
+  }
 }
 
 .check-items {
@@ -119,6 +147,20 @@ page {
       display: flex;
       gap: 12rpx;
       flex-shrink: 0;
+    }
+
+    .check-item-status {
+      font-size: 24rpx;
+      color: #999;
+      flex-shrink: 0;
+
+      &.normal {
+        color: #52c41a;
+      }
+
+      &.abnormal {
+        color: #ff4d4f;
+      }
     }
   }
 

@@ -3,8 +3,24 @@ const { getTaskDetail, saveTaskForm } = require("../../api/task");
 const { BASE_URL } = require("../../utils/http");
 
 const NO_VALUE = "--";
+const COMPLETED_STATE = "10018090";
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
+const createEmptyAbnormalState = () => ({
+  showAbnormalDialog: false,
+  currentAbnormalItem: null,
+  tempDescription: "",
+  tempImages: [],
+});
+const getEventValue = (e) =>
+  (e && e.detail && (e.detail.value !== undefined ? e.detail.value : e.detail)) ||
+  "";
+const editable =
+  (handler) =>
+  function (...args) {
+    if (this.data.readonly) return;
+    return handler.apply(this, args);
+  };
 
 const formatDate = (value) => {
   const date = String(value || "")
@@ -105,6 +121,7 @@ Page({
   data: {
     id: null,
     taskDetail: null,
+    readonly: false,
     submitting: false,
     checkResult: "",
     checkItems: [],
@@ -131,26 +148,31 @@ Page({
       }
 
       const detail = (res && res.data) || {};
+      const readonly = String(detail.state || "") === COMPLETED_STATE;
       this.setData({
         taskDetail: {
           ...detail,
           publisher: detail.pjname || detail.creator_fk || NO_VALUE,
           requiredDate: formatDate(detail.cktime || detail.create_time),
         },
+        readonly,
         checkResult: toCheckResult(detail.ckrs),
         checkItems: buildCheckItems(detail.fields, detail.vals),
         inspector: detail.cssign || detail.cksign || detail.checker || "",
         description: detail.ckdesc || "",
-        images: toUploaderFiles(detail.ckpics || detail.ckpics),
+        images: toUploaderFiles(detail.ckpics),
+        ...createEmptyAbnormalState(),
       });
     } catch (error) {
       showToast((error && error.message) || "加载详情失败");
     }
   },
 
-  onCheckResultChange(e) {
+  onCheckResultChange: editable(function (e) {
     this.setData({ checkResult: e.detail });
-  },
+  }),
+
+  onReadonlyResultTap() {},
 
   setCheckItem(index, patch) {
     const checkItems = this.data.checkItems.slice();
@@ -161,15 +183,15 @@ Page({
     this.setData({ checkItems });
   },
 
-  onCheckItemNormal(e) {
+  onCheckItemNormal: editable(function (e) {
     this.setCheckItem(Number(e.currentTarget.dataset.index), {
       status: true,
       description: "",
       images: [],
     });
-  },
+  }),
 
-  onCheckItemAbnormal(e) {
+  onCheckItemAbnormal: editable(function (e) {
     const index = Number(e.currentTarget.dataset.index);
     const item = this.data.checkItems[index] || {};
     this.setData({
@@ -178,11 +200,11 @@ Page({
       tempImages: toUploaderFiles(item.images),
       showAbnormalDialog: true,
     });
-  },
+  }),
 
-  onAbnormalDescChange(e) {
-    this.setData({ tempDescription: e.detail.value || e.detail });
-  },
+  onAbnormalDescChange: editable(function (e) {
+    this.setData({ tempDescription: getEventValue(e) });
+  }),
 
   appendUploaderFiles(targetField, file) {
     const incoming = Array.isArray(file) ? file : [file];
@@ -196,24 +218,19 @@ Page({
     });
   },
 
-  onUploadAbnormalImage(e) {
+  onUploadAbnormalImage: editable(function (e) {
     this.appendUploaderFiles("tempImages", e.detail.file);
-  },
+  }),
 
-  onDeleteAbnormalImage(e) {
+  onDeleteAbnormalImage: editable(function (e) {
     this.removeUploaderFile("tempImages", e.detail.index);
-  },
+  }),
 
   onCancelAbnormal() {
-    this.setData({
-      showAbnormalDialog: false,
-      currentAbnormalItem: null,
-      tempDescription: "",
-      tempImages: [],
-    });
+    this.setData(createEmptyAbnormalState());
   },
 
-  onConfirmAbnormal() {
+  onConfirmAbnormal: editable(function () {
     const { currentAbnormalItem, tempDescription, tempImages } = this.data;
     if (!String(tempDescription || "").trim()) {
       return showToast("请填写异常说明");
@@ -225,29 +242,24 @@ Page({
       images: toImageUrls(tempImages),
     });
 
-    this.setData({
-      showAbnormalDialog: false,
-      currentAbnormalItem: null,
-      tempDescription: "",
-      tempImages: [],
-    });
-  },
+    this.setData(createEmptyAbnormalState());
+  }),
 
-  onDescriptionChange(e) {
-    this.setData({ description: e.detail.value });
-  },
+  onDescriptionChange: editable(function (e) {
+    this.setData({ description: getEventValue(e) });
+  }),
 
-  onUploadImage(e) {
+  onUploadImage: editable(function (e) {
     this.appendUploaderFiles("images", e.detail.file);
-  },
+  }),
 
-  onDeleteImage(e) {
+  onDeleteImage: editable(function (e) {
     this.removeUploaderFile("images", e.detail.index);
-  },
+  }),
 
-  onInspectorChange(e) {
-    this.setData({ inspector: e.detail.value });
-  },
+  onInspectorChange: editable(function (e) {
+    this.setData({ inspector: getEventValue(e) });
+  }),
 
   async onSubmit() {
     const {
@@ -258,8 +270,10 @@ Page({
       images,
       inspector,
       submitting,
+      readonly,
     } = this.data;
     if (submitting) return;
+    if (readonly) return showToast("该任务已完成，无法提交");
 
     if (!checkItems.length) return showToast("暂无检查项");
     if (!taskDetail || !taskDetail.id || !taskDetail.table) {

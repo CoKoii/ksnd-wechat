@@ -39,10 +39,26 @@
   <!-- 巡检结果 -->
   <view class="section">
     <view class="section-title">巡检结果</view>
-    <van-radio-group value="{{checkResult}}" bind:change="onCheckResultChange" direction="horizontal">
-      <van-radio name="normal" checked-color="#3a7afe">正常</van-radio>
-      <van-radio name="abnormal" checked-color="#3a7afe">异常</van-radio>
-    </van-radio-group>
+    <view class="result-group">
+      <van-radio-group
+        value="{{checkResult}}"
+        bind:change="onCheckResultChange"
+        direction="horizontal">
+        <van-radio name="normal" checked-color="#52c41a">
+          <text class="result-label {{checkResult === 'normal' ? 'is-normal' : ''}}">正常</text>
+        </van-radio>
+        <van-radio name="abnormal" checked-color="#ff4d4f">
+          <text class="result-label {{checkResult === 'abnormal' ? 'is-abnormal' : ''}}">异常</text>
+        </van-radio>
+      </van-radio-group>
+      <view
+        class="result-group-mask"
+        wx:if="{{readonly}}"
+        catchtap="onReadonlyResultTap"
+        catchtouchstart="onReadonlyResultTap"
+        catchtouchmove="onReadonlyResultTap"
+        catchtouchend="onReadonlyResultTap" />
+    </view>
   </view>
 
   <!-- 检查项 -->
@@ -52,7 +68,7 @@
       <view class="check-item" wx:for="{{checkItems}}" wx:key="id">
         <view class="check-item-header">
           <text class="check-item-name">{{item.name}}</text>
-          <view class="check-item-actions">
+          <view class="check-item-actions" wx:if="{{!readonly}}">
             <view 
               class="action-btn {{item.status === true ? 'active' : ''}}" 
               data-index="{{index}}"
@@ -66,6 +82,9 @@
               <van-icon name="cross" color="{{item.status === false ? '#ff4d4f' : '#ccc'}}" size="16" />
             </view>
           </view>
+          <text class="check-item-status normal" wx:if="{{readonly && item.status === true}}">正常</text>
+          <text class="check-item-status abnormal" wx:if="{{readonly && item.status === false}}">异常</text>
+          <text class="check-item-status" wx:if="{{readonly && item.status === null}}">未巡检</text>
         </view>
         
         <!-- 异常信息显示 -->
@@ -94,6 +113,7 @@
       placeholder="请输入说明"
       maxlength="500"
       show-confirm-bar="{{false}}"
+      disabled="{{readonly}}"
       bindinput="onDescriptionChange" />
   </view>
 
@@ -104,6 +124,8 @@
       file-list="{{images}}"
       bind:after-read="onUploadImage"
       bind:delete="onDeleteImage"
+      disabled="{{readonly}}"
+      show-upload="{{!readonly}}"
       max-count="9"
       multiple />
   </view>
@@ -115,11 +137,12 @@
       class="text-input"
       value="{{inspector}}"
       placeholder="请输入姓名"
+      disabled="{{readonly}}"
       bindinput="onInspectorChange" />
   </view>
   
   <!-- 提交按钮 -->
-  <view class="submit-section">
+  <view class="submit-section" wx:if="{{!readonly}}">
     <button class="submit-btn" bindtap="onSubmit">提交巡检结果</button>
   </view>
 </scroll-view>
@@ -140,6 +163,7 @@
         placeholder="请输入说明"
         maxlength="200"
         show-confirm-bar="{{false}}"
+        disabled="{{readonly}}"
         bindinput="onAbnormalDescChange" />
       
       <view class="upload-section">
@@ -148,6 +172,8 @@
           file-list="{{tempImages}}"
           bind:after-read="onUploadAbnormalImage"
           bind:delete="onDeleteAbnormalImage"
+          disabled="{{readonly}}"
+          show-upload="{{!readonly}}"
           max-count="3"
           multiple />
       </view>
@@ -155,7 +181,7 @@
 
     <view class="modal-footer">
       <button class="modal-btn cancel" bindtap="onCancelAbnormal">取消</button>
-      <button class="modal-btn confirm" bindtap="onConfirmAbnormal">确认</button>
+      <button class="modal-btn confirm" bindtap="onConfirmAbnormal" wx:if="{{!readonly}}">确认</button>
     </view>
   </view>
 </view>
