@@ -54,10 +54,7 @@
       <view
         class="result-group-mask"
         wx:if="{{readonly}}"
-        catchtap="onReadonlyResultTap"
-        catchtouchstart="onReadonlyResultTap"
-        catchtouchmove="onReadonlyResultTap"
-        catchtouchend="onReadonlyResultTap" />
+        catchtap="onReadonlyResultTap" />
     </view>
   </view>
 
