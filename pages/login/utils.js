@@ -1,4 +1,4 @@
-const HOME_TAB_PATH = "/pages/home/home";
+const { BASIC_HOME_PATH } = require("../../utils/util");
 
 const normalizeForm = (form = {}) => ({
   uname: String(form.uname || "").trim(),
@@ -25,12 +25,7 @@ const parseLoginResponse = (response = {}) => {
 };
 
 const goHome = () => {
-  wx.switchTab({
-    url: HOME_TAB_PATH,
-    fail: () => {
-      wx.reLaunch({ url: HOME_TAB_PATH });
-    },
-  });
+  wx.switchTab({ url: BASIC_HOME_PATH });
 };
 
 module.exports = {

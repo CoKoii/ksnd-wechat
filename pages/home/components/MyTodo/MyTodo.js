@@ -1,3 +1,5 @@
+const { BASIC_HOME_PATH } = require("../../../../utils/util");
+
 Component({
   options: {
     styleIsolation: "apply-shared",
@@ -33,9 +35,7 @@ Component({
   },
   methods: {
     goToTodoList() {
-      wx.navigateTo({
-        url: "/pages/todoList/todoList",
-      });
+      wx.switchTab({ url: BASIC_HOME_PATH });
     },
     goToDetail(e) {
       const id = e.currentTarget.dataset.id;

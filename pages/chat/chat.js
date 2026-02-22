@@ -14,6 +14,7 @@ const {
 const { fetchAssistantReplyStream } = require('./utils/chat.service');
 const { markdownToHtml } = require('./utils/chat.markdown');
 const { loadConversations, saveConversations } = require('./utils/chat.storage');
+const { BASIC_HOME_PATH } = require('../../utils/util');
 
 const nextTick = (callback) => {
   if (typeof wx.nextTick === 'function') {
@@ -197,7 +198,7 @@ Page({
       wx.navigateBack();
       return;
     }
-    wx.switchTab({ url: '/pages/home/home' });
+    wx.switchTab({ url: BASIC_HOME_PATH });
   },
 
   openSidebar() {
