@@ -4,8 +4,16 @@ const { BASE_URL } = require("../../utils/http");
 
 const NO_VALUE = "--";
 const COMPLETED_STATE = "10018090";
+const TODO_LIST_RELOAD_KEY = "todoListNeedReload";
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
+const markTodoListNeedReload = () => {
+  try {
+    wx.setStorageSync(TODO_LIST_RELOAD_KEY, "1");
+  } catch (error) {
+    // ignore storage write failures
+  }
+};
 const createEmptyAbnormalState = () => ({
   showAbnormalDialog: false,
   currentAbnormalItem: null,
@@ -13,10 +21,11 @@ const createEmptyAbnormalState = () => ({
   tempImages: [],
 });
 const getEventValue = (e) =>
-  (e && e.detail && (e.detail.value !== undefined ? e.detail.value : e.detail)) ||
+  (e &&
+    e.detail &&
+    (e.detail.value !== undefined ? e.detail.value : e.detail)) ||
   "";
-const editable =
-  (handler) =>
+const editable = (handler) =>
   function (...args) {
     if (this.data.readonly) return;
     return handler.apply(this, args);
@@ -277,7 +286,6 @@ Page({
     if (submitting) return;
     if (readonly) return showToast("该任务已完成，无法提交");
 
-    if (!checkItems.length) return showToast("暂无检查项");
     if (!taskDetail || !taskDetail.id || !taskDetail.table) {
       return showToast("任务信息不完整");
     }
@@ -302,6 +310,7 @@ Page({
       if (String((res && res.code) || "") !== "0") {
         throw new Error((res && res.msg) || "提交失败");
       }
+      markTodoListNeedReload();
       wx.showToast({ title: "提交成功", icon: "success" });
       setTimeout(() => wx.navigateBack(), 1200);
     } catch (error) {

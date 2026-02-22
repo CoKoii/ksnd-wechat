@@ -21,6 +21,7 @@ const getStateByTab = (tabIndex) => {
 
 const CHECKER_ID_KEY = "checkerId";
 const LEGACY_LOGIN_ID_KEY = "loginId";
+const TODO_LIST_RELOAD_KEY = "todoListNeedReload";
 
 const normalizeStorageValue = (value) => {
   if (value === undefined || value === null || value === "") return "";
@@ -57,6 +58,12 @@ const getPersistedCheckerId = () => {
   return checkerId;
 };
 
+const shouldReloadTodoList = () =>
+  normalizeStorageValue(safeGetStorageSync(TODO_LIST_RELOAD_KEY)) === "1";
+
+const clearTodoListReloadFlag = () =>
+  safeSetStorageSync(TODO_LIST_RELOAD_KEY, "");
+
 Page({
   data: {
     activeTab: 0,
@@ -71,6 +78,13 @@ Page({
   },
 
   onLoad() {
+    this.loadTodoList();
+  },
+
+  onShow() {
+    if (!shouldReloadTodoList()) return;
+    clearTodoListReloadFlag();
+    this.resetList();
     this.loadTodoList();
   },
 
