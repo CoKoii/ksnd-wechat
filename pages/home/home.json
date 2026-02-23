@@ -5,5 +5,6 @@
     "TodayInspectSituation": "./components/TodayInspectSituation/TodayInspectSituation",
     "MyTodo": "./components/MyTodo/MyTodo"
   },
-  "navigationStyle": "custom"
+  "navigationStyle": "custom",
+  "disableScroll": true
 }

@@ -1,30 +1,32 @@
-<!-- 顶部蓝色区域 -->
-<view class="top-area-blue">
-  <view style="height: {{statusBarHeight}}px;"></view>
-  <view class="nav-bar" style="height: {{navBarHeight}}px;">
-    <view class="title">华远直巡</view>
-  </view>
-  <view class="info">
-    <view class="left">
-      <picker
-        class="title-picker"
-        mode="selector"
-        range="{{communityOptions}}"
-        value="{{selectedCommunityIndex}}"
-        bindchange="onCommunityChange"
-      >
-        <view class="title-wrap">
-          <view class="title">{{communityOptions[selectedCommunityIndex]}}</view>
-          <van-icon name="arrow-down" size="28rpx" />
-        </view>
-      </picker>
-      <view class="welcome">欢迎您，某某</view>
+<scroll-view class="home-scroll" scroll-y>
+  <!-- 顶部蓝色区域 -->
+  <view class="top-area-blue">
+    <view style="height: {{statusBarHeight}}px;"></view>
+    <view class="nav-bar" style="height: {{navBarHeight}}px;">
+      <view class="title">华远直巡</view>
+    </view>
+    <view class="info">
+      <view class="left">
+        <picker
+          class="title-picker"
+          mode="selector"
+          range="{{communityOptions}}"
+          value="{{selectedCommunityIndex}}"
+          bindchange="onCommunityChange"
+        >
+          <view class="title-wrap">
+            <view class="title">{{communityOptions[selectedCommunityIndex]}}</view>
+            <van-icon name="arrow-down" size="28rpx" />
+          </view>
+        </picker>
+        <view class="welcome">欢迎您，某某</view>
+      </view>
     </view>
   </view>
-</view>
 
-<view class="container">
-  <ProjectOverview />
-  <TodayInspectSituation />
-  <MyTodo />
-</view>
+  <view class="container">
+    <ProjectOverview />
+    <TodayInspectSituation />
+    <MyTodo />
+  </view>
+</scroll-view>

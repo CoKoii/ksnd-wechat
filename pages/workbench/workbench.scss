@@ -1,5 +1,9 @@
 @import "../../styles/theme/index.scss";
 
+.workbench-scroll {
+  height: 100vh;
+}
+
 .container {
   display: flex;
   flex-direction: column;

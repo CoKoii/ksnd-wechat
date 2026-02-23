@@ -1,4 +1,5 @@
 {
   "usingComponents": {},
-  "navigationBarTitleText": "工作台"
+  "navigationBarTitleText": "工作台",
+  "disableScroll": true
 }
