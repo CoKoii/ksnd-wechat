@@ -4,16 +4,14 @@ const STATUS_PENDING = "pending";
 const STATUS_DONE = "done";
 
 const normalizeText = (value) => String(value || "").trim();
-
-const safeGetStorage = (key) => {
+const safeGetStorageSync = (key) => {
   try {
     return wx.getStorageSync(key);
   } catch (error) {
     return "";
   }
 };
-
-const safeSetStorage = (key, value) => {
+const safeSetStorageSync = (key, value) => {
   try {
     wx.setStorageSync(key, value);
   } catch (error) {
@@ -66,13 +64,13 @@ const normalizeRecord = (record) => {
 };
 
 const readRecords = () => {
-  const raw = safeGetStorage(CASUAL_SHOOT_STORAGE_KEY);
+  const raw = safeGetStorageSync(CASUAL_SHOOT_STORAGE_KEY);
   const list = Array.isArray(raw) ? raw : [];
   return list.map(normalizeRecord).filter((item) => item.items.length > 0);
 };
 
 const writeRecords = (records) => {
-  safeSetStorage(CASUAL_SHOOT_STORAGE_KEY, records.map(normalizeRecord));
+  safeSetStorageSync(CASUAL_SHOOT_STORAGE_KEY, records.map(normalizeRecord));
 };
 
 const sortByCreatedAtDesc = (records) =>
@@ -127,24 +125,6 @@ const updateCasualShootRecord = (id, payload = {}) => {
   return records[index];
 };
 
-const updateCasualShootRecordStatus = (id, status) => {
-  const targetId = normalizeText(id);
-  const nextStatus = normalizeStatus(status);
-  if (!targetId) return null;
-
-  const records = readRecords();
-  const index = records.findIndex((item) => item.id === targetId);
-  if (index < 0) return null;
-
-  records[index] = normalizeRecord({
-    ...records[index],
-    status: nextStatus,
-    updatedAt: Date.now(),
-  });
-  writeRecords(records);
-  return records[index];
-};
-
 const pad2 = (value) => String(value).padStart(2, "0");
 
 const formatDateTime = (value) => {
@@ -167,6 +147,5 @@ module.exports = {
   getCasualShootRecordById,
   createCasualShootRecord,
   updateCasualShootRecord,
-  updateCasualShootRecordStatus,
   formatDateTime,
 };

@@ -38,8 +38,8 @@ page {
     }
 
     &.is-done {
-      color: #17915a;
-      background-color: #e8f8ef;
+      color: $color-success-deep;
+      background-color: $color-success-bg-soft;
     }
   }
 
@@ -116,7 +116,7 @@ page {
 
   .add-btn {
     margin: 6rpx 0 24rpx;
-    background-color: #ecf2ff;
+    background-color: $color-info-bg-soft;
     color: $color-primary-light;
   }
 
@@ -126,6 +126,6 @@ page {
 
   .submit-btn {
     background-color: $color-primary-light;
-    color: #fff;
+    color: $color-text-inverse;
   }
 }

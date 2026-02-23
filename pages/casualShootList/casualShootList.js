@@ -3,7 +3,7 @@ const {
   STATUS_DONE,
   listCasualShootRecords,
   formatDateTime,
-} = require("../../utils/casualShoot");
+} = require("../../services/casualShoot/store");
 
 const TAB_CONFIG = [
   { label: "未整改", status: STATUS_PENDING },

@@ -1,5 +1,7 @@
+@import "../../../../styles/theme/index.scss";
+
 .my-todo {
-  background-color: #fff;
+  background-color: $color-bg-card;
   border-radius: 18rpx;
   padding: 32rpx;
 
@@ -12,7 +14,7 @@
     .title {
       font-size: 32rpx;
       font-weight: 900;
-      color: #333;
+      color: $color-text-body;
     }
   }
 
@@ -20,9 +22,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1rpx solid #dbe7ff;
+    border: 1rpx solid $color-border-info;
     border-radius: 16rpx;
-    background-color: #f5f8ff;
+    background-color: $color-input-bg;
     padding: 24rpx;
 
     .entry-content {
@@ -34,18 +36,18 @@
     .entry-title {
       font-size: 30rpx;
       font-weight: 700;
-      color: #333;
+      color: $color-text-body;
     }
 
     .entry-desc {
       font-size: 24rpx;
-      color: #8a8a8a;
+      color: $color-text-soft;
     }
 
     .entry-arrow {
       font-size: 34rpx;
       font-weight: 700;
-      color: #3a7afe;
+      color: $color-primary-light;
       line-height: 1;
     }
   }

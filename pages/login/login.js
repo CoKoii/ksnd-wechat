@@ -1,14 +1,12 @@
 const { login } = require("../../api/auth");
 const { getToken, setToken } = require("../../utils/http");
+const { persistCheckerId } = require("../../services/task/localState");
 const {
   normalizeForm,
   isFormValid,
   parseLoginResponse,
   goHome,
 } = require("./utils");
-
-const CHECKER_ID_KEY = "checkerId";
-const LOGIN_ID_KEY = "loginId";
 
 Page({
   data: {
@@ -53,8 +51,7 @@ Page({
       if (result.ok) {
         setToken(result.token);
         if (result.loginId) {
-          wx.setStorageSync(CHECKER_ID_KEY, result.loginId);
-          wx.setStorageSync(LOGIN_ID_KEY, result.loginId);
+          persistCheckerId(result.loginId);
         }
         wx.showToast({
           title: "登录成功",

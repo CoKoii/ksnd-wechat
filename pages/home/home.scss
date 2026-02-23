@@ -1,34 +1,42 @@
+@import "../../styles/theme/index.scss";
+
 .top-area-blue {
   width: 100%;
-  background-color: #457ff9;
+  background-color: $color-primary;
   border-radius: 0 0 40rpx 40rpx;
   padding-bottom: 200rpx;
+
   .nav-bar {
     display: flex;
     align-items: center;
     justify-content: center;
+
     .title {
-      color: #ffffff;
+      color: $color-text-inverse;
       font-weight: bold;
     }
   }
+
   .info {
     width: 90%;
     margin: 0 auto;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    color: #ffffff;
+    color: $color-text-inverse;
     font-size: 35rpx;
     font-weight: 900;
+
     .left {
       display: flex;
       flex-direction: column;
       gap: 24rpx;
     }
+
     .title-picker {
       display: inline-block;
     }
+
     .title-wrap {
       display: inline-flex;
       align-items: center;
@@ -36,6 +44,7 @@
     }
   }
 }
+
 .container {
   width: 95%;
   margin: 0 auto;

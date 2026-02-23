@@ -1,6 +1,11 @@
 // pages/todoList/todoList.js
 const { getTaskList } = require("../../api/task");
 const {
+  getPersistedCheckerId,
+  shouldReloadTodoList,
+  clearTodoListReloadFlag,
+} = require("../../services/task/localState");
+const {
   parseTaskListResponse,
   calcHasMore,
   formatDateToYmd,
@@ -18,51 +23,6 @@ const getStateByTab = (tabIndex) => {
   const tab = TAB_CONFIG[tabIndex];
   return tab ? tab.state : undefined;
 };
-
-const CHECKER_ID_KEY = "checkerId";
-const LEGACY_LOGIN_ID_KEY = "loginId";
-const TODO_LIST_RELOAD_KEY = "todoListNeedReload";
-
-const normalizeStorageValue = (value) => {
-  if (value === undefined || value === null || value === "") return "";
-  return String(value);
-};
-
-const safeGetStorageSync = (key) => {
-  try {
-    return wx.getStorageSync(key);
-  } catch (error) {
-    return "";
-  }
-};
-
-const safeSetStorageSync = (key, value) => {
-  try {
-    wx.setStorageSync(key, value);
-  } catch (error) {
-    // ignore storage write failures
-  }
-};
-
-const getPersistedCheckerId = () => {
-  const loginId = normalizeStorageValue(safeGetStorageSync(LEGACY_LOGIN_ID_KEY));
-  if (loginId) {
-    safeSetStorageSync(CHECKER_ID_KEY, loginId);
-    return loginId;
-  }
-
-  const checkerId = normalizeStorageValue(safeGetStorageSync(CHECKER_ID_KEY));
-  if (checkerId) {
-    safeSetStorageSync(LEGACY_LOGIN_ID_KEY, checkerId);
-  }
-  return checkerId;
-};
-
-const shouldReloadTodoList = () =>
-  normalizeStorageValue(safeGetStorageSync(TODO_LIST_RELOAD_KEY)) === "1";
-
-const clearTodoListReloadFlag = () =>
-  safeSetStorageSync(TODO_LIST_RELOAD_KEY, "");
 
 Page({
   data: {

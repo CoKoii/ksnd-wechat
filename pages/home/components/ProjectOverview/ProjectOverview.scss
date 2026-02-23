@@ -1,5 +1,7 @@
+@import "../../../../styles/theme/index.scss";
+
 .project-overview {
-  background-color: #fff;
+  background-color: $color-bg-card;
   border-radius: 18rpx;
   padding: 32rpx;
 
@@ -7,7 +9,7 @@
     margin-bottom: 24rpx;
     font-size: 32rpx;
     font-weight: 900;
-    color: #333;
+    color: $color-text-body;
   }
 
   .po-content {
@@ -37,13 +39,13 @@
           .rate {
             font-size: 48rpx;
             font-weight: 900;
-            color: #333;
+            color: $color-text-body;
             line-height: 1.2;
           }
 
           .label {
             font-size: 24rpx;
-            color: #999;
+            color: $color-text-muted;
             margin-top: 8rpx;
           }
         }
@@ -73,28 +75,28 @@
           margin-right: 16rpx;
 
           &.abnormal {
-            background-color: #f56c6c;
+            background-color: $color-chart-danger;
           }
 
           &.normal {
-            background-color: #2ac86d;
+            background-color: $color-chart-success;
           }
 
           &.position {
-            background-color: #f59a23;
+            background-color: $color-chart-warning;
           }
         }
 
         .stat-label {
           font-size: 28rpx;
-          color: #666;
+          color: $color-text-sub;
           margin-right: 16rpx;
         }
 
         .stat-value {
           font-size: 32rpx;
           font-weight: 700;
-          color: #333;
+          color: $color-text-body;
         }
       }
     }
@@ -105,7 +107,7 @@
       top: 50%;
       transform: translateY(-50%);
       font-size: 32rpx;
-      color: #999;
+      color: $color-text-muted;
     }
   }
 }

@@ -1,36 +1,46 @@
+@import "../../../../styles/theme/index.scss";
+
 .today-inspect-situation {
-  background-color: #fff;
+  background-color: $color-bg-card;
   border-radius: 18rpx;
   padding: 32rpx;
+
   .title {
     margin-bottom: 24rpx;
     font-size: 32rpx;
     font-weight: 900;
-    color: #333;
+    color: $color-text-body;
   }
+
   .tis-container {
     white-space: nowrap;
+
     .item {
       display: inline-block;
       width: 250rpx;
       margin-right: 16rpx;
       padding: 16rpx 24rpx;
       border-radius: 16rpx;
-      color: #fff;
+      color: $color-text-inverse;
+
       &:nth-child(3n + 1) {
-        background-color: #3a7afe;
+        background-color: $color-primary-light;
       }
+
       &:nth-child(3n + 2) {
-        background-color: #2ac86d;
+        background-color: $color-chart-success;
       }
+
       &:nth-child(3n) {
-        background-color: #f56c6c;
+        background-color: $color-chart-danger;
       }
+
       .info {
         font-size: 42rpx;
         font-weight: 900;
         margin-bottom: 16rpx;
       }
+
       .text {
         font-size: 22rpx;
       }

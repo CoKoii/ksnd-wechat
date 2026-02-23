@@ -1,6 +1,8 @@
+@import "../../styles/theme/index.scss";
+
 page {
-  background: #ffffff;
-  color: #111111;
+  background: $color-bg-card;
+  color: $color-text-dark;
   font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -16,7 +18,7 @@ page {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background: $color-overlay-mask-soft;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
@@ -34,7 +36,7 @@ page {
   left: 0;
   bottom: 0;
   width: 68%;
-  background: #ffffff;
+  background: $color-bg-card;
   transform: translateX(-100%);
   transition: transform 0.25s ease;
   z-index: 30;
@@ -58,7 +60,7 @@ page {
 .sidebar-title {
   font-size: 30rpx;
   font-weight: 600;
-  color: #111111;
+  color: $color-text-dark;
 }
 
 .sidebar-new {
@@ -78,20 +80,20 @@ page {
   padding: 16rpx 16rpx;
   border-radius: 16rpx;
   margin-bottom: 12rpx;
-  background: #f7f8fa;
+  background: $color-chat-surface-muted;
   box-sizing: border-box;
   overflow: hidden;
 }
 
 .sidebar-item--active {
-  background: #edf2ff;
-  border: 1rpx solid #c8d7ff;
+  background: $color-chat-surface-active;
+  border: 1rpx solid $color-chat-border-active;
 }
 
 .sidebar-item-title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #111111;
+  color: $color-text-dark;
   margin-bottom: 6rpx;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -100,13 +102,13 @@ page {
 
 .sidebar-item-time {
   font-size: 22rpx;
-  color: #8a8a8a;
+  color: $color-text-soft;
 }
 
 .sidebar-empty {
   text-align: center;
   font-size: 24rpx;
-  color: #9a9a9a;
+  color: $color-text-muted;
   margin-top: 40rpx;
 }
 
@@ -152,7 +154,7 @@ page {
   position: relative;
   padding: 6rpx 18rpx;
   border-radius: 999rpx;
-  background: #f6f7f9;
+  background: $color-chat-surface-soft;
 }
 
 .nav-title__text {
@@ -165,8 +167,8 @@ page {
 .nav-title__chevron {
   width: 10rpx;
   height: 10rpx;
-  border-right: 3rpx solid #111111;
-  border-bottom: 3rpx solid #111111;
+  border-right: 3rpx solid $color-text-dark;
+  border-bottom: 3rpx solid $color-text-dark;
   transform: rotate(45deg);
   margin-left: 10rpx;
 }
@@ -181,7 +183,7 @@ page {
   position: absolute;
   width: 18rpx;
   height: 4rpx;
-  background: #111111;
+  background: $color-text-dark;
   border-radius: 4rpx;
   left: 2rpx;
   top: 14rpx;
@@ -201,7 +203,7 @@ page {
   width: 56rpx;
   height: 56rpx;
   border-radius: 50%;
-  border: 3rpx solid #111111;
+  border: 3rpx solid $color-text-dark;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -212,16 +214,16 @@ page {
   width: 48rpx;
   height: 48rpx;
   border-width: 2rpx;
-  border-color: #cfcfcf;
+  border-color: $color-chat-border;
 }
 
 .icon-plus {
   position: absolute;
-  background: #111111;
+  background: $color-text-dark;
 }
 
 .icon-circle--small .icon-plus {
-  background: #9a9a9a;
+  background: $color-text-muted;
 }
 
 .icon-plus--h {
@@ -285,7 +287,7 @@ page {
 .empty-text {
   font-size: 34rpx;
   font-weight: 600;
-  color: #111111;
+  color: $color-text-dark;
 }
 
 .message-list {
@@ -311,14 +313,14 @@ page {
   font-size: 28rpx;
   line-height: 44rpx;
   border-radius: 22rpx;
-  background: #f5f6f8;
-  color: #111111;
+  background: $color-chat-bubble-assistant;
+  color: $color-text-dark;
   box-sizing: border-box;
 }
 
 .message--user .bubble {
-  background: #111111;
-  color: #ffffff;
+  background: $color-text-dark;
+  color: $color-bg-card;
   border-bottom-right-radius: 6rpx;
 }
 
@@ -382,15 +384,15 @@ page {
 .markdown blockquote {
   margin: 12rpx 0;
   padding: 10rpx 16rpx;
-  border-left: 6rpx solid rgba(0, 0, 0, 0.15);
-  background: rgba(0, 0, 0, 0.03);
+  border-left: 6rpx solid $color-overlay-border;
+  background: $color-overlay-surface;
   border-radius: 8rpx;
 }
 
 .markdown code {
   font-family: "Menlo", "SFMono-Regular", Consolas, "Courier New", monospace;
   font-size: 26rpx;
-  background: rgba(0, 0, 0, 0.06);
+  background: $color-overlay-code;
   padding: 2rpx 8rpx;
   border-radius: 8rpx;
   display: inline-block;
@@ -403,7 +405,7 @@ page {
 .markdown pre {
   margin: 12rpx 0;
   padding: 16rpx;
-  background: #0f172a;
+  background: $color-chat-code-bg;
   border-radius: 16rpx;
   overflow-x: auto;
   overflow-y: hidden;
@@ -418,7 +420,7 @@ page {
 
 .markdown pre code {
   background: transparent;
-  color: #e2e8f0;
+  color: $color-chat-code-text;
   padding: 0;
   font-size: 24rpx;
   display: block;
@@ -428,24 +430,24 @@ page {
 }
 
 .markdown a {
-  color: #2f6df6;
+  color: $color-text-link;
   text-decoration: underline;
 }
 
 .message--user .markdown {
-  color: #ffffff;
+  color: $color-bg-card;
 }
 
 .message--user .markdown code {
-  background: rgba(255, 255, 255, 0.2);
+  background: $color-overlay-user-code;
 }
 
 .message--user .markdown pre {
-  background: rgba(255, 255, 255, 0.15);
+  background: $color-overlay-user-pre;
 }
 
 .message--user .markdown a {
-  color: #bcd1ff;
+  color: $color-text-link-soft;
 }
 
 .typing {
@@ -458,7 +460,7 @@ page {
   width: 10rpx;
   height: 10rpx;
   border-radius: 50%;
-  background: #9aa2b1;
+  background: $color-chat-dot;
   animation: typing 1.4s infinite ease-in-out;
 }
 
@@ -493,19 +495,19 @@ page {
   padding: 0 24rpx 24rpx;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0) 0%,
-    #ffffff 38%,
-    #ffffff 100%
+    $color-overlay-gradient-top 0%,
+    $color-bg-card 38%,
+    $color-bg-card 100%
   );
   box-sizing: border-box;
 }
 
 .composer-card {
-  background: #ffffff;
+  background: $color-bg-card;
   border-radius: 44rpx;
   padding: 15rpx 24rpx 22rpx;
-  box-shadow: 0 16rpx 40rpx rgba(0, 0, 0, 0.08);
-  border: 1rpx solid #f1f1f1;
+  box-shadow: 0 16rpx 40rpx $color-overlay-card;
+  border: 1rpx solid $color-border-light;
 }
 
 .composer-input-row {
@@ -515,7 +517,7 @@ page {
 .composer-input {
   width: 100%;
   font-size: 30rpx;
-  color: #111111;
+  color: $color-text-dark;
   height: 72rpx;
   line-height: 56rpx;
   padding-top: 2rpx;
@@ -524,7 +526,7 @@ page {
 }
 
 .composer-placeholder {
-  color: #c2c2c2;
+  color: $color-chat-placeholder;
   font-weight: 400;
 }
 
@@ -539,17 +541,17 @@ page {
   align-items: center;
   padding: 10rpx 20rpx;
   border-radius: 40rpx;
-  background: #f2f6ff;
-  border: 2rpx solid #d7e2fb;
+  background: $color-chat-chip-bg;
+  border: 2rpx solid $color-chat-chip-border;
   font-size: 26rpx;
-  color: #3c5dbb;
+  color: $color-chat-chip-text;
   margin-right: 14rpx;
 }
 
 .chip--active {
-  background: #e1ecff;
-  border-color: #7ea4ff;
-  color: #2f5cff;
+  background: $color-chat-chip-active-bg;
+  border-color: $color-chat-chip-active-border;
+  color: $color-chat-chip-active-text;
 }
 
 .chip-icon {
@@ -603,7 +605,7 @@ page {
 .icon-voice {
   width: 48rpx;
   height: 48rpx;
-  border: 2rpx solid #111111;
+  border: 2rpx solid $color-text-dark;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -614,7 +616,7 @@ page {
 .icon-voice__ring {
   width: 22rpx;
   height: 22rpx;
-  border: 2rpx solid #111111;
+  border: 2rpx solid $color-text-dark;
   border-radius: 50%;
 }
 
@@ -622,7 +624,7 @@ page {
   position: absolute;
   width: 6rpx;
   height: 6rpx;
-  background: #111111;
+  background: $color-text-dark;
   border-radius: 50%;
   bottom: 8rpx;
 }

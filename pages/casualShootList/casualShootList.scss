@@ -84,7 +84,7 @@ page {
 
     .search-action {
       background-color: $color-primary-light;
-      color: #fff;
+      color: $color-text-inverse;
     }
 
     .search-reset {
@@ -139,8 +139,8 @@ page {
         }
 
         &.is-done {
-          color: #17915a;
-          background-color: #e8f8ef;
+          color: $color-success-deep;
+          background-color: $color-success-bg-soft;
         }
       }
 
@@ -177,10 +177,10 @@ page {
     border-radius: 999rpx;
     border: none;
     background-color: $color-primary-light;
-    color: #fff;
+    color: $color-text-inverse;
     font-size: 28rpx;
     font-weight: 600;
-    box-shadow: 0 8rpx 24rpx rgba(58, 122, 254, 0.35);
+    box-shadow: $shadow-fab-primary;
     padding: 0 36rpx;
   }
 }

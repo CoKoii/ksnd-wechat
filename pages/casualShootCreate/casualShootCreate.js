@@ -5,7 +5,7 @@ const {
   createCasualShootRecord,
   updateCasualShootRecord,
   formatDateTime,
-} = require("../../utils/casualShoot");
+} = require("../../services/casualShoot/store");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
 

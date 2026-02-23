@@ -1,5 +1,11 @@
 import * as echarts from "../../../../components/ec-canvas/echarts";
 
+const CHART_COLORS = {
+  abnormal: "#f56c6c",
+  normal: "#2ac86d",
+  position: "#f59a23",
+};
+
 Component({
   options: {
     styleIsolation: "apply-shared",
@@ -40,10 +46,6 @@ Component({
 
     // 初始化图表配置
     initChart() {
-      const abnormalCount = this.data.abnormalCount;
-      const normalCount = this.data.normalCount;
-      const positionCount = this.data.positionCount;
-
       this.setData({
         chartOption: {
           onInit: this.initEchart.bind(this),
@@ -85,17 +87,17 @@ Component({
               {
                 value: abnormalCount,
                 name: "异常点位",
-                itemStyle: { color: "#f56c6c" },
+                itemStyle: { color: CHART_COLORS.abnormal },
               },
               {
                 value: normalCount,
                 name: "正常点位",
-                itemStyle: { color: "#2ac86d" },
+                itemStyle: { color: CHART_COLORS.normal },
               },
               {
                 value: positionCount,
                 name: "总点位数",
-                itemStyle: { color: "#f59a23" },
+                itemStyle: { color: CHART_COLORS.position },
               },
             ],
           },
