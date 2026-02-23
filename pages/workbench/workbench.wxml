@@ -1,10 +1,10 @@
 <!-- pages/workbench/workbench.wxml -->
 <scroll-view class="workbench-scroll" scroll-y>
   <view class="container">
-    <view class="item" wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="title">
+    <view class="module-card" wx:for="{{list}}" wx:for-item="item" wx:for-index="index" wx:key="title">
       <view class="title">{{item.title}}</view>
-      <view class="childrens">
-        <view class="item" wx:for="{{item.children}}" wx:for-item="item" wx:for-index="index" wx:key="title">
+      <view class="children-grid">
+        <view class="child-item" wx:for="{{item.children}}" wx:for-item="item" wx:for-index="index" wx:key="title">
           <view class="icon"></view>
           <view class="text">{{item.title}}</view>
         </view>

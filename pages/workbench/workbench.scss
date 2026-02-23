@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 32rpx;
 
-  .item {
+  .module-card {
     background-color: $color-bg-card;
     padding: 32rpx;
 
@@ -31,12 +31,12 @@
       }
     }
 
-    .childrens {
+    .children-grid {
       display: flex;
       flex-wrap: wrap;
-      padding: 24rpx 0;
+      padding-top: 24rpx;
 
-      .item {
+      .child-item {
         width: 25%;
         font-size: 24rpx;
         display: flex;
