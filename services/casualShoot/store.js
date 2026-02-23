@@ -45,6 +45,12 @@ const normalizeItems = (items) => {
 
 const normalizeStatus = (status) =>
   status === STATUS_DONE ? STATUS_DONE : STATUS_PENDING;
+const normalizeTask = (value) => normalizeText(value);
+const normalizeSource = (value) => {
+  if (value === undefined || value === null || value === "") return "";
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : normalizeText(value);
+};
 
 const normalizeTimestamp = (value) => {
   const numeric = Number(value);
@@ -58,6 +64,8 @@ const normalizeRecord = (record) => {
     id: normalizeText(record && record.id) || createId(),
     status: normalizeStatus(record && record.status),
     items: normalizeItems(record && record.items),
+    task: normalizeTask(record && record.task),
+    source: normalizeSource(record && record.source),
     createdAt,
     updatedAt: normalizeTimestamp((record && record.updatedAt) || createdAt),
   };
@@ -93,6 +101,8 @@ const createCasualShootRecord = (payload = {}) => {
     id: createId(),
     status: STATUS_PENDING,
     items,
+    task: normalizeTask(payload.task),
+    source: normalizeSource(payload.source),
     createdAt: now,
     updatedAt: now,
   });
@@ -119,6 +129,9 @@ const updateCasualShootRecord = (id, payload = {}) => {
   records[index] = normalizeRecord({
     ...current,
     items: nextItems,
+    task: payload.task === undefined ? current.task : normalizeTask(payload.task),
+    source:
+      payload.source === undefined ? current.source : normalizeSource(payload.source),
     updatedAt: Date.now(),
   });
   writeRecords(records);

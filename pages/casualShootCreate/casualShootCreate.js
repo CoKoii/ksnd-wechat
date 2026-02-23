@@ -6,8 +6,15 @@ const {
   updateCasualShootRecord,
   formatDateTime,
 } = require("../../services/casualShoot/store");
+const { saveCasualShootBatch } = require("../../api/casualShoot");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
+const ISSUE_STATE_PENDING = 10018010;
+const ISSUE_SOURCE_NO_TASK = 10021010;
+const ISSUE_SOURCE_WITH_TASK = 10021020;
+const normalizeTaskId = (value) => String(value || "").trim();
+const toIssueSource = (taskId) =>
+  taskId ? ISSUE_SOURCE_WITH_TASK : ISSUE_SOURCE_NO_TASK;
 
 const normalizeImageValue = (value) => {
   if (!value) return "";
@@ -54,6 +61,7 @@ const toSections = (items = []) => {
 Page({
   data: {
     id: "",
+    taskId: "",
     isEdit: false,
     recordMeta: null,
     sections: [createEmptySection()],
@@ -63,10 +71,12 @@ Page({
 
   onLoad(options = {}) {
     const id = String(options.id || "").trim();
+    const taskId = normalizeTaskId(options.taskId || options.task);
     const isEdit = Boolean(id);
 
     this.setData({
       id,
+      taskId,
       isEdit,
       submitText: isEdit ? "保存" : "提交",
     });
@@ -94,6 +104,7 @@ Page({
     this.setData({
       recordMeta: toRecordMeta(record),
       sections: toSections(record.items),
+      taskId: normalizeTaskId(this.data.taskId || record.task),
     });
   },
 
@@ -171,6 +182,25 @@ Page({
       .filter((item) => item.description || item.images.length);
   },
 
+  buildSubmitPayload(items = []) {
+    const taskId = normalizeTaskId(this.data.taskId);
+    const source = toIssueSource(taskId);
+
+    return {
+      taskId,
+      source,
+      payload: {
+        list: items.map((item) => ({
+          task: taskId || "",
+          name: item.description,
+          files: item.images.join(","),
+          state: ISSUE_STATE_PENDING,
+          source,
+        })),
+      },
+    };
+  },
+
   async onSubmit() {
     if (this.data.submitting) return;
 
@@ -182,14 +212,26 @@ Page({
 
     this.setData({ submitting: true });
     try {
+      const submitData = this.buildSubmitPayload(items);
+      const res = await saveCasualShootBatch(submitData.payload);
+      if (String((res && res.code) || "") !== "0") {
+        throw new Error((res && res.msg) || "提交失败");
+      }
+
       if (this.data.isEdit) {
-        const updated = updateCasualShootRecord(this.data.id, { items });
-        if (!updated) throw new Error("保存失败");
+        updateCasualShootRecord(this.data.id, {
+          items,
+          task: submitData.taskId,
+          source: submitData.source,
+        });
         wx.showToast({ title: "保存成功", icon: "success" });
         this.loadRecord();
       } else {
-        const record = createCasualShootRecord({ items });
-        if (!record) throw new Error("提交失败");
+        createCasualShootRecord({
+          items,
+          task: submitData.taskId,
+          source: submitData.source,
+        });
         wx.showToast({ title: "提交成功", icon: "success" });
         setTimeout(() => wx.navigateBack(), 900);
       }

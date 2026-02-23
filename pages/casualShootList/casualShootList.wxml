@@ -25,7 +25,7 @@
 
   <scroll-view class="scroll-container" scroll-y>
     <view class="record-list">
-      <view class="record-item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="goToDetail">
+      <view class="record-item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" data-task="{{item.task || ''}}" bindtap="goToDetail">
         <view class="record-header">
           <text class="record-title">{{item.firstDescription}}</text>
         </view>

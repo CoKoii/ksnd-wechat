@@ -10,4 +10,16 @@
       <van-icon name="arrow" color="#999" size="20px" />
     </view>
   </view>
+
+  <view class="todo-entry" bindtap="goToCasualShootList" hover-class="todo-entry-hover" hover-stay-time="90">
+    <view class="entry-content">
+      <view class="entry-title-row">
+        <view class="entry-title">随手拍</view>
+      </view>
+      <view class="entry-desc">进入随手拍列表</view>
+    </view>
+    <view class="entry-arrow">
+      <van-icon name="arrow" color="#999" size="20px" />
+    </view>
+  </view>
 </view>

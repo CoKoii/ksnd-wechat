@@ -9,6 +9,7 @@ const TAB_CONFIG = [
   { label: "未整改", status: STATUS_PENDING },
   { label: "已整改", status: STATUS_DONE },
 ];
+const normalizeTaskId = (value) => String(value || "").trim();
 
 const toSearchText = (record = {}) =>
   (Array.isArray(record.items)
@@ -39,12 +40,16 @@ Page({
   data: {
     activeTab: 0,
     tabs: TAB_CONFIG.map((item) => item.label),
+    taskId: "",
     keyword: "",
     searchValue: "",
     list: [],
   },
 
-  onLoad() {
+  onLoad(options = {}) {
+    this.setData({
+      taskId: normalizeTaskId(options.taskId || options.task),
+    });
     this.loadRecords();
   },
 
@@ -120,14 +125,23 @@ Page({
   goToDetail(e) {
     const id = e.currentTarget.dataset.id;
     if (!id) return;
+    const taskId = normalizeTaskId(e.currentTarget.dataset.task || this.data.taskId);
+    const query = [`id=${encodeURIComponent(id)}`];
+    if (taskId) {
+      query.push(`taskId=${encodeURIComponent(taskId)}`);
+    }
+
     wx.navigateTo({
-      url: `/pages/casualShootCreate/casualShootCreate?id=${encodeURIComponent(id)}`,
+      url: `/pages/casualShootCreate/casualShootCreate?${query.join("&")}`,
     });
   },
 
   goToCreate() {
+    const query = this.data.taskId
+      ? `?taskId=${encodeURIComponent(this.data.taskId)}`
+      : "";
     wx.navigateTo({
-      url: "/pages/casualShootCreate/casualShootCreate",
+      url: `/pages/casualShootCreate/casualShootCreate${query}`,
     });
   },
 });
