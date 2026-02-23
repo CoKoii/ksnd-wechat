@@ -7,6 +7,8 @@
       <view class="entry-title">进入待办列表</view>
       <view class="entry-desc">查看并处理当前待办任务</view>
     </view>
-    <view class="entry-arrow">></view>
+    <view class="entry-arrow">
+      <van-icon name="arrow" color="#999" size="20px" />
+    </view>
   </view>
 </view>

@@ -144,10 +144,10 @@ page {
   }
 
   .entry-arrow {
-    font-size: 34rpx;
-    color: $color-primary-light;
-    line-height: 1;
-    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 }
 
