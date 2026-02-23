@@ -1,0 +1,56 @@
+<scroll-view class="casual-shoot-create-page" scroll-y>
+  <view class="base-card" wx:if="{{isEdit && recordMeta}}">
+    <view class="base-header">
+      <text class="status-tag {{recordMeta.statusClass}}">{{recordMeta.statusText}}</text>
+      <text class="time">创建：{{recordMeta.createdAtText}}</text>
+    </view>
+    <view class="base-row">
+      <text class="label">更新时间：</text>
+      <text class="value">{{recordMeta.updatedAtText}}</text>
+    </view>
+  </view>
+
+  <view class="item-card" wx:for="{{sections}}" wx:key="key">
+    <view class="item-header">
+      <text class="item-index">第{{index + 1}}项</text>
+      <text
+        class="item-remove"
+        wx:if="{{sections.length > 1}}"
+        data-index="{{index}}"
+        bindtap="onRemoveSection">
+        删除
+      </text>
+    </view>
+
+    <view class="field-label">描述</view>
+    <textarea
+      class="description-input"
+      value="{{item.description}}"
+      placeholder="请输入问题描述"
+      maxlength="500"
+      show-confirm-bar="{{false}}"
+      data-index="{{index}}"
+      bindinput="onDescriptionInput" />
+
+    <view class="field-label">图片（选填）</view>
+    <van-uploader
+      file-list="{{item.images}}"
+      max-count="9"
+      multiple
+      data-index="{{index}}"
+      bind:after-read="onUploadImages"
+      bind:delete="onDeleteImage" />
+  </view>
+
+  <button class="add-btn" bindtap="onAddSection">+ 添加一项</button>
+
+  <view class="submit-wrap">
+    <button
+      class="submit-btn"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+      bindtap="onSubmit">
+      {{submitText}}
+    </button>
+  </view>
+</scroll-view>

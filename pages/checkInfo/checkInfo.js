@@ -174,6 +174,12 @@ Page({
     }
   },
 
+  goToCasualShootList() {
+    wx.navigateTo({
+      url: "/pages/casualShootList/casualShootList",
+    });
+  },
+
   onCheckResultChange: editable(function (e) {
     this.setData({ checkResult: e.detail });
   }),

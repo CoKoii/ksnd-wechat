@@ -119,6 +119,36 @@ page {
   }
 }
 
+.shoot-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+
+  .entry-main {
+    flex: 1;
+  }
+
+  .entry-title {
+    font-size: 30rpx;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8rpx;
+  }
+
+  .entry-desc {
+    font-size: 24rpx;
+    color: #666;
+  }
+
+  .entry-arrow {
+    font-size: 34rpx;
+    color: #3a7afe;
+    line-height: 1;
+    font-weight: 700;
+  }
+}
+
 .check-items {
   .check-item {
     padding-bottom: 24rpx;

@@ -36,6 +36,14 @@
     </view>
   </view>
 
+  <view class="section shoot-entry" wx:if="{{taskDetail}}" bindtap="goToCasualShootList">
+    <view class="entry-main">
+      <view class="entry-title">随手拍</view>
+      <view class="entry-desc">进入随手拍列表</view>
+    </view>
+    <view class="entry-arrow">></view>
+  </view>
+
   <!-- 巡检结果 -->
   <view class="section">
     <view class="section-title">巡检结果</view>

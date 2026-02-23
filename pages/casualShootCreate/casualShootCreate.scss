@@ -1,0 +1,131 @@
+@import "../../styles/theme/index.scss";
+
+page {
+  height: 100%;
+  background-color: $color-bg-page-alt;
+}
+
+.casual-shoot-create-page {
+  height: 100%;
+  padding: 24rpx 32rpx 40rpx;
+  box-sizing: border-box;
+
+  .base-card,
+  .item-card {
+    background-color: $color-bg-card;
+    border-radius: $radius-md;
+    box-shadow: $shadow-card;
+    padding: 24rpx;
+    margin-bottom: 20rpx;
+  }
+
+  .base-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20rpx;
+  }
+
+  .status-tag {
+    border-radius: 999rpx;
+    padding: 8rpx 16rpx;
+    font-size: 24rpx;
+    line-height: 1.2;
+
+    &.is-pending {
+      color: $color-danger;
+      background-color: $color-danger-bg;
+    }
+
+    &.is-done {
+      color: #17915a;
+      background-color: #e8f8ef;
+    }
+  }
+
+  .time {
+    font-size: 24rpx;
+    color: $color-text-muted;
+  }
+
+  .base-row {
+    display: flex;
+    align-items: center;
+    font-size: 26rpx;
+    line-height: 1.5;
+
+    .label {
+      color: $color-text-muted;
+      flex-shrink: 0;
+    }
+
+    .value {
+      color: $color-text-body;
+    }
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14rpx;
+
+    .item-index {
+      font-size: 28rpx;
+      color: $color-text-body;
+      font-weight: 600;
+    }
+
+    .item-remove {
+      font-size: 24rpx;
+      color: $color-danger;
+    }
+  }
+
+  .field-label {
+    font-size: 24rpx;
+    color: $color-text-sub;
+    margin-bottom: 12rpx;
+  }
+
+  .description-input {
+    width: 100%;
+    min-height: 170rpx;
+    border: 1rpx solid $color-border-input;
+    border-radius: $radius-md;
+    padding: 16rpx;
+    font-size: 28rpx;
+    color: $color-text-body;
+    line-height: 1.6;
+    box-sizing: border-box;
+    margin-bottom: 20rpx;
+    background-color: $color-input-bg;
+  }
+
+  .add-btn,
+  .submit-btn {
+    width: 100%;
+    height: 84rpx;
+    line-height: 84rpx;
+    border-radius: $radius-md;
+    border: none;
+    font-size: 30rpx;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .add-btn {
+    margin: 6rpx 0 24rpx;
+    background-color: #ecf2ff;
+    color: $color-primary-light;
+  }
+
+  .submit-wrap {
+    padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  }
+
+  .submit-btn {
+    background-color: $color-primary-light;
+    color: #fff;
+  }
+}

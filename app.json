@@ -5,6 +5,8 @@
     "pages/workbench/workbench",
     "pages/todoList/todoList",
     "pages/checkInfo/checkInfo",
+    "pages/casualShootList/casualShootList",
+    "pages/casualShootCreate/casualShootCreate",
     "pages/chat/chat"
   ],
   "window": {
