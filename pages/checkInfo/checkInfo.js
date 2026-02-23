@@ -1,4 +1,5 @@
 const { getTaskDetail, saveTaskForm } = require("../../api/task");
+const { uploadImage, resolveImagePreview } = require("../../services/file/image");
 const { markTodoListNeedReload } = require("../../services/task/localState");
 const {
   NO_VALUE,
@@ -8,13 +9,18 @@ const {
   editable,
   formatDate,
   toCheckResult,
-  toImageUrls,
   toUploaderFiles,
   buildCheckItems,
   buildSubmitPayload,
 } = require("./utils");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+
+const isValidImageType = (path = "") => /\.(jpe?g|png)$/i.test(String(path || ""));
+const isValidImageSize = (size) => !size || Number(size) <= MAX_IMAGE_SIZE;
+const isAbsoluteImageUrl = (value = "") =>
+  /^(https?:\/\/|wxfile:\/\/|data:)/i.test(String(value || "").trim());
 
 Page({
   data: {
@@ -45,6 +51,8 @@ Page({
 
       const detail = (res && res.data) || {};
       const readonly = String(detail.state || "") === COMPLETED_STATE;
+      const checkItems = buildCheckItems(detail.fields, detail.vals);
+      const images = toUploaderFiles(detail.ckpics);
       this.setData({
         taskDetail: {
           ...detail,
@@ -53,14 +61,75 @@ Page({
         },
         readonly,
         checkResult: toCheckResult(detail.ckrs),
-        checkItems: buildCheckItems(detail.fields, detail.vals),
+        checkItems,
         inspector: detail.cssign || detail.cksign || detail.checker || "",
         description: detail.ckdesc || "",
-        images: toUploaderFiles(detail.ckpics),
+        images,
         ...createEmptyAbnormalState(),
       });
+      this.hydrateDetailImagePreviews(checkItems, images);
     } catch (error) {
       showToast((error && error.message) || "加载详情失败");
+    }
+  },
+
+  async resolveUploaderFilePreview(file = {}) {
+    const path = String(file.path || file.url || "").trim();
+    if (!path) return null;
+
+    const previewUrl = await resolveImagePreview(path);
+    const safeFallbackUrl = isAbsoluteImageUrl(path) ? path : "";
+    return {
+      ...file,
+      path,
+      url: previewUrl || safeFallbackUrl,
+    };
+  },
+
+  async resolveUploaderFilesPreview(files = []) {
+    const list = Array.isArray(files) ? files : [];
+    const resolved = await Promise.all(
+      list.map(async (file) => {
+        try {
+          return await this.resolveUploaderFilePreview(file);
+        } catch (error) {
+          const path = String((file && file.path) || (file && file.url) || "").trim();
+          const url = String((file && file.url) || "").trim();
+          return {
+            ...file,
+            path,
+            url: isAbsoluteImageUrl(url) ? url : "",
+          };
+        }
+      })
+    );
+    return resolved.filter((item) => item && item.path);
+  },
+
+  async hydrateDetailImagePreviews(checkItems = [], images = []) {
+    try {
+      const [resolvedImages, resolvedCheckItemsImages] = await Promise.all([
+        this.resolveUploaderFilesPreview(images),
+        Promise.all(
+          (Array.isArray(checkItems) ? checkItems : []).map((item) =>
+            this.resolveUploaderFilesPreview(item.images || [])
+          )
+        ),
+      ]);
+
+      const nextCheckItems = (Array.isArray(checkItems) ? checkItems : []).map(
+        (item, index) => ({
+          ...item,
+          images: resolvedCheckItemsImages[index] || [],
+        })
+      );
+
+      this.setData({
+        images: resolvedImages,
+        checkItems: nextCheckItems,
+      });
+    } catch (error) {
+      // ignore preview hydration failures
     }
   },
 
@@ -114,10 +183,54 @@ Page({
     this.setData({ tempDescription: getEventValue(e) });
   }),
 
-  appendUploaderFiles(targetField, file) {
+  async appendUploaderFiles(targetField, file) {
     const incoming = Array.isArray(file) ? file : [file];
-    const next = incoming.map((item) => ({ url: item.url || item.path }));
-    this.setData({ [targetField]: [...this.data[targetField], ...next] });
+    if (!incoming.length) return;
+
+    wx.showLoading({
+      title: "图片上传中",
+      mask: true,
+    });
+
+    let failedCount = 0;
+    const uploaded = [];
+    for (const item of incoming) {
+      const localPath = String((item && (item.url || item.path)) || "").trim();
+      if (!localPath) continue;
+      if (!isValidImageType(localPath)) {
+        failedCount += 1;
+        continue;
+      }
+      if (!isValidImageSize(item && item.size)) {
+        failedCount += 1;
+        continue;
+      }
+
+      try {
+        const result = await uploadImage(localPath);
+        const serverPath = String((result && result.path) || "").trim();
+        if (!serverPath) {
+          failedCount += 1;
+          continue;
+        }
+        uploaded.push({
+          path: serverPath,
+          url: localPath,
+          name: item.name || `image-${Date.now()}`,
+        });
+      } catch (error) {
+        failedCount += 1;
+      }
+    }
+
+    wx.hideLoading();
+
+    if (uploaded.length) {
+      this.setData({ [targetField]: [...this.data[targetField], ...uploaded] });
+    }
+    if (failedCount > 0) {
+      showToast("部分图片上传失败，仅支持JPG/PNG且小于2MB");
+    }
   },
 
   removeUploaderFile(targetField, index) {
@@ -126,8 +239,8 @@ Page({
     });
   },
 
-  onUploadAbnormalImage: editable(function (e) {
-    this.appendUploaderFiles("tempImages", e.detail.file);
+  onUploadAbnormalImage: editable(async function (e) {
+    await this.appendUploaderFiles("tempImages", e.detail.file);
   }),
 
   onDeleteAbnormalImage: editable(function (e) {
@@ -148,7 +261,7 @@ Page({
     this.setCheckItem(currentAbnormalItem, {
       status: false,
       description: descriptionText,
-      images: toImageUrls(tempImages),
+      images: toUploaderFiles(tempImages),
     });
 
     this.setData(createEmptyAbnormalState());
@@ -158,8 +271,8 @@ Page({
     this.setData({ description: getEventValue(e) });
   }),
 
-  onUploadImage: editable(function (e) {
-    this.appendUploaderFiles("images", e.detail.file);
+  onUploadImage: editable(async function (e) {
+    await this.appendUploaderFiles("images", e.detail.file);
   }),
 
   onDeleteImage: editable(function (e) {

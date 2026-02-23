@@ -1,15 +1,4 @@
 <scroll-view class="casual-shoot-create-page" scroll-y>
-  <view class="base-card" wx:if="{{isEdit && recordMeta}}">
-    <view class="base-header">
-      <text class="status-tag {{recordMeta.statusClass}}">{{recordMeta.statusText}}</text>
-      <text class="time">创建：{{recordMeta.createdAtText}}</text>
-    </view>
-    <view class="base-row">
-      <text class="label">更新时间：</text>
-      <text class="value">{{recordMeta.updatedAtText}}</text>
-    </view>
-  </view>
-
   <view class="item-card" wx:for="{{sections}}" wx:key="key">
     <view class="item-header">
       <text class="item-index">第{{index + 1}}项</text>
@@ -50,7 +39,7 @@
       loading="{{submitting}}"
       disabled="{{submitting}}"
       bindtap="onSubmit">
-      {{submitText}}
+      提交
     </button>
   </view>
 </scroll-view>

@@ -1,25 +1,21 @@
-const {
-  STATUS_PENDING,
-  STATUS_DONE,
-  getCasualShootRecordById,
-  createCasualShootRecord,
-  updateCasualShootRecord,
-  formatDateTime,
-} = require("../../services/casualShoot/store");
 const { saveCasualShootBatch } = require("../../api/casualShoot");
+const { uploadImage } = require("../../services/file/image");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
 const ISSUE_STATE_PENDING = 10018010;
 const ISSUE_SOURCE_NO_TASK = 10021010;
 const ISSUE_SOURCE_WITH_TASK = 10021020;
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 const normalizeTaskId = (value) => String(value || "").trim();
 const toIssueSource = (taskId) =>
   taskId ? ISSUE_SOURCE_WITH_TASK : ISSUE_SOURCE_NO_TASK;
+const isValidImageType = (path = "") => /\.(jpe?g|png)$/i.test(String(path || ""));
+const isValidImageSize = (size) => !size || Number(size) <= MAX_IMAGE_SIZE;
 
 const normalizeImageValue = (value) => {
   if (!value) return "";
   if (typeof value === "string") return String(value).trim();
-  return String(value.url || value.path || "").trim();
+  return String(value.path || value.url || "").trim();
 };
 
 const createSectionKey = () =>
@@ -31,80 +27,17 @@ const createEmptySection = () => ({
   images: [],
 });
 
-const toStatus = (status) =>
-  status === STATUS_DONE ? STATUS_DONE : STATUS_PENDING;
-
-const toRecordMeta = (record = {}) => {
-  const status = toStatus(record.status);
-  return {
-    statusText: status === STATUS_DONE ? "已整改" : "未整改",
-    statusClass: status === STATUS_DONE ? "is-done" : "is-pending",
-    createdAtText: formatDateTime(record.createdAt),
-    updatedAtText: formatDateTime(record.updatedAt),
-  };
-};
-
-const toSections = (items = []) => {
-  const list = (Array.isArray(items) ? items : [])
-    .map((item) => ({
-      key: createSectionKey(),
-      description: String((item && item.description) || ""),
-      images: (Array.isArray(item && item.images) ? item.images : [])
-        .map(normalizeImageValue)
-        .filter(Boolean)
-        .map((url) => ({ url })),
-    }))
-    .filter((item) => item.description || item.images.length);
-  return list.length ? list : [createEmptySection()];
-};
-
 Page({
   data: {
-    id: "",
     taskId: "",
-    isEdit: false,
-    recordMeta: null,
     sections: [createEmptySection()],
     submitting: false,
-    submitText: "提交",
   },
 
   onLoad(options = {}) {
-    const id = String(options.id || "").trim();
     const taskId = normalizeTaskId(options.taskId || options.task);
-    const isEdit = Boolean(id);
-
     this.setData({
-      id,
       taskId,
-      isEdit,
-      submitText: isEdit ? "保存" : "提交",
-    });
-
-    wx.setNavigationBarTitle({
-      title: isEdit ? "随手拍详情" : "新增随手拍",
-    });
-
-    if (isEdit) {
-      this.loadRecord();
-    }
-  },
-
-  loadRecord() {
-    const record = getCasualShootRecordById(this.data.id);
-    if (!record) {
-      this.setData({
-        recordMeta: null,
-        sections: [createEmptySection()],
-      });
-      showToast("记录不存在或已删除");
-      return;
-    }
-
-    this.setData({
-      recordMeta: toRecordMeta(record),
-      sections: toSections(record.items),
-      taskId: normalizeTaskId(this.data.taskId || record.task),
     });
   },
 
@@ -124,21 +57,60 @@ Page({
     this.updateSection(index, { description: value });
   },
 
-  onUploadImages(e) {
+  async onUploadImages(e) {
     const index = Number(e.currentTarget.dataset.index);
     if (Number.isNaN(index)) return;
 
     const incoming = Array.isArray(e.detail.file) ? e.detail.file : [e.detail.file];
-    const files = incoming
-      .map((item) => normalizeImageValue(item))
-      .filter(Boolean)
-      .map((url) => ({ url }));
-    if (!files.length) return;
+    if (!incoming.length) return;
+
+    wx.showLoading({
+      title: "图片上传中",
+      mask: true,
+    });
+
+    const files = [];
+    let failedCount = 0;
+    for (const item of incoming) {
+      const localPath = String((item && (item.url || item.path)) || "").trim();
+      if (!localPath) continue;
+      if (!isValidImageType(localPath)) {
+        failedCount += 1;
+        continue;
+      }
+      if (!isValidImageSize(item && item.size)) {
+        failedCount += 1;
+        continue;
+      }
+
+      try {
+        const result = await uploadImage(localPath);
+        const path = String((result && result.path) || "").trim();
+        if (!path) {
+          failedCount += 1;
+          continue;
+        }
+        files.push({
+          path,
+          url: localPath,
+        });
+      } catch (error) {
+        failedCount += 1;
+      }
+    }
+
+    wx.hideLoading();
+    if (!files.length && failedCount <= 0) return;
 
     const target = this.data.sections[index] || createEmptySection();
-    this.updateSection(index, {
-      images: [...target.images, ...files],
-    });
+    if (files.length) {
+      this.updateSection(index, {
+        images: [...target.images, ...files],
+      });
+    }
+    if (failedCount > 0) {
+      showToast("部分图片上传失败，仅支持JPG/PNG且小于2MB");
+    }
   },
 
   onDeleteImage(e) {
@@ -217,24 +189,8 @@ Page({
       if (String((res && res.code) || "") !== "0") {
         throw new Error((res && res.msg) || "提交失败");
       }
-
-      if (this.data.isEdit) {
-        updateCasualShootRecord(this.data.id, {
-          items,
-          task: submitData.taskId,
-          source: submitData.source,
-        });
-        wx.showToast({ title: "保存成功", icon: "success" });
-        this.loadRecord();
-      } else {
-        createCasualShootRecord({
-          items,
-          task: submitData.taskId,
-          source: submitData.source,
-        });
-        wx.showToast({ title: "提交成功", icon: "success" });
-        setTimeout(() => wx.navigateBack(), 900);
-      }
+      wx.showToast({ title: "提交成功", icon: "success" });
+      setTimeout(() => wx.navigateBack(), 900);
     } catch (error) {
       showToast((error && error.message) || "操作失败");
     } finally {

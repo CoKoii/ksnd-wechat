@@ -1,5 +1,3 @@
-const { BASE_URL } = require("../../utils/http");
-
 const NO_VALUE = "--";
 const COMPLETED_STATE = "10018090";
 
@@ -39,39 +37,40 @@ const toItemStatus = (value) => {
   return String(value) === "1";
 };
 
-const normalizeImageUrl = (value) => {
-  const url = String(value || "").trim();
-  if (!url) return "";
-  if (/^(https?:\/\/|wxfile:\/\/|data:)/i.test(url)) return url;
-
-  const base = String(BASE_URL || "").replace(/\/+$/, "");
-  const path = url.replace(/^\/+/, "").replace(/^ksndsrv\/+/i, "");
-  return base ? `${base}/${path}` : path;
-};
-
 const toRawImageValue = (item) => {
   if (!item) return "";
   if (typeof item === "string") return item;
-  return item.url || item.path || "";
+  return item.path || item.url || "";
 };
 
-const toImageUrls = (value) => {
+const toImageValues = (value) => {
   const source = Array.isArray(value) ? value : String(value || "").split(",");
   return source
     .map(toRawImageValue)
     .map((item) => String(item || "").trim())
-    .filter(Boolean)
-    .map(normalizeImageUrl)
     .filter(Boolean);
 };
 
-const toUploaderFiles = (value) =>
-  toImageUrls(value).map((url, index) => ({
-    url,
-    name: `image-${index + 1}`,
-  }));
+const toUploaderFiles = (value) => {
+  const source = Array.isArray(value) ? value : String(value || "").split(",");
+  return source
+    .map((item, index) => {
+      const path = String(toRawImageValue(item) || "").trim();
+      if (!path) return null;
 
-const toCsv = (value) => toImageUrls(value).join(",");
+      const previewUrl = item && typeof item === "object" ? String(item.url || "").trim() : "";
+      const safePreviewUrl = /^(https?:\/\/|wxfile:\/\/|data:)/i.test(previewUrl) ? previewUrl : "";
+
+      return {
+        path,
+        url: safePreviewUrl,
+        name: `image-${index + 1}`,
+      };
+    })
+    .filter(Boolean);
+};
+
+const toCsv = (value) => toImageValues(value).join(",");
 
 const buildCheckItems = (fields = [], vals = []) => {
   const latestVals = (Array.isArray(vals) && vals[0]) || {};
@@ -85,7 +84,7 @@ const buildCheckItems = (fields = [], vals = []) => {
         name: field.name || `检查项${seq}`,
         status: toItemStatus(latestVals[`value${seq}`]),
         description: String(latestVals[`memo${seq}`] || ""),
-        images: toImageUrls(latestVals[`file${seq}`]),
+        images: toUploaderFiles(latestVals[`file${seq}`]),
       };
     });
 };
@@ -125,7 +124,7 @@ module.exports = {
   editable,
   formatDate,
   toCheckResult,
-  toImageUrls,
+  toImageValues,
   toUploaderFiles,
   buildCheckItems,
   buildSubmitPayload,

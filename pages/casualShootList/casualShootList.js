@@ -1,38 +1,36 @@
-const {
-  STATUS_PENDING,
-  STATUS_DONE,
-  listCasualShootRecords,
-  formatDateTime,
-} = require("../../services/casualShoot/store");
+const normalizeTaskId = (value) => String(value || "").trim();
+const STATUS_PENDING = 10018010;
+const STATUS_DONE = 10018090;
 
 const TAB_CONFIG = [
-  { label: "未整改", status: STATUS_PENDING },
-  { label: "已整改", status: STATUS_DONE },
+  { label: "未整改", state: STATUS_PENDING },
+  { label: "已整改", state: STATUS_DONE },
 ];
-const normalizeTaskId = (value) => String(value || "").trim();
 
 const toSearchText = (record = {}) =>
-  (Array.isArray(record.items)
-    ? record.items.map((item) => (item && item.description) || "")
-    : [])
-    .join(" ")
+  String(record.name || record.description || "")
+    .trim()
     .toLowerCase();
 
+const normalizeDateText = (value) => {
+  if (value === undefined || value === null || value === "") return "--";
+  return String(value);
+};
+
 const toListItem = (record = {}) => {
-  const items = Array.isArray(record.items) ? record.items : [];
-  const firstDescription =
-    (items.find((item) => item && item.description) || {}).description || "--";
-  const imageCount = items.reduce((sum, item) => {
-    const images = (item && item.images) || [];
-    return sum + (Array.isArray(images) ? images.length : 0);
-  }, 0);
+  const files = String(record.files || "")
+    .split(",")
+    .map((item) => String(item || "").trim())
+    .filter(Boolean);
 
   return {
     ...record,
-    firstDescription,
-    itemCount: items.length,
-    imageCount,
-    createdAtText: formatDateTime(record.createdAt),
+    firstDescription: record.name || record.description || "--",
+    itemCount: Number(record.itemCount) || 1,
+    imageCount: files.length,
+    createdAtText: normalizeDateText(
+      record.createdAt || record.create_time || record.createTime
+    ),
   };
 };
 
@@ -44,6 +42,7 @@ Page({
     keyword: "",
     searchValue: "",
     list: [],
+    loading: false,
   },
 
   onLoad(options = {}) {
@@ -57,9 +56,16 @@ Page({
     this.loadRecords();
   },
 
-  loadRecords() {
-    this.allRecords = listCasualShootRecords();
-    this.applyFilters();
+  async loadRecords() {
+    if (this.data.loading) return;
+    this.setData({ loading: true });
+    try {
+      // 本地存储已移除。列表接口接入前先保留页面结构与交互。
+      this.allRecords = [];
+      this.applyFilters();
+    } finally {
+      this.setData({ loading: false });
+    }
   },
 
   applyFilters() {
@@ -68,7 +74,7 @@ Page({
     const searchText = String(keyword || "").trim().toLowerCase();
 
     const list = (this.allRecords || [])
-      .filter((item) => item.status === tab.status)
+      .filter((item) => Number(item.state || 0) === tab.state)
       .filter((item) => !searchText || toSearchText(item).includes(searchText))
       .map(toListItem);
 
@@ -130,7 +136,6 @@ Page({
     if (taskId) {
       query.push(`taskId=${encodeURIComponent(taskId)}`);
     }
-
     wx.navigateTo({
       url: `/pages/casualShootCreate/casualShootCreate?${query.join("&")}`,
     });

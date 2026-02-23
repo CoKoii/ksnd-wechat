@@ -103,7 +103,7 @@
               wx:for="{{item.images}}" 
               wx:key="index"
               wx:for-item="img"
-              src="{{img}}" 
+              src="{{img.url}}" 
               mode="aspectFill" />
           </view>
         </view>

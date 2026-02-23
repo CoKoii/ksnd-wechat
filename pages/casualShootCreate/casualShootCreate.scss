@@ -10,57 +10,11 @@ page {
   padding: 24rpx 32rpx 40rpx;
   box-sizing: border-box;
 
-  .base-card,
   .item-card {
     background-color: $color-bg-card;
     border-radius: $radius-md;
     padding: 24rpx;
     margin-bottom: 20rpx;
-  }
-
-  .base-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20rpx;
-  }
-
-  .status-tag {
-    border-radius: 999rpx;
-    padding: 8rpx 16rpx;
-    font-size: 24rpx;
-    line-height: 1.2;
-
-    &.is-pending {
-      color: $color-danger;
-      background-color: $color-danger-bg;
-    }
-
-    &.is-done {
-      color: $color-success-deep;
-      background-color: $color-success-bg-soft;
-    }
-  }
-
-  .time {
-    font-size: 24rpx;
-    color: $color-text-muted;
-  }
-
-  .base-row {
-    display: flex;
-    align-items: center;
-    font-size: 26rpx;
-    line-height: 1.5;
-
-    .label {
-      color: $color-text-muted;
-      flex-shrink: 0;
-    }
-
-    .value {
-      color: $color-text-body;
-    }
   }
 
   .item-header {
