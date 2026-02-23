@@ -103,7 +103,6 @@ page {
       border-radius: $radius-md;
       padding: 28rpx;
       margin-bottom: 20rpx;
-      box-shadow: $shadow-card;
 
       .record-header {
         display: flex;
@@ -179,7 +178,6 @@ page {
     color: $color-text-inverse;
     font-size: 28rpx;
     font-weight: 600;
-    box-shadow: $shadow-fab-primary;
     padding: 0 36rpx;
   }
 }
