@@ -28,7 +28,6 @@
       <view class="record-item" wx:for="{{list}}" wx:key="id" data-id="{{item.id}}" bindtap="goToDetail">
         <view class="record-header">
           <text class="record-title">{{item.firstDescription}}</text>
-          <text class="status-tag {{item.statusClass}}">{{item.statusText}}</text>
         </view>
 
         <view class="record-footer">

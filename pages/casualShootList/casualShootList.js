@@ -25,7 +25,6 @@ const toListItem = (record = {}) => {
     const images = (item && item.images) || [];
     return sum + (Array.isArray(images) ? images.length : 0);
   }, 0);
-  const status = record.status === STATUS_DONE ? STATUS_DONE : STATUS_PENDING;
 
   return {
     ...record,
@@ -33,8 +32,6 @@ const toListItem = (record = {}) => {
     itemCount: items.length,
     imageCount,
     createdAtText: formatDateTime(record.createdAt),
-    statusText: status === STATUS_DONE ? "已整改" : "未整改",
-    statusClass: status === STATUS_DONE ? "is-done" : "is-pending",
   };
 };
 

@@ -124,24 +124,6 @@ page {
         overflow: hidden;
       }
 
-      .status-tag {
-        flex-shrink: 0;
-        border-radius: 999rpx;
-        padding: 6rpx 14rpx;
-        font-size: 22rpx;
-        line-height: 1.2;
-
-        &.is-pending {
-          color: $color-danger;
-          background-color: $color-danger-bg;
-        }
-
-        &.is-done {
-          color: $color-success-deep;
-          background-color: $color-success-bg-soft;
-        }
-      }
-
       .record-footer {
         margin-top: 18rpx;
         padding-top: 18rpx;
