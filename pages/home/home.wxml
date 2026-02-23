@@ -6,11 +6,19 @@
   </view>
   <view class="info">
     <view class="left">
-      <view class="title">招商花园</view>
+      <picker
+        class="title-picker"
+        mode="selector"
+        range="{{communityOptions}}"
+        value="{{selectedCommunityIndex}}"
+        bindchange="onCommunityChange"
+      >
+        <view class="title-wrap">
+          <view class="title">{{communityOptions[selectedCommunityIndex]}}</view>
+          <van-icon name="arrow-down" size="28rpx" />
+        </view>
+      </picker>
       <view class="welcome">欢迎您，某某</view>
-    </view>
-    <view class="right">
-      <van-icon name="arrow-down" />
     </view>
   </view>
 </view>

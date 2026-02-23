@@ -1,22 +1,12 @@
 <view class="my-todo">
   <view class="header">
     <view class="title">我的待办</view>
-    <view class="more" bindtap="goToTodoList">更多 ></view>
   </view>
-  <view class="todo-list">
-    <view class="todo-item" wx:for="{{todoList}}" wx:key="id" data-id="{{item.id}}" bindtap="goToDetail">
-      <view class="left-bar"></view>
-      <view class="content">
-        <view class="top-row">
-          <view class="task-name">{{item.name}}</view>
-          <view class="badge" wx:if="{{item.badge}}">{{item.badge}}</view>
-          <view class="count">{{item.count}}</view>
-        </view>
-        <view class="bottom-row">
-          <view class="completed">今日完成 {{item.completed}} 单</view>
-          <view class="type">{{item.type}}</view>
-        </view>
-      </view>
+  <view class="todo-entry" bindtap="goToTodoList">
+    <view class="entry-content">
+      <view class="entry-title">进入待办列表</view>
+      <view class="entry-desc">查看并处理当前待办任务</view>
     </view>
+    <view class="entry-arrow">></view>
   </view>
 </view>

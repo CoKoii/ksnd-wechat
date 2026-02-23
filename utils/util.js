@@ -1,4 +1,4 @@
-const BASIC_HOME_PATH = "/pages/todoList/todoList";
+const BASIC_HOME_PATH = "/pages/home/home";
 
 const formatTime = (date) => {
   const year = date.getFullYear();

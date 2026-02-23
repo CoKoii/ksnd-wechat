@@ -13,8 +13,8 @@ const LOGIN_ID_KEY = "loginId";
 Page({
   data: {
     form: {
-      uname: "",
-      pwd: "",
+      uname: "fstadm",
+      pwd: "ksLD25002@",
     },
     submitting: false,
   },

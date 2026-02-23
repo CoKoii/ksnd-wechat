@@ -19,8 +19,8 @@
     "backgroundColor": "#fff",
     "list": [
       {
-        "text": "我的任务",
-        "pagePath": "pages/todoList/todoList",
+        "text": "首页",
+        "pagePath": "pages/home/home",
         "iconPath": "/assets/home.png",
         "selectedIconPath": "/assets/home-active.png"
       },
