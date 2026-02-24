@@ -1,6 +1,6 @@
 const { login } = require("../../api/auth");
 const { getToken, setToken } = require("../../utils/http");
-const { persistCheckerId } = require("../../services/task/localState");
+const { persistLoginId } = require("../../services/task/localState");
 const {
   normalizeForm,
   isFormValid,
@@ -51,7 +51,7 @@ Page({
       if (result.ok) {
         setToken(result.token);
         if (result.loginId) {
-          persistCheckerId(result.loginId);
+          persistLoginId(result.loginId);
         }
         wx.showToast({
           title: "登录成功",

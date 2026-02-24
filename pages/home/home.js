@@ -4,7 +4,7 @@ const {
   persistProjectId,
   getPersistedProjectId,
 } = require("../../services/project/localState");
-const { getPersistedCheckerId } = require("../../services/task/localState");
+const { getPersistedLoginId } = require("../../services/task/localState");
 
 const toText = (value) => String(value || "").trim();
 const SUCCESS_CODE = "0";
@@ -94,7 +94,7 @@ Page({
   },
 
   async loadUserProfile() {
-    const uid = toText(getPersistedCheckerId());
+    const uid = toText(getPersistedLoginId());
     if (!uid) return;
 
     try {

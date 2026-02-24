@@ -1,5 +1,4 @@
-const CHECKER_ID_KEY = "checkerId";
-const LEGACY_LOGIN_ID_KEY = "loginId";
+const LOGIN_ID_KEY = "loginId";
 const TODO_LIST_RELOAD_KEY = "todoListNeedReload";
 
 const toStorageText = (value) => {
@@ -9,27 +8,14 @@ const toStorageText = (value) => {
 const getStorageText = (key) => toStorageText(wx.getStorageSync(key));
 const setStorageText = (key, value) => wx.setStorageSync(key, toStorageText(value));
 
-const persistCheckerId = (value) => {
-  const checkerId = toStorageText(value);
-  if (!checkerId) return "";
-  setStorageText(CHECKER_ID_KEY, checkerId);
-  setStorageText(LEGACY_LOGIN_ID_KEY, checkerId);
-  return checkerId;
+const persistLoginId = (value) => {
+  const loginId = toStorageText(value);
+  if (!loginId) return "";
+  setStorageText(LOGIN_ID_KEY, loginId);
+  return loginId;
 };
 
-const getPersistedCheckerId = () => {
-  const legacyId = getStorageText(LEGACY_LOGIN_ID_KEY);
-  if (legacyId) {
-    setStorageText(CHECKER_ID_KEY, legacyId);
-    return legacyId;
-  }
-
-  const checkerId = getStorageText(CHECKER_ID_KEY);
-  if (checkerId) {
-    setStorageText(LEGACY_LOGIN_ID_KEY, checkerId);
-  }
-  return checkerId;
-};
+const getPersistedLoginId = () => getStorageText(LOGIN_ID_KEY);
 
 const markTodoListNeedReload = () => {
   setStorageText(TODO_LIST_RELOAD_KEY, "1");
@@ -43,8 +29,8 @@ const clearTodoListReloadFlag = () => {
 };
 
 module.exports = {
-  persistCheckerId,
-  getPersistedCheckerId,
+  persistLoginId,
+  getPersistedLoginId,
   markTodoListNeedReload,
   shouldReloadTodoList,
   clearTodoListReloadFlag,

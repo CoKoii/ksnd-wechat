@@ -2,7 +2,7 @@
 const { getTaskList } = require("../../api/task");
 const { getPersistedProjectId } = require("../../services/project/localState");
 const {
-  getPersistedCheckerId,
+  getPersistedLoginId,
   shouldReloadTodoList,
   clearTodoListReloadFlag,
 } = require("../../services/task/localState");
@@ -128,7 +128,7 @@ Page({
     this.setData({ loading: true });
 
     try {
-      const checker = getPersistedCheckerId();
+      const checker = getPersistedLoginId();
       const project = getPersistedProjectId();
       const res = await getTaskList({
         pno: page,
