@@ -6,6 +6,13 @@ const saveCasualShootBatch = async (data) =>
     data: data || {},
   });
 
+const getCasualShootList = async (data) =>
+  request("/api/safe/im/issue/list", {
+    method: "POST",
+    data: data || {},
+  });
+
 module.exports = {
   saveCasualShootBatch,
+  getCasualShootList,
 };

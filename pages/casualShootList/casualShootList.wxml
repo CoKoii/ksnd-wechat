@@ -34,12 +34,13 @@
         bindtap="goToDetail">
         <view class="record-header">
           <text class="record-title">{{item.firstDescription}}</text>
+          <view class="state-tag {{item.stateClass}}">{{item.stateText}}</view>
         </view>
 
         <view class="record-footer">
-          <text class="footer-text">记录项：{{item.itemCount}}</text>
-          <text class="footer-text">照片：{{item.imageCount}}</text>
-          <text class="footer-text">{{item.createdAtText}}</text>
+          <text class="footer-text">照片 {{item.imageCount}}</text>
+          <text class="footer-text">创建 {{item.createdAtText}}</text>
+          <text class="footer-text">更新 {{item.updatedAtText}}</text>
         </view>
       </view>
     </view>

@@ -103,13 +103,14 @@ page {
       border-radius: $radius-md;
       padding: 28rpx;
       margin-bottom: 20rpx;
+      box-shadow: 0 8rpx 24rpx $color-overlay-surface;
 
       .record-header {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
         gap: 12rpx;
-        margin-bottom: 18rpx;
+        margin-bottom: 14rpx;
       }
 
       .record-title {
@@ -124,12 +125,36 @@ page {
         overflow: hidden;
       }
 
+      .state-tag {
+        flex-shrink: 0;
+        height: 40rpx;
+        line-height: 40rpx;
+        padding: 0 14rpx;
+        border-radius: 999rpx;
+        font-size: 22rpx;
+        font-weight: 600;
+
+        &.is-pending {
+          color: $color-danger;
+          background-color: $color-danger-bg-soft;
+        }
+
+        &.is-done {
+          color: $color-success-deep;
+          background-color: $color-success-bg-soft;
+        }
+
+        &.is-unknown {
+          color: $color-text-sub;
+          background-color: $color-bg-page;
+        }
+      }
+
       .record-footer {
-        margin-top: 18rpx;
-        padding-top: 18rpx;
+        padding-top: 16rpx;
         border-top: 1rpx solid $color-border-base;
         display: flex;
-        gap: 20rpx;
+        gap: 16rpx;
         flex-wrap: wrap;
 
         .footer-text {
