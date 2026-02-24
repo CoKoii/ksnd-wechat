@@ -95,7 +95,7 @@ page {
   .scroll-container {
     flex: 1;
     height: 0;
-    padding: 24rpx 32rpx 180rpx;
+    padding: 24rpx 32rpx 24rpx;
     box-sizing: border-box;
 
     .record-item {
@@ -164,6 +164,10 @@ page {
       }
     }
 
+    .record-item:last-child {
+      margin-bottom: 0;
+    }
+
     .loading-more,
     .empty {
       padding-top: 220rpx;
@@ -176,7 +180,8 @@ page {
   .fab-add {
     position: fixed;
     right: 36rpx;
-    bottom: calc(36rpx + env(safe-area-inset-bottom));
+    bottom: calc(24rpx + constant(safe-area-inset-bottom));
+    bottom: calc(24rpx + env(safe-area-inset-bottom));
     min-width: 180rpx;
     height: 84rpx;
     line-height: 84rpx;
