@@ -23,6 +23,15 @@ const getStateByTab = (tabIndex) => {
   const tab = TAB_CONFIG[tabIndex];
   return tab ? tab.state : undefined;
 };
+const pickNextValue = (value, fallback) =>
+  value === undefined ? fallback : value;
+const getSearchKeyword = (event, fallbackValue = "") => {
+  const value =
+    event && event.detail && event.detail.value !== undefined
+      ? event.detail.value
+      : fallbackValue;
+  return String(value || "").trim();
+};
 
 Page({
   data: {
@@ -49,23 +58,22 @@ Page({
   },
 
   resetList(options = {}) {
-    const activeTab =
-      options.activeTab === undefined ? this.data.activeTab : options.activeTab;
-    const keyword =
-      options.keyword === undefined ? this.data.keyword : options.keyword;
-    const searchValue =
-      options.searchValue === undefined
-        ? this.data.searchValue
-        : options.searchValue;
-
     this.setData({
-      activeTab,
-      keyword,
-      searchValue,
+      activeTab: pickNextValue(options.activeTab, this.data.activeTab),
+      keyword: pickNextValue(options.keyword, this.data.keyword),
+      searchValue: pickNextValue(options.searchValue, this.data.searchValue),
       todoList: [],
       page: 1,
       hasMore: true,
     });
+  },
+
+  applySearch(keyword) {
+    this.resetList({
+      keyword,
+      searchValue: keyword,
+    });
+    this.loadTodoList();
   },
 
   onTabChange(e) {
@@ -83,25 +91,11 @@ Page({
   },
 
   onSearchConfirm(e) {
-    const value =
-      (e && e.detail && e.detail.value !== undefined
-        ? e.detail.value
-        : this.data.searchValue) || "";
-    const keyword = String(value).trim();
-
-    this.resetList({
-      keyword,
-      searchValue: keyword,
-    });
-    this.loadTodoList();
+    this.applySearch(getSearchKeyword(e, this.data.searchValue));
   },
 
   onSearchTap() {
-    this.onSearchConfirm({
-      detail: {
-        value: this.data.searchValue,
-      },
-    });
+    this.applySearch(getSearchKeyword(null, this.data.searchValue));
   },
 
   onSearchReset() {

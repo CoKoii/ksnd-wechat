@@ -3,7 +3,7 @@ const {
   getCasualShootDetail,
 } = require("../../api/casualShoot");
 const {
-  uploadImage,
+  uploadUploaderFiles,
   resolveImagePreviewByProxy,
 } = require("../../services/file/image");
 
@@ -11,13 +11,10 @@ const showToast = (title) => wx.showToast({ title, icon: "none" });
 const ISSUE_STATE_PENDING = 10018010;
 const ISSUE_SOURCE_NO_TASK = 10021010;
 const ISSUE_SOURCE_WITH_TASK = 10021020;
-const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 const normalizeTaskId = (value) => String(value || "").trim();
 const normalizeIssueId = (value) => String(value || "").trim();
 const toIssueSource = (taskId) =>
   taskId ? ISSUE_SOURCE_WITH_TASK : ISSUE_SOURCE_NO_TASK;
-const isValidImageType = (path = "") => /\.(jpe?g|png)$/i.test(String(path || ""));
-const isValidImageSize = (size) => !size || Number(size) <= MAX_IMAGE_SIZE;
 const parseFiles = (value) =>
   String(value || "")
     .split(",")
@@ -82,17 +79,16 @@ Page({
       const detail = (res && res.data) || {};
       const description = String(detail.name || "").trim();
       const rawImages = toRawUploaderFiles(detail.files);
-      const sections = [
-        {
-          key: createSectionKey(),
-          description,
-          images: [],
-        },
-      ];
 
       this.setData({
         taskId: normalizeTaskId(detail.task || this.data.taskId),
-        sections: sections.length ? sections : [createEmptySection()],
+        sections: [
+          {
+            key: createSectionKey(),
+            description,
+            images: [],
+          },
+        ],
       });
       this.hydrateIssueImagePreviews(rawImages);
     } catch (error) {
@@ -146,45 +142,7 @@ Page({
     const index = Number(e.currentTarget.dataset.index);
     if (Number.isNaN(index)) return;
 
-    const incoming = Array.isArray(e.detail.file) ? e.detail.file : [e.detail.file];
-    if (!incoming.length) return;
-
-    wx.showLoading({
-      title: "图片上传中",
-      mask: true,
-    });
-
-    const files = [];
-    let failedCount = 0;
-    for (const item of incoming) {
-      const localPath = String((item && (item.url || item.path)) || "").trim();
-      if (!localPath) continue;
-      if (!isValidImageType(localPath)) {
-        failedCount += 1;
-        continue;
-      }
-      if (!isValidImageSize(item && item.size)) {
-        failedCount += 1;
-        continue;
-      }
-
-      try {
-        const result = await uploadImage(localPath);
-        const path = String((result && result.path) || "").trim();
-        if (!path) {
-          failedCount += 1;
-          continue;
-        }
-        files.push({
-          path,
-          url: localPath,
-        });
-      } catch (error) {
-        failedCount += 1;
-      }
-    }
-
-    wx.hideLoading();
+    const { uploaded: files, failedCount } = await uploadUploaderFiles(e.detail.file);
     if (!files.length && failedCount <= 0) return;
 
     const target = this.data.sections[index] || createEmptySection();
@@ -194,7 +152,7 @@ Page({
       });
     }
     if (failedCount > 0) {
-      showToast("部分图片上传失败，仅支持JPG/PNG且小于2MB");
+      showToast("部分图片上传失败");
     }
   },
 
@@ -247,17 +205,13 @@ Page({
     const source = toIssueSource(taskId);
 
     return {
-      taskId,
-      source,
-      payload: {
-        list: items.map((item) => ({
-          task: taskId || "",
-          name: item.description,
-          files: item.images.join(","),
-          state: ISSUE_STATE_PENDING,
-          source,
-        })),
-      },
+      list: items.map((item) => ({
+        task: taskId || "",
+        name: item.description,
+        files: item.images.join(","),
+        state: ISSUE_STATE_PENDING,
+        source,
+      })),
     };
   },
 
@@ -273,8 +227,8 @@ Page({
 
     this.setData({ submitting: true });
     try {
-      const submitData = this.buildSubmitPayload(items);
-      const res = await saveCasualShootBatch(submitData.payload);
+      const payload = this.buildSubmitPayload(items);
+      const res = await saveCasualShootBatch(payload);
       if (String((res && res.code) || "") !== "0") {
         throw new Error((res && res.msg) || "提交失败");
       }

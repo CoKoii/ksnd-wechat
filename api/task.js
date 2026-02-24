@@ -1,21 +1,15 @@
-const { request } = require("../utils/http");
+const { get, post } = require("../utils/http");
 
-const getTaskList = async (data) =>
-  request("/api/tm/task/list", {
-    method: "POST",
-    data: data || {},
+const toText = (value) => (value == null || value === "" ? "" : String(value));
+
+const getTaskList = (data = {}) => post("/api/tm/task/list", data);
+
+const getTaskDetail = (id) =>
+  get("/api/tm/task/get", {
+    id: toText(id),
   });
 
-const getTaskDetail = async (id) =>
-  request(`/api/tm/task/get?id=${encodeURIComponent(id)}`, {
-    method: "GET",
-  });
-
-const saveTaskForm = async (data) =>
-  request("/api/ct/form/save", {
-    method: "POST",
-    data: data || {},
-  });
+const saveTaskForm = (data = {}) => post("/api/ct/form/save", data);
 
 module.exports = {
   getTaskList,

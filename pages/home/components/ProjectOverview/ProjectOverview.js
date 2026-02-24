@@ -12,10 +12,10 @@ Component({
   },
   properties: {},
   data: {
-    abnormalCount: 0, // 异常点位
-    normalCount: 0, // 正常点位
-    positionCount: 0, // 总点位数
-    abnormalRate: 0.0, // 异常率
+    abnormalCount: 0,
+    normalCount: 0,
+    positionCount: 0,
+    abnormalRate: 0.0,
     chartOption: {
       onInit: null,
     },
@@ -27,24 +27,17 @@ Component({
     },
   },
   methods: {
-    // 计算数据
     calculateData() {
-      const abnormalCount = this.data.abnormalCount;
-      const normalCount = this.data.normalCount;
-      const positionCount = this.data.positionCount;
+      const { abnormalCount, normalCount, positionCount } = this.data;
       const total = abnormalCount + normalCount + positionCount;
-
-      let abnormalRate = 0;
-      if (total > 0) {
-        abnormalRate = ((abnormalCount / total) * 100).toFixed(1);
-      }
+      const abnormalRate =
+        total > 0 ? ((abnormalCount / total) * 100).toFixed(1) : 0;
 
       this.setData({
-        abnormalRate: abnormalRate,
+        abnormalRate,
       });
     },
 
-    // 初始化图表配置
     initChart() {
       this.setData({
         chartOption: {
@@ -61,9 +54,7 @@ Component({
       });
       canvas.setChart(chart);
 
-      const abnormalCount = this.data.abnormalCount;
-      const normalCount = this.data.normalCount;
-      const positionCount = this.data.positionCount;
+      const { abnormalCount, normalCount, positionCount } = this.data;
 
       const option = {
         series: [

@@ -2,25 +2,31 @@
 const { CHAT_CONFIG } = require('../chat.constants');
 const { createUtf8Decoder } = require('./chat.utils');
 
+const CHAT_URL = `${CHAT_CONFIG.baseUrl}${CHAT_CONFIG.chatPath}`;
+const isSuccessStatus = (statusCode) => statusCode >= 200 && statusCode < 300;
+const createAuthHeader = (extra = {}) => ({
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${CHAT_CONFIG.apiKey}`,
+  ...extra,
+});
+const toRequestError = (statusCode, data) =>
+  new Error((data && data.error && data.error.message) || `HTTP ${statusCode}`);
+
 const requestChatCompletion = (payload = {}) =>
   new Promise((resolve, reject) => {
     wx.request({
-      url: `${CHAT_CONFIG.baseUrl}${CHAT_CONFIG.chatPath}`,
+      url: CHAT_URL,
       method: 'POST',
       data: payload,
       timeout: CHAT_CONFIG.timeout,
-      header: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${CHAT_CONFIG.apiKey}`,
-      },
+      header: createAuthHeader(),
       success: (res) => {
         const { statusCode, data } = res || {};
-        if (statusCode >= 200 && statusCode < 300 && data) {
+        if (isSuccessStatus(statusCode) && data) {
           resolve(data);
           return;
         }
-        const message = (data && data.error && data.error.message) || `HTTP ${statusCode}`;
-        reject(new Error(message));
+        reject(toRequestError(statusCode, data));
       },
       fail: (error) => reject(error),
     });
@@ -81,17 +87,15 @@ const requestChatCompletionStream = ({ payload, onDelta }) =>
     });
 
     const requestTask = wx.request({
-      url: `${CHAT_CONFIG.baseUrl}${CHAT_CONFIG.chatPath}`,
+      url: CHAT_URL,
       method: 'POST',
       data: payload,
       timeout: CHAT_CONFIG.timeout,
       enableChunked: true,
       responseType: 'arraybuffer',
-      header: {
-        'Content-Type': 'application/json',
+      header: createAuthHeader({
         Accept: 'text/event-stream',
-        Authorization: `Bearer ${CHAT_CONFIG.apiKey}`,
-      },
+      }),
       success: () => {
         if (decoder) {
           const tail = decoder.decode();

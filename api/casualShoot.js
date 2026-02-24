@@ -1,20 +1,15 @@
-const { request } = require("../utils/http");
+const { get, post } = require("../utils/http");
 
-const saveCasualShootBatch = async (data) =>
-  request("/api/safe/im/issue/saveBatch", {
-    method: "POST",
-    data: data || {},
-  });
+const toText = (value) => (value == null || value === "" ? "" : String(value));
 
-const getCasualShootList = async (data) =>
-  request("/api/safe/im/issue/list", {
-    method: "POST",
-    data: data || {},
-  });
+const saveCasualShootBatch = (data = {}) =>
+  post("/api/safe/im/issue/saveBatch", data);
 
-const getCasualShootDetail = async (id) =>
-  request(`/api/safe/im/issue/get?id=${encodeURIComponent(id)}`, {
-    method: "GET",
+const getCasualShootList = (data = {}) => post("/api/safe/im/issue/list", data);
+
+const getCasualShootDetail = (id) =>
+  get("/api/safe/im/issue/get", {
+    id: toText(id),
   });
 
 module.exports = {

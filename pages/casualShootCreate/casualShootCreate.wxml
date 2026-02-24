@@ -25,7 +25,6 @@
     <view class="field-label">图片（选填）</view>
     <van-uploader
       file-list="{{item.images}}"
-      max-count="9"
       multiple
       deletable="{{!readonly}}"
       show-upload="{{!readonly}}"

@@ -28,12 +28,12 @@ const formatDate = (value) => {
 };
 
 const toCheckResult = (value) => {
-  if (value === null || value === undefined || value === "") return "";
+  if (value == null || value === "") return "";
   return String(value) === "1" ? "normal" : "abnormal";
 };
 
 const toItemStatus = (value) => {
-  if (value === null || value === undefined || value === "") return null;
+  if (value == null || value === "") return null;
   return String(value) === "1";
 };
 
@@ -42,18 +42,18 @@ const toRawImageValue = (item) => {
   if (typeof item === "string") return item;
   return item.path || item.url || "";
 };
+const toImageSourceList = (value) =>
+  Array.isArray(value) ? value : String(value || "").split(",");
 
 const toImageValues = (value) => {
-  const source = Array.isArray(value) ? value : String(value || "").split(",");
-  return source
+  return toImageSourceList(value)
     .map(toRawImageValue)
     .map((item) => String(item || "").trim())
     .filter(Boolean);
 };
 
 const toUploaderFiles = (value) => {
-  const source = Array.isArray(value) ? value : String(value || "").split(",");
-  return source
+  return toImageSourceList(value)
     .map((item, index) => {
       const path = String(toRawImageValue(item) || "").trim();
       if (!path) return null;

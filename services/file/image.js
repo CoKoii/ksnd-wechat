@@ -5,6 +5,11 @@ const OSS_PROXY_DOWNLOAD_PATH = "/ksnd/api/proxy/download";
 
 const normalizeText = (value) => String(value || "").trim();
 const isAbsoluteUrl = (value) => /^(https?:\/\/|wxfile:\/\/|data:)/i.test(value);
+const toUploaderInputFiles = (file) =>
+  (Array.isArray(file) ? file : [file]).filter(Boolean);
+
+const pickLocalFilePath = (file = {}) =>
+  normalizeText((file && (file.url || file.path)) || "");
 
 const buildUrl = (path = "") => {
   if (isAbsoluteUrl(path)) return path;
@@ -75,6 +80,63 @@ const uploadImage = (filePath) =>
       },
     });
   });
+
+const uploadUploaderFiles = async (file, options = {}) => {
+  const files = toUploaderInputFiles(file);
+  if (!files.length) {
+    return {
+      uploaded: [],
+      failedCount: 0,
+    };
+  }
+
+  const {
+    showLoading = true,
+    loadingTitle = "图片上传中",
+  } = options;
+
+  if (showLoading) {
+    wx.showLoading({
+      title: loadingTitle,
+      mask: true,
+    });
+  }
+
+  let failedCount = 0;
+  const uploaded = [];
+
+  try {
+    for (let index = 0; index < files.length; index += 1) {
+      const item = files[index];
+      const localPath = pickLocalFilePath(item);
+      if (!localPath) continue;
+
+      try {
+        const result = await uploadImage(localPath);
+        const serverPath = normalizeText(result && result.path);
+        if (!serverPath) {
+          failedCount += 1;
+          continue;
+        }
+
+        uploaded.push({
+          path: serverPath,
+          url: localPath,
+          name: normalizeText(item && item.name) || `image-${Date.now()}-${index + 1}`,
+        });
+      } catch (error) {
+        failedCount += 1;
+      }
+    }
+  } finally {
+    if (showLoading) wx.hideLoading();
+  }
+
+  return {
+    uploaded,
+    failedCount,
+  };
+};
 
 const getFileExt = (path = "") => {
   const match = normalizeText(path).match(/\.([a-zA-Z0-9]{1,8})(?:$|\?)/);
@@ -167,6 +229,7 @@ const resolveImagePreviewByProxy = async (path) => {
 
 module.exports = {
   uploadImage,
+  uploadUploaderFiles,
   resolveImagePreview,
   resolveImagePreviewByProxy,
 };

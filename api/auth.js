@@ -1,6 +1,6 @@
 const { post } = require("../utils/http");
 
-const login = async (data = {}) =>
+const login = (data = {}) =>
   post("/auth/login", data, {
     withAuth: false,
   });

@@ -5,7 +5,7 @@ const {
   normalizeForm,
   isFormValid,
   parseLoginResponse,
-  goHome,
+  navigateHome,
 } = require("./utils");
 
 Page({
@@ -19,7 +19,7 @@ Page({
 
   onShow() {
     if (getToken()) {
-      this.goHome();
+      navigateHome();
     }
   },
 
@@ -57,7 +57,7 @@ Page({
           title: "登录成功",
           icon: "success",
         });
-        goHome();
+        navigateHome();
         return;
       }
 
@@ -73,9 +73,5 @@ Page({
     } finally {
       this.setData({ submitting: false });
     }
-  },
-
-  goHome() {
-    goHome();
   },
 });

@@ -2,7 +2,6 @@ Component({
   options: {
     styleIsolation: "isolated",
   },
-  properties: {},
   data: {
     list: [
       { info: "0/2", text: "完成任务/新任务" },
@@ -12,5 +11,4 @@ Component({
       { info: "0", text: "已完成工单" },
     ],
   },
-  methods: {},
 });

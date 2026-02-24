@@ -17,10 +17,13 @@ const sanitizeConversations = (conversations = []) =>
     createdAt: conversation.createdAt,
     updatedAt: conversation.updatedAt,
   }));
+const readConversationStorage = () => wx.getStorageSync(STORAGE_KEYS.conversations);
+const writeConversationStorage = (value) =>
+  wx.setStorageSync(STORAGE_KEYS.conversations, value);
 
 const loadConversations = () => {
   try {
-    const data = wx.getStorageSync(STORAGE_KEYS.conversations);
+    const data = readConversationStorage();
     return Array.isArray(data) ? data : [];
   } catch (error) {
     return [];
@@ -29,7 +32,7 @@ const loadConversations = () => {
 
 const saveConversations = (conversations = []) => {
   const trimmed = conversations.slice(0, UI_CONFIG.maxConversations);
-  wx.setStorageSync(STORAGE_KEYS.conversations, sanitizeConversations(trimmed));
+  writeConversationStorage(sanitizeConversations(trimmed));
 };
 
 module.exports = {

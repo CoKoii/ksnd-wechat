@@ -8,7 +8,7 @@ const normalizeForm = (form = {}) => ({
 const isFormValid = (form = {}) => Boolean(form.uname && form.pwd);
 
 const toIdString = (value) => {
-  if (value === undefined || value === null || value === "") return "";
+  if (value == null || value === "") return "";
   return String(value);
 };
 
@@ -18,13 +18,12 @@ const parseLoginResponse = (response = {}) => {
   return {
     ok: response.msg === "ok" && Boolean(data.tokenValue),
     token: data.tokenValue || "",
-    checkerId: loginId,
     loginId,
     message: response.msg || "登录失败",
   };
 };
 
-const goHome = () => {
+const navigateHome = () => {
   wx.switchTab({ url: BASIC_HOME_PATH });
 };
 
@@ -32,5 +31,5 @@ module.exports = {
   normalizeForm,
   isFormValid,
   parseLoginResponse,
-  goHome,
+  navigateHome,
 };

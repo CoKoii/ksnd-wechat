@@ -2,6 +2,7 @@ const { getCasualShootList } = require("../../api/casualShoot");
 const { getPersistedProjectId } = require("../../services/project/localState");
 
 const normalizeProjectId = (value) => String(value || "").trim();
+const normalizeTaskId = (value) => String(value || "").trim();
 const STATUS_PENDING = 10018010;
 const STATUS_DONE = 10018090;
 
@@ -9,9 +10,17 @@ const TAB_CONFIG = [
   { label: "未整改", state: STATUS_PENDING },
   { label: "已整改", state: STATUS_DONE },
 ];
+const getSearchKeyword = (event, fallbackValue = "") => {
+  const value =
+    event && event.detail && event.detail.value !== undefined
+      ? event.detail.value
+      : fallbackValue;
+  return String(value || "").trim();
+};
+const hasValue = (value) => value != null && value !== "";
 
 const normalizeDateText = (value) => {
-  if (value === undefined || value === null || value === "") return "";
+  if (!hasValue(value)) return "";
   const text = String(value).trim();
   if (!text) return "";
   return text.replace("T", " ").replace(/Z$/i, "");
@@ -20,7 +29,7 @@ const normalizeDateText = (value) => {
 const pad2 = (value) => String(value).padStart(2, "0");
 
 const toDateTimestamp = (value) => {
-  if (value === undefined || value === null || value === "") return 0;
+  if (!hasValue(value)) return 0;
   if (typeof value === "number" && Number.isFinite(value)) {
     return value > 1e12 ? value : value * 1000;
   }
@@ -135,6 +144,7 @@ Page({
     activeTab: 0,
     tabs: TAB_CONFIG.map((item) => item.label),
     projectId: "",
+    taskId: "",
     keyword: "",
     searchValue: "",
     list: [],
@@ -145,9 +155,8 @@ Page({
     const projectId = normalizeProjectId(
       options.project || getPersistedProjectId(),
     );
-    this.setData({
-      projectId,
-    });
+    const taskId = normalizeTaskId(options.taskId || options.task);
+    this.setData({ projectId, taskId });
   },
 
   onShow() {
@@ -168,20 +177,21 @@ Page({
     if (this.data.loading) return;
     this.setData({ loading: true });
     try {
-      const { activeTab, keyword, projectId } = this.data;
+      const { activeTab, keyword, projectId, taskId } = this.data;
       const tab = TAB_CONFIG[activeTab] || TAB_CONFIG[0];
+      const params = {
+        state: tab.state,
+        name: keyword || "",
+        project: projectId || "",
+      };
+      if (taskId) params.task = taskId;
       const response = await getCasualShootList({
-        params: {
-          state: tab.state,
-          name: keyword || "",
-          project: projectId || "",
-        },
+        params,
       });
-      this.allRecords = parseIssueListResponse(response);
-      this.applyFilters();
+      const list = parseIssueListResponse(response).map(toListItem);
+      this.setData({ list });
     } catch (error) {
-      this.allRecords = [];
-      this.applyFilters();
+      this.setData({ list: [] });
       wx.showToast({
         title: (error && error.message) || "加载失败",
         icon: "none",
@@ -191,10 +201,14 @@ Page({
     }
   },
 
-  applyFilters() {
-    const list = (this.allRecords || []).map(toListItem);
-
-    this.setData({ list });
+  applySearch(keyword) {
+    this.setData(
+      {
+        keyword,
+        searchValue: keyword,
+      },
+      () => this.loadRecords(),
+    );
   },
 
   onTabChange(e) {
@@ -212,26 +226,11 @@ Page({
   },
 
   onSearchConfirm(e) {
-    const value =
-      (e && e.detail && e.detail.value !== undefined
-        ? e.detail.value
-        : this.data.searchValue) || "";
-    const keyword = String(value).trim();
-    this.setData(
-      {
-        keyword,
-        searchValue: keyword,
-      },
-      () => this.loadRecords(),
-    );
+    this.applySearch(getSearchKeyword(e, this.data.searchValue));
   },
 
   onSearchTap() {
-    this.onSearchConfirm({
-      detail: {
-        value: this.data.searchValue,
-      },
-    });
+    this.applySearch(getSearchKeyword(null, this.data.searchValue));
   },
 
   onSearchReset() {
@@ -253,8 +252,11 @@ Page({
   },
 
   goToCreate() {
+    const taskId = normalizeTaskId(this.data.taskId);
     wx.navigateTo({
-      url: "/pages/casualShootCreate/casualShootCreate",
+      url: taskId
+        ? `/pages/casualShootCreate/casualShootCreate?taskId=${encodeURIComponent(taskId)}`
+        : "/pages/casualShootCreate/casualShootCreate",
     });
   },
 });

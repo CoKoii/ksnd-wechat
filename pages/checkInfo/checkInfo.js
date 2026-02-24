@@ -1,5 +1,8 @@
 const { getTaskDetail, saveTaskForm } = require("../../api/task");
-const { uploadImage, resolveImagePreview } = require("../../services/file/image");
+const {
+  uploadUploaderFiles,
+  resolveImagePreview,
+} = require("../../services/file/image");
 const { markTodoListNeedReload } = require("../../services/task/localState");
 const {
   NO_VALUE,
@@ -15,10 +18,6 @@ const {
 } = require("./utils");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
-const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
-
-const isValidImageType = (path = "") => /\.(jpe?g|png)$/i.test(String(path || ""));
-const isValidImageSize = (size) => !size || Number(size) <= MAX_IMAGE_SIZE;
 const isAbsoluteImageUrl = (value = "") =>
   /^(https?:\/\/|wxfile:\/\/|data:)/i.test(String(value || "").trim());
 
@@ -38,8 +37,9 @@ Page({
 
   onLoad(options) {
     if (!options.id) return showToast("缺少任务ID");
-    this.setData({ id: options.id });
-    this.loadDetailData(options.id);
+    const taskId = String(options.id || "").trim();
+    this.setData({ id: taskId });
+    this.loadDetailData(taskId);
   },
 
   async loadDetailData(id) {
@@ -134,8 +134,9 @@ Page({
   },
 
   goToCasualShootList() {
+    const taskId = String(this.data.id || "").trim();
     wx.navigateTo({
-      url: "/pages/casualShootList/casualShootList",
+      url: `/pages/casualShootList/casualShootList?taskId=${encodeURIComponent(taskId)}`,
     });
   },
 
@@ -182,52 +183,13 @@ Page({
   }),
 
   async appendUploaderFiles(targetField, file) {
-    const incoming = Array.isArray(file) ? file : [file];
-    if (!incoming.length) return;
-
-    wx.showLoading({
-      title: "图片上传中",
-      mask: true,
-    });
-
-    let failedCount = 0;
-    const uploaded = [];
-    for (const item of incoming) {
-      const localPath = String((item && (item.url || item.path)) || "").trim();
-      if (!localPath) continue;
-      if (!isValidImageType(localPath)) {
-        failedCount += 1;
-        continue;
-      }
-      if (!isValidImageSize(item && item.size)) {
-        failedCount += 1;
-        continue;
-      }
-
-      try {
-        const result = await uploadImage(localPath);
-        const serverPath = String((result && result.path) || "").trim();
-        if (!serverPath) {
-          failedCount += 1;
-          continue;
-        }
-        uploaded.push({
-          path: serverPath,
-          url: localPath,
-          name: item.name || `image-${Date.now()}`,
-        });
-      } catch (error) {
-        failedCount += 1;
-      }
-    }
-
-    wx.hideLoading();
+    const { uploaded, failedCount } = await uploadUploaderFiles(file);
 
     if (uploaded.length) {
       this.setData({ [targetField]: [...this.data[targetField], ...uploaded] });
     }
     if (failedCount > 0) {
-      showToast("部分图片上传失败，仅支持JPG/PNG且小于2MB");
+      showToast("部分图片上传失败");
     }
   },
 

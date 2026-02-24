@@ -1,10 +1,7 @@
-const { request } = require("../utils/http");
+const { post } = require("../utils/http");
 
-const getProjectTree = async (params = {}) =>
-  request("/ksnd/safe/basis/list/project", {
-    method: "POST",
-    data: params || {},
-  });
+const getProjectTree = (params = {}) =>
+  post("/ksnd/safe/basis/list/project", params);
 
 module.exports = {
   getProjectTree,

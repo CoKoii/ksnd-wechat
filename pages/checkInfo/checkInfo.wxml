@@ -133,7 +133,6 @@
       bind:delete="onDeleteImage"
       disabled="{{readonly}}"
       show-upload="{{!readonly}}"
-      max-count="9"
       multiple />
   </view>
 
@@ -181,7 +180,6 @@
           bind:delete="onDeleteAbnormalImage"
           disabled="{{readonly}}"
           show-upload="{{!readonly}}"
-          max-count="3"
           multiple />
       </view>
     </view>

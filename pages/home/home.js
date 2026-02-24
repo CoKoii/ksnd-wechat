@@ -6,6 +6,13 @@ const {
 
 const toText = (value) => String(value || "").trim();
 const SUCCESS_CODE = "0";
+const getKeywordFromEvent = (event, fallbackValue = "") => {
+  const value =
+    event && event.detail && event.detail.value !== undefined
+      ? event.detail.value
+      : fallbackValue;
+  return toText(value);
+};
 
 const pickProjectName = (item = {}) =>
   toText(item.name || item.pjname || item.label || item.title || item.mc);
@@ -86,7 +93,6 @@ Page({
 
     try {
       const response = await getProjectTree(name ? { name } : {});
-      console.log("[home] project tree response:", response);
 
       if (String((response && response.code) || "") !== SUCCESS_CODE) {
         throw new Error((response && response.msg) || "场所加载失败");
@@ -117,7 +123,6 @@ Page({
         }
         return;
       }
-
     } catch (error) {
       console.error("[home] project tree request failed:", error);
       wx.showToast({
@@ -129,19 +134,8 @@ Page({
     }
   },
 
-  onProjectKeywordInput(event) {
-    const value = toText(event && event.detail && event.detail.value);
-    this.setData({ projectKeyword: value });
-  },
-
-  onProjectSearchConfirm(event) {
-    const value = toText(
-      event &&
-        event.detail &&
-        (event.detail.value !== undefined
-          ? event.detail.value
-          : this.data.projectKeyword),
-    );
+  searchProject(keyword = "") {
+    const value = toText(keyword);
     this.setData(
       {
         projectKeyword: value,
@@ -150,21 +144,21 @@ Page({
     );
   },
 
+  onProjectKeywordInput(event) {
+    const value = getKeywordFromEvent(event);
+    this.setData({ projectKeyword: value });
+  },
+
+  onProjectSearchConfirm(event) {
+    this.searchProject(getKeywordFromEvent(event, this.data.projectKeyword));
+  },
+
   onProjectSearchTap() {
-    this.onProjectSearchConfirm({
-      detail: {
-        value: this.data.projectKeyword,
-      },
-    });
+    this.searchProject(this.data.projectKeyword);
   },
 
   onProjectSearchReset() {
-    this.setData(
-      {
-        projectKeyword: "",
-      },
-      () => this.loadProjectTree(""),
-    );
+    this.searchProject("");
   },
 
   onProjectPanelToggle() {
@@ -173,7 +167,11 @@ Page({
       showProjectPanel: nextOpen,
     });
 
-    if (nextOpen && !this.data.projectOptions.length && !this.data.loadingProjectTree) {
+    if (
+      nextOpen &&
+      !this.data.projectOptions.length &&
+      !this.data.loadingProjectTree
+    ) {
       this.loadProjectTree(this.data.projectKeyword);
     }
   },

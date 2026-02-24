@@ -9,17 +9,14 @@ const pickChatFields = (payload = {}) => ({
   reasoning: payload.reasoning_content || '',
 });
 
-const buildChatPayload = ({ messages, stream = false }) => {
-  const model = CHAT_CONFIG.modelChat;
-  return {
-    model,
-    messages,
-    stream,
-    temperature: CHAT_CONFIG.temperature,
-    top_p: CHAT_CONFIG.top_p,
-    max_tokens: CHAT_CONFIG.max_tokens,
-  };
-};
+const buildChatPayload = ({ messages, stream = false }) => ({
+  model: CHAT_CONFIG.modelChat,
+  messages,
+  stream,
+  temperature: CHAT_CONFIG.temperature,
+  top_p: CHAT_CONFIG.top_p,
+  max_tokens: CHAT_CONFIG.max_tokens,
+});
 
 const parseChatEvent = (data) => {
   const choice = getFirstChoice(data);
@@ -34,7 +31,9 @@ const fetchAssistantReplyStream = ({ messages, onDelta }) => {
     payload,
     onDelta: (data) => {
       const parsed = parseChatEvent(data);
-      if (parsed.content || parsed.reasoning) onDelta(parsed);
+      if ((parsed.content || parsed.reasoning) && typeof onDelta === 'function') {
+        onDelta(parsed);
+      }
     },
   });
 };

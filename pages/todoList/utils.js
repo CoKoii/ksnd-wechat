@@ -16,17 +16,17 @@ const calcHasMore = ({ mergedLength, listLength, page, pageSize, total, pageCoun
   if (Number.isFinite(pageCount)) return page < pageCount;
   return listLength === pageSize;
 };
+const hasValue = (value) => value != null && value !== "";
+const toYmdFromDate = (date) => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 const formatDateToYmd = (value) => {
-  if (value === null || value === undefined || value === "") return "";
-
-  const toYmdFromDate = (date) => {
-    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return "";
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  if (!hasValue(value)) return "";
 
   if (typeof value === "number" && Number.isFinite(value)) {
     const timestamp = value > 1e12 ? value : value * 1000;
@@ -69,17 +69,13 @@ const pickTaskDateValue = (item = {}) => {
     item.plan_time,
     item.planDate,
   ];
-  const fixedValue = preferred.find(
-    (value) => value !== null && value !== undefined && value !== ""
-  );
+  const fixedValue = preferred.find((value) => hasValue(value));
   if (fixedValue !== undefined) return fixedValue;
 
   const dynamicKey = Object.keys(item).find(
     (key) =>
       /(time|date|day|rq)/i.test(key) &&
-      item[key] !== null &&
-      item[key] !== undefined &&
-      item[key] !== ""
+      hasValue(item[key])
   );
   return dynamicKey ? item[dynamicKey] : "";
 };
