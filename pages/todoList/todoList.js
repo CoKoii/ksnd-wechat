@@ -1,5 +1,6 @@
 // pages/todoList/todoList.js
 const { getTaskList } = require("../../api/task");
+const { getPersistedProjectId } = require("../../services/project/localState");
 const {
   getPersistedCheckerId,
   shouldReloadTodoList,
@@ -128,12 +129,14 @@ Page({
 
     try {
       const checker = getPersistedCheckerId();
+      const project = getPersistedProjectId();
       const res = await getTaskList({
         pno: page,
         psize: pageSize,
         params: {
           state,
           checker,
+          project: project || "",
           name: keyword || "",
         },
       });
