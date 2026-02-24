@@ -25,33 +25,11 @@
 
   <scroll-view class="scroll-container" scroll-y>
     <view class="record-list">
-      <view
-        class="record-item"
-        wx:for="{{list}}"
-        wx:for-index="recordIndex"
-        wx:key="id"
-        data-id="{{item.id}}"
-        bindtap="goToDetail">
-        <view class="record-header">
-          <text class="record-title">{{item.firstDescription}}</text>
-          <view class="state-tag {{item.stateClass}}">{{item.stateText}}</view>
-        </view>
-
-        <view class="record-date {{item.previewImages.length > 0 ? 'has-images' : ''}}">更新：{{item.updatedAtText}}</view>
-        <view class="record-images" wx:if="{{item.previewImages.length > 0}}">
-          <image
-            class="record-image"
-            wx:for="{{item.previewImages}}"
-            wx:key="index"
-            wx:for-index="imageIndex"
-            wx:for-item="img"
-            data-record-index="{{recordIndex}}"
-            data-image-index="{{imageIndex}}"
-            catchtap="onPreviewRecordImage"
-            src="{{img.url}}"
-            mode="aspectFill" />
-        </view>
-      </view>
+      <casual-shoot-record-list
+        list="{{list}}"
+        bind:recordtap="onRecordTap"
+        bind:previewopen="onRecordPreviewOpen"
+        bind:previewfail="onRecordPreviewFail" />
     </view>
 
     <view class="loading-more" wx:if="{{loading}}">

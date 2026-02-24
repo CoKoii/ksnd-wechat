@@ -45,34 +45,12 @@
       </view>
     </view>
 
-    <view class="shoot-record-list" wx:if="{{casualShootList.length > 0}}">
-      <view
-        class="shoot-record-item"
-        wx:for="{{casualShootList}}"
-        wx:for-index="recordIndex"
-        wx:key="id"
-        data-id="{{item.id}}"
-        bindtap="goToCasualShootDetail">
-        <view class="shoot-record-header">
-          <text class="shoot-record-title">{{item.firstDescription}}</text>
-          <view class="shoot-state-tag {{item.stateClass}}">{{item.stateText}}</view>
-        </view>
-        <view class="shoot-record-date {{item.previewImages.length > 0 ? 'has-images' : ''}}">更新：{{item.updatedAtText}}</view>
-        <view class="shoot-record-images" wx:if="{{item.previewImages.length > 0}}">
-          <image
-            class="shoot-record-image"
-            wx:for="{{item.previewImages}}"
-            wx:key="index"
-            wx:for-index="imageIndex"
-            wx:for-item="img"
-            data-record-index="{{recordIndex}}"
-            data-image-index="{{imageIndex}}"
-            catchtap="onPreviewCasualShootImage"
-            src="{{img.url}}"
-            mode="aspectFill" />
-        </view>
-      </view>
-    </view>
+    <casual-shoot-record-list
+      wx:if="{{casualShootList.length > 0}}"
+      list="{{casualShootList}}"
+      bind:recordtap="onCasualShootRecordTap"
+      bind:previewopen="onCasualShootPreviewOpen"
+      bind:previewfail="onCasualShootPreviewFail" />
 
     <view class="shoot-loading" wx:if="{{casualShootLoading && casualShootList.length === 0}}">
       <text>加载中...</text>

@@ -207,36 +207,21 @@ Page({
     }
   },
 
-  goToCasualShootDetail(e) {
-    const issueId = normalizeText(e.currentTarget.dataset.id);
+  onCasualShootRecordTap(e) {
+    const detail = (e && e.detail) || {};
+    const issueId = normalizeText(detail.id || (detail.item && detail.item.id));
     if (!issueId) return;
     wx.navigateTo({
       url: `/pages/casualShootCreate/casualShootCreate?id=${encodeURIComponent(issueId)}`,
     });
   },
 
-  onPreviewCasualShootImage(e) {
-    const recordIndex = Number(e.currentTarget.dataset.recordIndex);
-    const imageIndex = Number(e.currentTarget.dataset.imageIndex);
-    if (Number.isNaN(recordIndex) || Number.isNaN(imageIndex)) return;
-
-    const record = (this.data.casualShootList || [])[recordIndex] || {};
-    const previewImages = Array.isArray(record.previewImages)
-      ? record.previewImages
-      : [];
-    const urls = previewImages
-      .map((img) => String((img && img.url) || "").trim())
-      .filter(Boolean);
-    if (!urls.length) return;
-
+  onCasualShootPreviewOpen() {
     this._skipNextShowReload = true;
-    wx.previewImage({
-      current: urls[imageIndex] || urls[0],
-      urls,
-      fail: () => {
-        this._skipNextShowReload = false;
-      },
-    });
+  },
+
+  onCasualShootPreviewFail() {
+    this._skipNextShowReload = false;
   },
 
   onCheckResultChange: editable(function (e) {

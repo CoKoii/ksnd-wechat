@@ -6,7 +6,8 @@
     "van-button": "@vant/weapp/button/index",
     "van-uploader": "@vant/weapp/uploader/index",
     "van-dialog": "@vant/weapp/dialog/index",
-    "van-icon": "@vant/weapp/icon/index"
+    "van-icon": "@vant/weapp/icon/index",
+    "casual-shoot-record-list": "/components/casualShootRecordList/casualShootRecordList"
   },
   "navigationBarTitleText": "巡检详情"
 }

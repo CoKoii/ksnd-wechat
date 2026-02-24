@@ -3,6 +3,7 @@ const { resolveImagePreview } = require("../../services/file/image");
 const { getPersistedProjectId } = require("../../services/project/localState");
 const {
   CASUAL_SHOOT_TAB_CONFIG,
+  normalizeText,
   normalizeProjectId,
   normalizeTaskId,
   withCasualShootPreviewPlaceholders,
@@ -141,32 +142,17 @@ Page({
     );
   },
 
-  onPreviewRecordImage(e) {
-    const recordIndex = Number(e.currentTarget.dataset.recordIndex);
-    const imageIndex = Number(e.currentTarget.dataset.imageIndex);
-    if (Number.isNaN(recordIndex) || Number.isNaN(imageIndex)) return;
-
-    const record = (this.data.list || [])[recordIndex] || {};
-    const previewImages = Array.isArray(record.previewImages)
-      ? record.previewImages
-      : [];
-    const urls = previewImages
-      .map((img) => String((img && img.url) || "").trim())
-      .filter(Boolean);
-    if (!urls.length) return;
-
+  onRecordPreviewOpen() {
     this._skipNextShowReload = true;
-    wx.previewImage({
-      current: urls[imageIndex] || urls[0],
-      urls,
-      fail: () => {
-        this._skipNextShowReload = false;
-      },
-    });
   },
 
-  goToDetail(e) {
-    const id = e.currentTarget.dataset.id;
+  onRecordPreviewFail() {
+    this._skipNextShowReload = false;
+  },
+
+  onRecordTap(e) {
+    const detail = (e && e.detail) || {};
+    const id = normalizeText(detail.id || (detail.item && detail.item.id));
     if (!id) return;
     wx.navigateTo({
       url: `/pages/casualShootCreate/casualShootCreate?id=${encodeURIComponent(id)}`,

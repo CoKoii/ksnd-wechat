@@ -1,0 +1,31 @@
+<view class="casual-shoot-record-list">
+  <view
+    class="record-item"
+    wx:for="{{list}}"
+    wx:key="id"
+    wx:for-index="recordIndex"
+    data-index="{{recordIndex}}"
+    bindtap="onRecordTap">
+    <view class="record-header">
+      <text class="record-title">{{item.firstDescription}}</text>
+      <view class="state-tag {{item.stateClass}}">{{item.stateText}}</view>
+    </view>
+
+    <view class="record-date {{item.previewImages.length > 0 ? 'has-images' : ''}}">
+      更新：{{item.updatedAtText}}
+    </view>
+    <view class="record-images" wx:if="{{item.previewImages.length > 0}}">
+      <image
+        class="record-image"
+        wx:for="{{item.previewImages}}"
+        wx:key="index"
+        wx:for-index="imageIndex"
+        wx:for-item="img"
+        data-record-index="{{recordIndex}}"
+        data-image-index="{{imageIndex}}"
+        catchtap="onPreviewImage"
+        src="{{img.url}}"
+        mode="aspectFill" />
+    </view>
+  </view>
+</view>
