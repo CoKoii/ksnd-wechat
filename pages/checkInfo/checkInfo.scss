@@ -162,6 +162,19 @@ page {
       padding-bottom: 0;
       border-bottom: none;
     }
+
+    &.is-ignore {
+      .check-item-name,
+      .check-item-status {
+        color: $color-text-muted;
+        text-decoration: line-through;
+        text-decoration-color: $color-text-muted;
+      }
+
+      .check-item-status.ignore {
+        text-decoration: none;
+      }
+    }
   }
 
   .check-item-header {
@@ -193,6 +206,10 @@ page {
       &.abnormal {
         color: $color-danger;
       }
+
+      &.ignore {
+        color: $color-text-sub;
+      }
     }
   }
 
@@ -214,6 +231,12 @@ page {
       &.error {
         background-color: $color-danger-bg-soft;
         border-color: $color-danger;
+      }
+
+      &.ignore {
+        background-color: $color-bg-page-alt;
+        border-color: $color-text-muted;
+        box-shadow: none;
       }
     }
   }

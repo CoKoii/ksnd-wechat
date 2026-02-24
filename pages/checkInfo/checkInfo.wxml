@@ -72,25 +72,35 @@
   <view class="section">
     <view class="section-title">检查项</view>
     <view class="check-items">
-      <view class="check-item" wx:for="{{checkItems}}" wx:key="id">
+      <view class="check-item {{item.status === 'ignore' ? 'is-ignore' : ''}}" wx:for="{{checkItems}}" wx:key="id">
         <view class="check-item-header">
           <text class="check-item-name">{{item.name}}</text>
           <view class="check-item-actions" wx:if="{{!readonly}}">
             <view 
               class="action-btn {{item.status === true ? 'active' : ''}}" 
               data-index="{{index}}"
-              bindtap="onCheckItemNormal">
+              data-action="normal"
+              bindtap="onCheckItemAction">
               <van-icon name="success" color="{{item.status === true ? '#52c41a' : '#ccc'}}" size="16" />
             </view>
             <view 
               class="action-btn error {{item.status === false ? 'active' : ''}}" 
               data-index="{{index}}"
-              bindtap="onCheckItemAbnormal">
+              data-action="abnormal"
+              bindtap="onCheckItemAction">
               <van-icon name="cross" color="{{item.status === false ? '#ff4d4f' : '#ccc'}}" size="16" />
+            </view>
+            <view
+              class="action-btn ignore {{item.status === 'ignore' ? 'active' : ''}}"
+              data-index="{{index}}"
+              data-action="ignore"
+              bindtap="onCheckItemAction">
+              <van-icon name="minus" color="{{item.status === 'ignore' ? '#666' : '#ccc'}}" size="16" />
             </view>
           </view>
           <text class="check-item-status normal" wx:if="{{readonly && item.status === true}}">正常</text>
           <text class="check-item-status abnormal" wx:if="{{readonly && item.status === false}}">异常</text>
+          <text class="check-item-status ignore" wx:if="{{readonly && item.status === 'ignore'}}">不涉及</text>
           <text class="check-item-status" wx:if="{{readonly && item.status === null}}">未巡检</text>
         </view>
         

@@ -1,5 +1,6 @@
 const NO_VALUE = "--";
 const COMPLETED_STATE = "10018090";
+const CHECK_ITEM_IGNORE = "ignore";
 
 const createEmptyAbnormalState = () => ({
   showAbnormalDialog: false,
@@ -34,7 +35,10 @@ const toCheckResult = (value) => {
 
 const toItemStatus = (value) => {
   if (value == null || value === "") return null;
-  return String(value) === "1";
+  const text = String(value);
+  if (text === "1") return true;
+  if (text === "2") return CHECK_ITEM_IGNORE;
+  return false;
 };
 
 const toRawImageValue = (item) => {
@@ -108,6 +112,13 @@ const buildSubmitPayload = ({
 
   checkItems.forEach((item, index) => {
     const seq = index + 1;
+    if (item.status === CHECK_ITEM_IGNORE) {
+      payload[`value${seq}`] = "2";
+      payload[`memo${seq}`] = "";
+      payload[`file${seq}`] = "";
+      return;
+    }
+
     payload[`value${seq}`] = item.status ? "1" : "0";
     payload[`memo${seq}`] = String(item.description || "").trim();
     payload[`file${seq}`] = toCsv(item.images);
@@ -119,6 +130,7 @@ const buildSubmitPayload = ({
 module.exports = {
   NO_VALUE,
   COMPLETED_STATE,
+  CHECK_ITEM_IGNORE,
   createEmptyAbnormalState,
   getEventValue,
   editable,

@@ -7,6 +7,7 @@ const { markTodoListNeedReload } = require("../../services/task/localState");
 const {
   NO_VALUE,
   COMPLETED_STATE,
+  CHECK_ITEM_IGNORE,
   createEmptyAbnormalState,
   getEventValue,
   editable,
@@ -165,17 +166,32 @@ Page({
     });
   },
 
-  onCheckItemNormal: editable(function (e) {
-    this.setCheckItem(Number(e.currentTarget.dataset.index), {
-      status: true,
-      description: "",
-      images: [],
-    });
-  }),
-
-  onCheckItemAbnormal: editable(function (e) {
+  onCheckItemAction: editable(function (e) {
     const index = Number(e.currentTarget.dataset.index);
-    this.openAbnormalDialog(index, this.data.checkItems[index]);
+    const action = String((e.currentTarget.dataset.action || "")).trim();
+    if (Number.isNaN(index) || !action) return;
+
+    if (action === "normal") {
+      this.setCheckItem(index, {
+        status: true,
+        description: "",
+        images: [],
+      });
+      return;
+    }
+
+    if (action === "abnormal") {
+      this.openAbnormalDialog(index, this.data.checkItems[index]);
+      return;
+    }
+
+    if (action === "ignore") {
+      this.setCheckItem(index, {
+        status: CHECK_ITEM_IGNORE,
+        description: "",
+        images: [],
+      });
+    }
   }),
 
   onAbnormalDescChange: editable(function (e) {
