@@ -1,10 +1,13 @@
 const { getCasualShootList } = require("../../api/casualShoot");
+const { getPersistedProjectId } = require("../../services/project/localState");
 
-const normalizeTaskId = (value) => String(value || "").trim();
+const normalizeProjectId = (value) => String(value || "").trim();
+const STATUS_PENDING = 10018010;
+const STATUS_DONE = 10018090;
 
 const TAB_CONFIG = [
-  { label: "未整改", state: 10018010 },
-  { label: "已整改", state: 10018090 },
+  { label: "未整改", state: STATUS_PENDING },
+  { label: "已整改", state: STATUS_DONE },
 ];
 
 const normalizeDateText = (value) => {
@@ -131,7 +134,7 @@ Page({
   data: {
     activeTab: 0,
     tabs: TAB_CONFIG.map((item) => item.label),
-    taskId: "",
+    projectId: "",
     keyword: "",
     searchValue: "",
     list: [],
@@ -139,26 +142,39 @@ Page({
   },
 
   onLoad(options = {}) {
+    const projectId = normalizeProjectId(
+      options.project || getPersistedProjectId(),
+    );
     this.setData({
-      taskId: normalizeTaskId(options.taskId || options.task),
+      projectId,
     });
   },
 
   onShow() {
-    this.loadRecords();
+    const latestProjectId = normalizeProjectId(getPersistedProjectId());
+    if (latestProjectId === this.data.projectId) {
+      this.loadRecords();
+      return;
+    }
+    this.setData(
+      {
+        projectId: latestProjectId,
+      },
+      () => this.loadRecords(),
+    );
   },
 
   async loadRecords() {
     if (this.data.loading) return;
     this.setData({ loading: true });
     try {
-      const { activeTab, keyword, taskId } = this.data;
+      const { activeTab, keyword, projectId } = this.data;
       const tab = TAB_CONFIG[activeTab] || TAB_CONFIG[0];
       const response = await getCasualShootList({
         params: {
           state: tab.state,
           name: keyword || "",
-          task: taskId || "",
+          project: projectId || "",
         },
       });
       this.allRecords = parseIssueListResponse(response);
@@ -231,24 +247,14 @@ Page({
   goToDetail(e) {
     const id = e.currentTarget.dataset.id;
     if (!id) return;
-    const taskId = normalizeTaskId(
-      e.currentTarget.dataset.task || this.data.taskId,
-    );
-    const query = [`id=${encodeURIComponent(id)}`];
-    if (taskId) {
-      query.push(`taskId=${encodeURIComponent(taskId)}`);
-    }
     wx.navigateTo({
-      url: `/pages/casualShootCreate/casualShootCreate?${query.join("&")}`,
+      url: `/pages/casualShootCreate/casualShootCreate?id=${encodeURIComponent(id)}`,
     });
   },
 
   goToCreate() {
-    const query = this.data.taskId
-      ? `?taskId=${encodeURIComponent(this.data.taskId)}`
-      : "";
     wx.navigateTo({
-      url: `/pages/casualShootCreate/casualShootCreate${query}`,
+      url: "/pages/casualShootCreate/casualShootCreate",
     });
   },
 });

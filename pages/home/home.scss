@@ -35,16 +35,108 @@
       display: flex;
       flex-direction: column;
       gap: 24rpx;
+      position: relative;
     }
 
-    .title-picker {
-      display: inline-block;
+    .title-trigger {
+      display: inline-flex;
+      align-items: center;
     }
 
     .title-wrap {
       display: inline-flex;
       align-items: center;
       gap: 8rpx;
+    }
+
+    .project-mask {
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.2);
+      z-index: 98;
+    }
+
+    .project-panel {
+      position: absolute;
+      top: 68rpx;
+      left: 0;
+      width: 680rpx;
+      max-width: calc(100vw - 72rpx);
+      background: #fff;
+      border-radius: 18rpx;
+      padding: 20rpx;
+      box-sizing: border-box;
+      box-shadow: 0 16rpx 40rpx rgba(13, 35, 83, 0.2);
+      z-index: 99;
+      color: #1f2937;
+      font-size: 26rpx;
+      font-weight: 500;
+
+      .panel-search {
+        display: flex;
+        align-items: center;
+        gap: 10rpx;
+
+        .search-input {
+          flex: 1;
+          height: 60rpx;
+          padding: 0 18rpx;
+          border-radius: 10rpx;
+          border: 2rpx solid #d8dde8;
+          background: #f7f9fc;
+          box-sizing: border-box;
+          color: #111827;
+          font-size: 24rpx;
+        }
+
+        .search-placeholder {
+          color: #9ca3af;
+          font-size: 24rpx;
+        }
+
+        .search-btn,
+        .reset-btn {
+          min-width: 88rpx;
+          height: 60rpx;
+          line-height: 60rpx;
+          text-align: center;
+          padding: 0 16rpx;
+          border-radius: 10rpx;
+          font-size: 24rpx;
+          color: #1d4ed8;
+          background: #eaf1ff;
+          border: 2rpx solid #c8d9ff;
+        }
+      }
+
+      .panel-list {
+        max-height: 440rpx;
+        margin-top: 14rpx;
+      }
+
+      .panel-item {
+        min-height: 64rpx;
+        line-height: 64rpx;
+        padding: 0 12rpx;
+        border-radius: 8rpx;
+        color: #1f2937;
+      }
+
+      .panel-item.is-active {
+        background: #eaf1ff;
+        color: #1d4ed8;
+        font-weight: 700;
+      }
+
+      .panel-status {
+        height: 64rpx;
+        line-height: 64rpx;
+        text-align: center;
+        color: #6b7280;
+      }
     }
   }
 }

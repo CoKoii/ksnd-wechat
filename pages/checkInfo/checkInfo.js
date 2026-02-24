@@ -134,10 +134,8 @@ Page({
   },
 
   goToCasualShootList() {
-    const taskId = String((this.data.taskDetail && this.data.taskDetail.id) || "").trim();
-    const query = taskId ? `?taskId=${encodeURIComponent(taskId)}` : "";
     wx.navigateTo({
-      url: `/pages/casualShootList/casualShootList${query}`,
+      url: "/pages/casualShootList/casualShootList",
     });
   },
 

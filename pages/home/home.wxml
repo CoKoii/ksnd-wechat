@@ -7,18 +7,59 @@
     </view>
     <view class="info">
       <view class="left">
-        <picker
-          class="title-picker"
-          mode="selector"
-          range="{{communityOptions}}"
-          value="{{selectedCommunityIndex}}"
-          bindchange="onCommunityChange"
-        >
+        <view class="title-trigger" bindtap="onProjectPanelToggle">
           <view class="title-wrap">
-            <view class="title">{{communityOptions[selectedCommunityIndex]}}</view>
-            <van-icon name="arrow-down" size="28rpx" />
+            <view class="title">{{selectedProjectName || "请选择场所"}}</view>
+            <van-icon
+              name="{{showProjectPanel ? 'arrow-up' : 'arrow-down'}}"
+              size="28rpx"
+            />
           </view>
-        </picker>
+        </view>
+        <view
+          wx:if="{{showProjectPanel}}"
+          class="project-mask"
+          bindtap="onProjectPanelClose"
+        ></view>
+        <view wx:if="{{showProjectPanel}}" class="project-panel" catchtap="onProjectPanelTap">
+          <view class="panel-search">
+            <input
+              class="search-input"
+              value="{{projectKeyword}}"
+              placeholder="按名称搜索场所"
+              placeholder-class="search-placeholder"
+              confirm-type="search"
+              bindinput="onProjectKeywordInput"
+              bindconfirm="onProjectSearchConfirm"
+            />
+            <view class="search-btn" bindtap="onProjectSearchTap">搜索</view>
+            <view
+              wx:if="{{projectKeyword}}"
+              class="reset-btn"
+              bindtap="onProjectSearchReset"
+            >
+              重置
+            </view>
+          </view>
+          <scroll-view class="panel-list" scroll-y>
+            <view
+              class="panel-item {{item.id === selectedProjectId ? 'is-active' : ''}}"
+              wx:for="{{projectOptions}}"
+              wx:key="id"
+              data-index="{{index}}"
+              bindtap="onProjectSelect"
+            >
+              {{item.name}}
+            </view>
+            <view wx:if="{{loadingProjectTree}}" class="panel-status">加载中...</view>
+            <view
+              wx:if="{{!loadingProjectTree && projectOptions.length === 0}}"
+              class="panel-status"
+            >
+              暂无场所
+            </view>
+          </scroll-view>
+        </view>
         <view class="welcome">欢迎您，某某</view>
       </view>
     </view>
