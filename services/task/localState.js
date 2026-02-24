@@ -16,6 +16,7 @@ const persistLoginId = (value) => {
 };
 
 const getPersistedLoginId = () => getStorageText(LOGIN_ID_KEY);
+const clearPersistedLoginId = () => wx.removeStorageSync(LOGIN_ID_KEY);
 
 const markTodoListNeedReload = () => {
   setStorageText(TODO_LIST_RELOAD_KEY, "1");
@@ -31,6 +32,7 @@ const clearTodoListReloadFlag = () => {
 module.exports = {
   persistLoginId,
   getPersistedLoginId,
+  clearPersistedLoginId,
   markTodoListNeedReload,
   shouldReloadTodoList,
   clearTodoListReloadFlag,

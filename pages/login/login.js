@@ -1,5 +1,5 @@
 const { login } = require("../../api/auth");
-const { getToken, setToken } = require("../../utils/http");
+const { setToken } = require("../../utils/http");
 const { persistLoginId } = require("../../services/task/localState");
 const {
   normalizeForm,
@@ -15,12 +15,6 @@ Page({
       pwd: "ksLD25002@",
     },
     submitting: false,
-  },
-
-  onShow() {
-    if (getToken()) {
-      navigateHome();
-    }
   },
 
   onInput(event) {

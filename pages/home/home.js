@@ -4,12 +4,32 @@ const {
   persistProjectId,
   getPersistedProjectId,
 } = require("../../services/project/localState");
-const { getPersistedLoginId } = require("../../services/task/localState");
+const {
+  getPersistedLoginId,
+  clearPersistedLoginId,
+} = require("../../services/task/localState");
+const { getToken, clearToken } = require("../../utils/http");
 
 const toText = (value) => String(value || "").trim();
 const SUCCESS_CODE = "0";
 const pickUserName = (response = {}) =>
   toText(response.data && response.data.realname);
+const isProfileResponseValid = (response = {}) => {
+  if (!response || typeof response !== "object") return false;
+
+  const code = toText(response.code);
+  if (code && code !== "0" && code !== "200") return false;
+
+  const payload = response.data;
+  if (!payload || typeof payload !== "object") return false;
+
+  return Object.keys(payload).length > 0;
+};
+const isUnauthorizedError = (error = {}) => {
+  const statusCode = Number(error.statusCode);
+  if (statusCode === 401 || statusCode === 403) return true;
+  return String((error && error.data && error.data.code) || "") === "401";
+};
 const getKeywordFromEvent = (event, fallbackValue = "") => {
   const value =
     event && event.detail && event.detail.value !== undefined
@@ -73,6 +93,7 @@ Page({
     projectKeyword: "",
     showProjectPanel: false,
     loadingProjectTree: false,
+    authChecking: false,
   },
 
   onLoad() {
@@ -89,29 +110,56 @@ Page({
       selectedProjectId: persistedProjectId,
     });
 
-    this.loadUserProfile();
-    this.loadProjectTree();
+    this.initializePage();
   },
 
-  async loadUserProfile() {
-    const uid = toText(getPersistedLoginId());
-    if (!uid) return;
+  async ensureLoginAndLoadProfile() {
+    const token = toText(getToken());
+    if (!token) {
+      wx.reLaunch({ url: "/pages/login/login" });
+      return false;
+    }
 
+    const uid = toText(getPersistedLoginId());
     try {
       const response = await getUserByUid(uid);
+      if (!isProfileResponseValid(response)) {
+        throw new Error("登录态无效");
+      }
+
       const welcomeName = pickUserName(response);
       if (welcomeName) {
         this.setData({ welcomeName });
       }
-      console.log("[home] /auth/user response:", {
-        uid,
-        response,
-      });
+      return true;
     } catch (error) {
       console.error("[home] /auth/user request failed:", {
         uid,
         error,
       });
+      if (isUnauthorizedError(error)) {
+        clearToken();
+        clearPersistedLoginId();
+        wx.reLaunch({ url: "/pages/login/login" });
+      } else {
+        wx.showToast({
+          title: (error && error.message) || "用户信息加载失败",
+          icon: "none",
+        });
+      }
+      return false;
+    }
+  },
+
+  async initializePage() {
+    if (this.data.authChecking) return;
+    this.setData({ authChecking: true });
+    try {
+      const ok = await this.ensureLoginAndLoadProfile();
+      if (!ok) return;
+      await this.loadProjectTree();
+    } finally {
+      this.setData({ authChecking: false });
     }
   },
 
