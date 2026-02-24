@@ -159,12 +159,19 @@ const limitMessages = (messages = [], maxMessages = 50) => {
   return messages.slice(messages.length - maxMessages);
 };
 
+const getWindowInfoSafe = () => {
+  if (typeof wx.getWindowInfo === 'function') {
+    return wx.getWindowInfo();
+  }
+  return wx.getSystemInfoSync();
+};
+
 const getSafeAreaInsets = () => {
-  const systemInfo = wx.getSystemInfoSync();
-  const safeArea = systemInfo.safeArea || { bottom: systemInfo.screenHeight };
-  const safeAreaBottom = Math.max(systemInfo.screenHeight - safeArea.bottom, 0);
+  const windowInfo = getWindowInfoSafe();
+  const safeArea = windowInfo.safeArea || { bottom: windowInfo.screenHeight };
+  const safeAreaBottom = Math.max(windowInfo.screenHeight - safeArea.bottom, 0);
   return {
-    statusBarHeight: systemInfo.statusBarHeight || 0,
+    statusBarHeight: windowInfo.statusBarHeight || 0,
     safeAreaBottom,
   };
 };
@@ -179,5 +186,6 @@ module.exports = {
   formatTimeLabel,
   createUtf8Decoder,
   limitMessages,
+  getWindowInfoSafe,
   getSafeAreaInsets,
 };

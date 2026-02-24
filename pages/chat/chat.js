@@ -7,6 +7,7 @@ const {
   toApiMessages,
   buildSystemPrompt,
   limitMessages,
+  getWindowInfoSafe,
   getSafeAreaInsets,
   buildTitleFromContent,
   formatTimeLabel,
@@ -77,8 +78,8 @@ Page({
 
   updateLayout() {
     nextTick(() => {
-      const systemInfo = wx.getSystemInfoSync();
-      const windowHeight = systemInfo.windowHeight || systemInfo.screenHeight || 0;
+      const windowInfo = getWindowInfoSafe();
+      const windowHeight = windowInfo.windowHeight || windowInfo.screenHeight || 0;
       const query = wx.createSelectorQuery().in(this);
       const getRect = (rects, index) => (rects && rects[index]) || { height: 0 };
       const extraPadding = 16;
@@ -96,16 +97,16 @@ Page({
   },
 
   setNavMetrics() {
-    const systemInfo = wx.getSystemInfoSync();
+    const windowInfo = getWindowInfoSafe();
     const menuButton = wx.getMenuButtonBoundingClientRect
       ? wx.getMenuButtonBoundingClientRect()
       : null;
-    const statusBarHeight = this.data.statusBarHeight || systemInfo.statusBarHeight || 0;
+    const statusBarHeight = this.data.statusBarHeight || windowInfo.statusBarHeight || 0;
     let navHeight = statusBarHeight + 44;
     let navSideWidth = 96;
     if (menuButton) {
       const topGap = Math.max(menuButton.top - statusBarHeight, 0);
-      const rightGap = Math.max((systemInfo.windowWidth || 0) - menuButton.right, 0);
+      const rightGap = Math.max((windowInfo.windowWidth || 0) - menuButton.right, 0);
       navHeight = statusBarHeight + menuButton.height + topGap * 2;
       navSideWidth = menuButton.width + rightGap;
     }

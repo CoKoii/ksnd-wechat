@@ -4,7 +4,37 @@ exports.canIUseGetUserProfile = exports.canIUseCanvas2d = exports.canIUseNextTic
 var systemInfo;
 function getSystemInfoSync() {
     if (systemInfo == null) {
-        systemInfo = wx.getSystemInfoSync();
+        var appBaseInfo = {};
+        var windowInfo = {};
+        var deviceInfo = {};
+        var systemSetting = {};
+        var appAuthorizeSetting = {};
+        if (typeof wx.getAppBaseInfo === 'function') {
+            appBaseInfo = wx.getAppBaseInfo() || {};
+        }
+        if (typeof wx.getWindowInfo === 'function') {
+            windowInfo = wx.getWindowInfo() || {};
+        }
+        if (typeof wx.getDeviceInfo === 'function') {
+            deviceInfo = wx.getDeviceInfo() || {};
+        }
+        if (typeof wx.getSystemSetting === 'function') {
+            systemSetting = wx.getSystemSetting() || {};
+        }
+        if (typeof wx.getAppAuthorizeSetting === 'function') {
+            appAuthorizeSetting = wx.getAppAuthorizeSetting() || {};
+        }
+        if (!appBaseInfo.environment && appBaseInfo.host && appBaseInfo.host.env) {
+            appBaseInfo.environment = appBaseInfo.host.env;
+        }
+        if (Object.keys(appBaseInfo).length ||
+            Object.keys(windowInfo).length ||
+            Object.keys(deviceInfo).length) {
+            systemInfo = Object.assign({}, deviceInfo, windowInfo, appBaseInfo, systemSetting, appAuthorizeSetting);
+        }
+        else {
+            systemInfo = wx.getSystemInfoSync();
+        }
     }
     return systemInfo;
 }
