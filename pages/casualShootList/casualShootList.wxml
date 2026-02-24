@@ -28,6 +28,7 @@
       <view
         class="record-item"
         wx:for="{{list}}"
+        wx:for-index="recordIndex"
         wx:key="id"
         data-id="{{item.id}}"
         bindtap="goToDetail">
@@ -36,10 +37,19 @@
           <view class="state-tag {{item.stateClass}}">{{item.stateText}}</view>
         </view>
 
-        <view class="record-footer">
-          <text class="footer-text">照片 {{item.imageCount}}</text>
-          <text class="footer-text">创建 {{item.createdAtText}}</text>
-          <text class="footer-text">更新 {{item.updatedAtText}}</text>
+        <view class="record-date {{item.previewImages.length > 0 ? 'has-images' : ''}}">更新：{{item.updatedAtText}}</view>
+        <view class="record-images" wx:if="{{item.previewImages.length > 0}}">
+          <image
+            class="record-image"
+            wx:for="{{item.previewImages}}"
+            wx:key="index"
+            wx:for-index="imageIndex"
+            wx:for-item="img"
+            data-record-index="{{recordIndex}}"
+            data-image-index="{{imageIndex}}"
+            catchtap="onPreviewRecordImage"
+            src="{{img.url}}"
+            mode="aspectFill" />
         </view>
       </view>
     </view>

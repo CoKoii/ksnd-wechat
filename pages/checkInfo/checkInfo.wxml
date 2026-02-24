@@ -49,6 +49,7 @@
       <view
         class="shoot-record-item"
         wx:for="{{casualShootList}}"
+        wx:for-index="recordIndex"
         wx:key="id"
         data-id="{{item.id}}"
         bindtap="goToCasualShootDetail">
@@ -56,10 +57,19 @@
           <text class="shoot-record-title">{{item.firstDescription}}</text>
           <view class="shoot-state-tag {{item.stateClass}}">{{item.stateText}}</view>
         </view>
-        <view class="shoot-record-footer">
-          <text class="shoot-footer-text">照片 {{item.imageCount}}</text>
-          <text class="shoot-footer-text">创建 {{item.createdAtText}}</text>
-          <text class="shoot-footer-text">更新 {{item.updatedAtText}}</text>
+        <view class="shoot-record-date {{item.previewImages.length > 0 ? 'has-images' : ''}}">更新：{{item.updatedAtText}}</view>
+        <view class="shoot-record-images" wx:if="{{item.previewImages.length > 0}}">
+          <image
+            class="shoot-record-image"
+            wx:for="{{item.previewImages}}"
+            wx:key="index"
+            wx:for-index="imageIndex"
+            wx:for-item="img"
+            data-record-index="{{recordIndex}}"
+            data-image-index="{{imageIndex}}"
+            catchtap="onPreviewCasualShootImage"
+            src="{{img.url}}"
+            mode="aspectFill" />
         </view>
       </view>
     </view>

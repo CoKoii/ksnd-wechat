@@ -1,5 +1,6 @@
 const CASUAL_SHOOT_STATUS_PENDING = 10018010;
 const CASUAL_SHOOT_STATUS_DONE = 10018090;
+const CASUAL_SHOOT_PREVIEW_LIMIT = 3;
 
 const CASUAL_SHOOT_TAB_CONFIG = [
   { label: "未整改", state: CASUAL_SHOOT_STATUS_PENDING },
@@ -73,6 +74,65 @@ const parseFiles = (value) =>
     .map((item) => String(item || "").trim())
     .filter(Boolean);
 
+const isAbsoluteImageUrl = (value = "") =>
+  /^(https?:\/\/|wxfile:\/\/|data:)/i.test(normalizeText(value));
+
+const toCasualShootPreviewPaths = (item = {}, limit = CASUAL_SHOOT_PREVIEW_LIMIT) =>
+  parseFiles(item.files).slice(0, Math.max(0, Number(limit) || 0));
+
+const withCasualShootPreviewPlaceholders = (list = []) =>
+  (Array.isArray(list) ? list : []).map((item) => ({
+    ...item,
+    previewImages: [],
+  }));
+
+const hydrateCasualShootListPreviewImages = async (list = [], options = {}) => {
+  const source = Array.isArray(list) ? list : [];
+  const { limit = CASUAL_SHOOT_PREVIEW_LIMIT, resolvePreview } = options;
+  if (typeof resolvePreview !== "function") {
+    return source.map((item) => ({
+      ...item,
+      previewImages: [],
+    }));
+  }
+
+  const resolved = await Promise.all(
+    source.map(async (item) => {
+      const previewPaths = toCasualShootPreviewPaths(item, limit);
+      const previewImages = await Promise.all(
+        previewPaths.map(async (path, index) => {
+          const rawPath = normalizeText(path);
+          if (!rawPath) return null;
+          try {
+            const resolvedUrl = normalizeText(await resolvePreview(rawPath));
+            const fallbackUrl = isAbsoluteImageUrl(rawPath) ? rawPath : "";
+            const url = resolvedUrl || fallbackUrl;
+            if (!url) return null;
+            return {
+              path: rawPath,
+              url,
+              name: `casual-shoot-${index + 1}`,
+            };
+          } catch (error) {
+            if (!isAbsoluteImageUrl(rawPath)) return null;
+            return {
+              path: rawPath,
+              url: rawPath,
+              name: `casual-shoot-${index + 1}`,
+            };
+          }
+        }),
+      );
+      return {
+        ...item,
+        previewImages: previewImages.filter(Boolean),
+      };
+    }),
+  );
+
+  return resolved;
+};
+
 const toCasualShootStateMeta = (value) => {
   const state = Number(value);
   if (state === CASUAL_SHOOT_STATUS_PENDING) {
@@ -109,7 +169,6 @@ const parseCasualShootListResponse = (response = {}) => {
 };
 
 const toCasualShootListItem = (record = {}) => {
-  const files = parseFiles(record.files);
   const stateMeta = toCasualShootStateMeta(record.state);
   const createdAtRaw = record.create_time;
   const updatedAtRaw = record.update_time;
@@ -121,7 +180,6 @@ const toCasualShootListItem = (record = {}) => {
     ...record,
     ...stateMeta,
     firstDescription: record.name || "--",
-    imageCount: files.length,
     createdAtText: toDateTimeText(createdAtRaw),
     updatedAtText: toDateTimeText(updatedAtRaw),
     sortTimestamp: displayTimestamp || 0,
@@ -136,9 +194,9 @@ module.exports = {
   normalizeProjectId,
   normalizeTaskId,
   parseFiles,
-  toDateTimestamp,
-  toDateTimeText,
-  toCasualShootStateMeta,
+  isAbsoluteImageUrl,
+  withCasualShootPreviewPlaceholders,
+  hydrateCasualShootListPreviewImages,
   parseCasualShootListResponse,
   toCasualShootListItem,
 };

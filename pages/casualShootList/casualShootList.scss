@@ -150,16 +150,27 @@ page {
         }
       }
 
-      .record-footer {
-        padding-top: 16rpx;
-        border-top: 1rpx solid $color-border-base;
-        display: flex;
-        gap: 16rpx;
-        flex-wrap: wrap;
+      .record-date {
+        margin-bottom: 0;
+        font-size: 22rpx;
+        color: $color-text-muted;
 
-        .footer-text {
-          font-size: 22rpx;
-          color: $color-text-muted;
+        &.has-images {
+          margin-bottom: 12rpx;
+        }
+      }
+
+      .record-images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10rpx;
+
+        .record-image {
+          width: 140rpx;
+          height: 140rpx;
+          border-radius: 8rpx;
+          flex-shrink: 0;
+          background-color: $color-bg-page-alt;
         }
       }
     }

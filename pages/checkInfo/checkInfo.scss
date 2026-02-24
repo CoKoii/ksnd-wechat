@@ -212,16 +212,27 @@ page {
       }
     }
 
-    .shoot-record-footer {
-      padding-top: 14rpx;
-      border-top: 1rpx solid $color-border-base;
+    .shoot-record-date {
+      margin-bottom: 0;
+      font-size: 22rpx;
+      color: $color-text-muted;
+
+      &.has-images {
+        margin-bottom: 12rpx;
+      }
+    }
+
+    .shoot-record-images {
       display: flex;
       flex-wrap: wrap;
-      gap: 12rpx;
+      gap: 10rpx;
 
-      .shoot-footer-text {
-        font-size: 22rpx;
-        color: $color-text-muted;
+      .shoot-record-image {
+        width: 140rpx;
+        height: 140rpx;
+        border-radius: 8rpx;
+        flex-shrink: 0;
+        background-color: $color-bg-page-alt;
       }
     }
   }

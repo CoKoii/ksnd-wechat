@@ -1,9 +1,12 @@
 const { getCasualShootList } = require("../../api/casualShoot");
+const { resolveImagePreview } = require("../../services/file/image");
 const { getPersistedProjectId } = require("../../services/project/localState");
 const {
   CASUAL_SHOOT_TAB_CONFIG,
   normalizeProjectId,
   normalizeTaskId,
+  withCasualShootPreviewPlaceholders,
+  hydrateCasualShootListPreviewImages,
   parseCasualShootListResponse,
   toCasualShootListItem,
 } = require("../../utils/casualShoot");
@@ -38,6 +41,11 @@ Page({
   },
 
   onShow() {
+    if (this._skipNextShowReload) {
+      this._skipNextShowReload = false;
+      return;
+    }
+
     const latestProjectId = normalizeProjectId(getPersistedProjectId());
     if (latestProjectId === this.data.projectId) {
       this.loadRecords();
@@ -66,10 +74,20 @@ Page({
       const response = await getCasualShootList({
         params,
       });
-      const list = parseCasualShootListResponse(response).map(
+      const rawList = parseCasualShootListResponse(response).map(
         toCasualShootListItem,
       );
-      this.setData({ list });
+      this.setData({
+        list: withCasualShootPreviewPlaceholders(rawList),
+      });
+      try {
+        const hydratedList = await hydrateCasualShootListPreviewImages(rawList, {
+          resolvePreview: resolveImagePreview,
+        });
+        this.setData({ list: hydratedList });
+      } catch (error) {
+        // ignore preview hydration failures for list thumbnails
+      }
     } catch (error) {
       this.setData({ list: [] });
       wx.showToast({
@@ -121,6 +139,30 @@ Page({
       },
       () => this.loadRecords(),
     );
+  },
+
+  onPreviewRecordImage(e) {
+    const recordIndex = Number(e.currentTarget.dataset.recordIndex);
+    const imageIndex = Number(e.currentTarget.dataset.imageIndex);
+    if (Number.isNaN(recordIndex) || Number.isNaN(imageIndex)) return;
+
+    const record = (this.data.list || [])[recordIndex] || {};
+    const previewImages = Array.isArray(record.previewImages)
+      ? record.previewImages
+      : [];
+    const urls = previewImages
+      .map((img) => String((img && img.url) || "").trim())
+      .filter(Boolean);
+    if (!urls.length) return;
+
+    this._skipNextShowReload = true;
+    wx.previewImage({
+      current: urls[imageIndex] || urls[0],
+      urls,
+      fail: () => {
+        this._skipNextShowReload = false;
+      },
+    });
   },
 
   goToDetail(e) {
