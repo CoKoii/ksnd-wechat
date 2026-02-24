@@ -1,12 +1,10 @@
 const { getCasualShootList } = require("../../api/casualShoot");
 
 const normalizeTaskId = (value) => String(value || "").trim();
-const STATUS_PENDING = 10018010;
-const STATUS_DONE = 10018090;
 
 const TAB_CONFIG = [
-  { label: "未整改", state: STATUS_PENDING },
-  { label: "已整改", state: STATUS_DONE },
+  { label: "未整改", state: 10018010 },
+  { label: "已整改", state: 10018090 },
 ];
 
 const normalizeDateText = (value) => {
@@ -38,7 +36,7 @@ const toDateTimestamp = (value) => {
     .replace(/日/g, "")
     .replace(/\s+/g, " ");
   const match = normalized.match(
-    /^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?$/
+    /^(\d{4})-(\d{1,2})-(\d{1,2})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?$/,
   );
   if (!match) return 0;
 
@@ -49,7 +47,7 @@ const toDateTimestamp = (value) => {
     Number(day),
     Number(hour),
     Number(minute),
-    Number(second)
+    Number(second),
   ).getTime();
 };
 
@@ -188,7 +186,7 @@ Page({
       {
         activeTab: Number(e.currentTarget.dataset.index) || 0,
       },
-      () => this.loadRecords()
+      () => this.loadRecords(),
     );
   },
 
@@ -208,7 +206,7 @@ Page({
         keyword,
         searchValue: keyword,
       },
-      () => this.loadRecords()
+      () => this.loadRecords(),
     );
   },
 
@@ -226,14 +224,16 @@ Page({
         keyword: "",
         searchValue: "",
       },
-      () => this.loadRecords()
+      () => this.loadRecords(),
     );
   },
 
   goToDetail(e) {
     const id = e.currentTarget.dataset.id;
     if (!id) return;
-    const taskId = normalizeTaskId(e.currentTarget.dataset.task || this.data.taskId);
+    const taskId = normalizeTaskId(
+      e.currentTarget.dataset.task || this.data.taskId,
+    );
     const query = [`id=${encodeURIComponent(id)}`];
     if (taskId) {
       query.push(`taskId=${encodeURIComponent(taskId)}`);
