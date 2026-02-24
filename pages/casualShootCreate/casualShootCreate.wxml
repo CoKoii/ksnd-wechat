@@ -4,7 +4,7 @@
       <text class="item-index">第{{index + 1}}项</text>
       <text
         class="item-remove"
-        wx:if="{{sections.length > 1}}"
+        wx:if="{{!readonly && sections.length > 1}}"
         data-index="{{index}}"
         bindtap="onRemoveSection">
         删除
@@ -18,6 +18,7 @@
       placeholder="请输入问题描述"
       maxlength="500"
       show-confirm-bar="{{false}}"
+      disabled="{{readonly}}"
       data-index="{{index}}"
       bindinput="onDescriptionInput" />
 
@@ -26,14 +27,17 @@
       file-list="{{item.images}}"
       max-count="9"
       multiple
+      deletable="{{!readonly}}"
+      show-upload="{{!readonly}}"
+      disabled="{{readonly}}"
       data-index="{{index}}"
       bind:after-read="onUploadImages"
       bind:delete="onDeleteImage" />
   </view>
 
-  <button class="add-btn" bindtap="onAddSection">+ 添加一项</button>
+  <button class="add-btn" wx:if="{{!readonly}}" bindtap="onAddSection">+ 添加一项</button>
 
-  <view class="submit-wrap">
+  <view class="submit-wrap" wx:if="{{!readonly}}">
     <button
       class="submit-btn"
       loading="{{submitting}}"

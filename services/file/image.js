@@ -153,7 +153,20 @@ const resolveImagePreview = async (path) => {
   }
 };
 
+const resolveImagePreviewByProxy = async (path) => {
+  const rawPath = normalizeText(path);
+  if (!rawPath) return "";
+
+  try {
+    return await downloadImageTempFile(rawPath);
+  } catch (error) {
+    console.error("resolveImagePreviewByProxy failed:", rawPath, error);
+    return "";
+  }
+};
+
 module.exports = {
   uploadImage,
   resolveImagePreview,
+  resolveImagePreviewByProxy,
 };

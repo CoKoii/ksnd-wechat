@@ -1,5 +1,11 @@
-const { saveCasualShootBatch } = require("../../api/casualShoot");
-const { uploadImage } = require("../../services/file/image");
+const {
+  saveCasualShootBatch,
+  getCasualShootDetail,
+} = require("../../api/casualShoot");
+const {
+  uploadImage,
+  resolveImagePreviewByProxy,
+} = require("../../services/file/image");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
 const ISSUE_STATE_PENDING = 10018010;
@@ -7,16 +13,28 @@ const ISSUE_SOURCE_NO_TASK = 10021010;
 const ISSUE_SOURCE_WITH_TASK = 10021020;
 const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
 const normalizeTaskId = (value) => String(value || "").trim();
+const normalizeIssueId = (value) => String(value || "").trim();
 const toIssueSource = (taskId) =>
   taskId ? ISSUE_SOURCE_WITH_TASK : ISSUE_SOURCE_NO_TASK;
 const isValidImageType = (path = "") => /\.(jpe?g|png)$/i.test(String(path || ""));
 const isValidImageSize = (size) => !size || Number(size) <= MAX_IMAGE_SIZE;
+const parseFiles = (value) =>
+  String(value || "")
+    .split(",")
+    .map((item) => String(item || "").trim())
+    .filter(Boolean);
 
 const normalizeImageValue = (value) => {
   if (!value) return "";
   if (typeof value === "string") return String(value).trim();
   return String(value.path || value.url || "").trim();
 };
+
+const toRawUploaderFiles = (value) =>
+  parseFiles(value).map((path, index) => ({
+    path,
+    name: `image-${index + 1}`,
+  }));
 
 const createSectionKey = () =>
   `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -30,15 +48,80 @@ const createEmptySection = () => ({
 Page({
   data: {
     taskId: "",
+    issueId: "",
+    readonly: false,
     sections: [createEmptySection()],
     submitting: false,
   },
 
   onLoad(options = {}) {
     const taskId = normalizeTaskId(options.taskId || options.task);
+    const issueId = normalizeIssueId(options.id);
+    const readonly = Boolean(issueId);
     this.setData({
       taskId,
+      issueId,
+      readonly,
     });
+    wx.setNavigationBarTitle({
+      title: readonly ? "随手拍详情" : "新增随手拍",
+    });
+
+    if (issueId) {
+      this.loadIssueDetail(issueId);
+    }
+  },
+
+  async loadIssueDetail(id) {
+    try {
+      const res = await getCasualShootDetail(id);
+      if (String((res && res.code) || "") !== "0") {
+        throw new Error((res && res.msg) || "加载详情失败");
+      }
+
+      const detail = (res && res.data) || {};
+      const description = String(detail.name || "").trim();
+      const rawImages = toRawUploaderFiles(detail.files);
+      const sections = [
+        {
+          key: createSectionKey(),
+          description,
+          images: [],
+        },
+      ];
+
+      this.setData({
+        taskId: normalizeTaskId(detail.task || this.data.taskId),
+        sections: sections.length ? sections : [createEmptySection()],
+      });
+      this.hydrateIssueImagePreviews(rawImages);
+    } catch (error) {
+      showToast((error && error.message) || "加载详情失败");
+    }
+  },
+
+  async hydrateIssueImagePreviews(images = []) {
+    const source = Array.isArray(images) ? images : [];
+    if (!source.length) return;
+
+    const resolved = await Promise.all(
+      source.map(async (item, index) => {
+        const path = String((item && item.path) || "").trim();
+        if (!path) return null;
+
+        const url = await resolveImagePreviewByProxy(path);
+        if (!url) return null;
+
+        return {
+          path,
+          url,
+          name: (item && item.name) || `image-${index + 1}`,
+        };
+      }),
+    );
+
+    const validImages = resolved.filter(Boolean);
+    this.updateSection(0, { images: validImages });
   },
 
   updateSection(index, patch) {
@@ -51,6 +134,7 @@ Page({
   },
 
   onDescriptionInput(e) {
+    if (this.data.readonly) return;
     const index = Number(e.currentTarget.dataset.index);
     if (Number.isNaN(index)) return;
     const value = (e.detail && e.detail.value) || "";
@@ -58,6 +142,7 @@ Page({
   },
 
   async onUploadImages(e) {
+    if (this.data.readonly) return;
     const index = Number(e.currentTarget.dataset.index);
     if (Number.isNaN(index)) return;
 
@@ -114,6 +199,7 @@ Page({
   },
 
   onDeleteImage(e) {
+    if (this.data.readonly) return;
     const index = Number(e.currentTarget.dataset.index);
     const imageIndex = Number(e.detail.index);
     if (Number.isNaN(index) || Number.isNaN(imageIndex)) return;
@@ -124,12 +210,14 @@ Page({
   },
 
   onAddSection() {
+    if (this.data.readonly) return;
     this.setData({
       sections: [...this.data.sections, createEmptySection()],
     });
   },
 
   onRemoveSection(e) {
+    if (this.data.readonly) return;
     const index = Number(e.currentTarget.dataset.index);
     if (Number.isNaN(index)) return;
     if (this.data.sections.length <= 1) return showToast("至少保留一项");
@@ -174,6 +262,7 @@ Page({
   },
 
   async onSubmit() {
+    if (this.data.readonly) return showToast("详情只读，无法提交");
     if (this.data.submitting) return;
 
     const items = this.buildSubmitItems();

@@ -12,7 +12,13 @@ const getCasualShootList = async (data) =>
     data: data || {},
   });
 
+const getCasualShootDetail = async (id) =>
+  request(`/api/safe/im/issue/get?id=${encodeURIComponent(id)}`, {
+    method: "GET",
+  });
+
 module.exports = {
   saveCasualShootBatch,
   getCasualShootList,
+  getCasualShootDetail,
 };
