@@ -60,7 +60,7 @@
             </view>
           </scroll-view>
         </view>
-        <view class="welcome">欢迎您，某某</view>
+        <view class="welcome">欢迎您，{{welcomeName || "某某"}}</view>
       </view>
     </view>
   </view>

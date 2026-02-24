@@ -1,11 +1,15 @@
 const { getProjectTree } = require("../../api/project");
+const { getUserByUid } = require("../../api/auth");
 const {
   persistProjectId,
   getPersistedProjectId,
 } = require("../../services/project/localState");
+const { getPersistedCheckerId } = require("../../services/task/localState");
 
 const toText = (value) => String(value || "").trim();
 const SUCCESS_CODE = "0";
+const pickUserName = (response = {}) =>
+  toText(response.data && response.data.realname);
 const getKeywordFromEvent = (event, fallbackValue = "") => {
   const value =
     event && event.detail && event.detail.value !== undefined
@@ -65,6 +69,7 @@ Page({
     projectOptions: [],
     selectedProjectId: "",
     selectedProjectName: "",
+    welcomeName: "",
     projectKeyword: "",
     showProjectPanel: false,
     loadingProjectTree: false,
@@ -84,7 +89,30 @@ Page({
       selectedProjectId: persistedProjectId,
     });
 
+    this.loadUserProfile();
     this.loadProjectTree();
+  },
+
+  async loadUserProfile() {
+    const uid = toText(getPersistedCheckerId());
+    if (!uid) return;
+
+    try {
+      const response = await getUserByUid(uid);
+      const welcomeName = pickUserName(response);
+      if (welcomeName) {
+        this.setData({ welcomeName });
+      }
+      console.log("[home] /auth/user response:", {
+        uid,
+        response,
+      });
+    } catch (error) {
+      console.error("[home] /auth/user request failed:", {
+        uid,
+        error,
+      });
+    }
   },
 
   async loadProjectTree(keyword = "") {
