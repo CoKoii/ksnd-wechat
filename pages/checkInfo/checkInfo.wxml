@@ -36,13 +36,39 @@
     </view>
   </view>
 
-  <view class="section shoot-entry" wx:if="{{taskDetail}}" bindtap="goToCasualShootList">
-    <view class="entry-main">
-      <view class="entry-title">随手拍</view>
-      <view class="entry-desc">进入随手拍列表</view>
+  <view class="section shoot-list-section" wx:if="{{taskDetail}}">
+    <view class="shoot-list-header">
+      <view class="section-title">随手拍</view>
+      <view class="shoot-create-btn" bindtap="goToCasualShootCreate">
+        <van-icon name="plus" size="14px" color="#fff" />
+        <text class="shoot-create-text">新增</text>
+      </view>
     </view>
-    <view class="entry-arrow">
-      <van-icon name="arrow" color="#999" size="20px" />
+
+    <view class="shoot-record-list" wx:if="{{casualShootList.length > 0}}">
+      <view
+        class="shoot-record-item"
+        wx:for="{{casualShootList}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="goToCasualShootDetail">
+        <view class="shoot-record-header">
+          <text class="shoot-record-title">{{item.firstDescription}}</text>
+          <view class="shoot-state-tag {{item.stateClass}}">{{item.stateText}}</view>
+        </view>
+        <view class="shoot-record-footer">
+          <text class="shoot-footer-text">照片 {{item.imageCount}}</text>
+          <text class="shoot-footer-text">创建 {{item.createdAtText}}</text>
+          <text class="shoot-footer-text">更新 {{item.updatedAtText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="shoot-loading" wx:if="{{casualShootLoading && casualShootList.length === 0}}">
+      <text>加载中...</text>
+    </view>
+    <view class="shoot-empty" wx:if="{{!casualShootLoading && casualShootList.length === 0}}">
+      <text>暂无随手拍记录</text>
     </view>
   </view>
 

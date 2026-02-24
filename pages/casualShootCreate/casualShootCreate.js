@@ -6,20 +6,19 @@ const {
   uploadUploaderFiles,
   resolveImagePreviewByProxy,
 } = require("../../services/file/image");
+const {
+  normalizeText,
+  normalizeTaskId,
+  parseFiles,
+} = require("../../utils/casualShoot");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
 const ISSUE_STATE_PENDING = 10018010;
 const ISSUE_SOURCE_NO_TASK = 10021010;
 const ISSUE_SOURCE_WITH_TASK = 10021020;
-const normalizeTaskId = (value) => String(value || "").trim();
-const normalizeIssueId = (value) => String(value || "").trim();
+const normalizeIssueId = (value) => normalizeText(value);
 const toIssueSource = (taskId) =>
   taskId ? ISSUE_SOURCE_WITH_TASK : ISSUE_SOURCE_NO_TASK;
-const parseFiles = (value) =>
-  String(value || "")
-    .split(",")
-    .map((item) => String(item || "").trim())
-    .filter(Boolean);
 
 const normalizeImageValue = (value) => {
   if (!value) return "";

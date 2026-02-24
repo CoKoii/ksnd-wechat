@@ -1,9 +1,18 @@
 const { getTaskDetail, saveTaskForm } = require("../../api/task");
+const { getCasualShootList } = require("../../api/casualShoot");
 const {
   uploadUploaderFiles,
   resolveImagePreview,
 } = require("../../services/file/image");
 const { markTodoListNeedReload } = require("../../services/task/localState");
+const { getPersistedProjectId } = require("../../services/project/localState");
+const {
+  normalizeText,
+  normalizeProjectId,
+  normalizeTaskId,
+  parseCasualShootListResponse,
+  toCasualShootListItem,
+} = require("../../utils/casualShoot");
 const {
   NO_VALUE,
   COMPLETED_STATE,
@@ -33,14 +42,20 @@ Page({
     description: "",
     images: [],
     inspector: "",
+    casualShootList: [],
+    casualShootLoading: false,
     ...createEmptyAbnormalState(),
   },
 
   onLoad(options) {
     if (!options.id) return showToast("缺少任务ID");
-    const taskId = String(options.id || "").trim();
+    const taskId = normalizeTaskId(options.id);
     this.setData({ id: taskId });
     this.loadDetailData(taskId);
+  },
+
+  onShow() {
+    this.loadCasualShootList();
   },
 
   async loadDetailData(id) {
@@ -134,10 +149,51 @@ Page({
     }
   },
 
-  goToCasualShootList() {
-    const taskId = String(this.data.id || "").trim();
+  goToCasualShootCreate() {
+    const taskId = normalizeTaskId(this.data.id);
     wx.navigateTo({
-      url: `/pages/casualShootList/casualShootList?taskId=${encodeURIComponent(taskId)}`,
+      url: taskId
+        ? `/pages/casualShootCreate/casualShootCreate?taskId=${encodeURIComponent(taskId)}`
+        : "/pages/casualShootCreate/casualShootCreate",
+    });
+  },
+
+  async loadCasualShootList() {
+    if (this.data.casualShootLoading) return;
+
+    const taskId = normalizeTaskId(this.data.id);
+    if (!taskId) {
+      this.setData({ casualShootList: [] });
+      return;
+    }
+
+    const projectId = normalizeProjectId(getPersistedProjectId());
+
+    this.setData({ casualShootLoading: true });
+    try {
+      const response = await getCasualShootList({
+        params: {
+          project: projectId || "",
+          task: taskId,
+        },
+      });
+      const casualShootList = parseCasualShootListResponse(response)
+        .map(toCasualShootListItem)
+        .sort((a, b) => b.sortTimestamp - a.sortTimestamp);
+      this.setData({ casualShootList });
+    } catch (error) {
+      this.setData({ casualShootList: [] });
+      showToast((error && error.message) || "随手拍加载失败");
+    } finally {
+      this.setData({ casualShootLoading: false });
+    }
+  },
+
+  goToCasualShootDetail(e) {
+    const issueId = normalizeText(e.currentTarget.dataset.id);
+    if (!issueId) return;
+    wx.navigateTo({
+      url: `/pages/casualShootCreate/casualShootCreate?id=${encodeURIComponent(issueId)}`,
     });
   },
 
