@@ -10,7 +10,7 @@ const {
   parseTaskListResponse,
   calcHasMore,
   formatDateToYmd,
-  pickTaskDateValue,
+  pickPublishDateValue,
 } = require("./utils");
 
 const TAB_CONFIG = [
@@ -143,7 +143,7 @@ Page({
       const { list: nextList, total, pageCount } = parseTaskListResponse(res);
       const normalizedList = nextList.map((item) => ({
         ...item,
-        createDate: formatDateToYmd(pickTaskDateValue(item)),
+        publishDate: formatDateToYmd(pickPublishDateValue(item)),
       }));
       const mergedList =
         page === 1 ? normalizedList : todoList.concat(normalizedList);

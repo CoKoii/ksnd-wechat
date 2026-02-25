@@ -57,24 +57,23 @@ const formatDateToYmd = (value) => {
   return "";
 };
 
-const pickTaskDateValue = (item = {}) => {
+const pickPublishDateValue = (item = {}) => {
   const preferred = [
+    item.publish_time,
+    item.publishTime,
+    item.release_time,
+    item.releaseTime,
     item.create_time,
-    item.cktime,
     item.createTime,
     item.createDate,
-    item.require_time,
-    item.requireDate,
-    item.deadline,
-    item.plan_time,
-    item.planDate,
+    item.cktime,
   ];
   const fixedValue = preferred.find((value) => hasValue(value));
   if (fixedValue !== undefined) return fixedValue;
 
   const dynamicKey = Object.keys(item).find(
     (key) =>
-      /(time|date|day|rq)/i.test(key) &&
+      /(publish|release|create|ctime|fbsj|cjsj)/i.test(key) &&
       hasValue(item[key])
   );
   return dynamicKey ? item[dynamicKey] : "";
@@ -84,5 +83,5 @@ module.exports = {
   parseTaskListResponse,
   calcHasMore,
   formatDateToYmd,
-  pickTaskDateValue,
+  pickPublishDateValue,
 };
