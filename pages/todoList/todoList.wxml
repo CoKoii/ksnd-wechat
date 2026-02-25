@@ -42,7 +42,6 @@
         
         <view class="item-body">
           <view class="shop-row">
-            <text class="shop-label">商铺</text>
             <text class="shop-value">{{item.name || '--'}}</text>
           </view>
         </view>

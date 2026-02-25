@@ -137,13 +137,6 @@ page {
             border-radius: $radius-sm;
             border: 1rpx solid $color-border-light;
 
-            .shop-label {
-              flex-shrink: 0;
-              margin-right: 12rpx;
-              font-size: 24rpx;
-              color: $color-text-muted;
-            }
-
             .shop-value {
               font-size: 26rpx;
               line-height: 38rpx;
