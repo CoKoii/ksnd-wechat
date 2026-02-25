@@ -7,11 +7,11 @@
   </view>
 
   <view class="section" wx:if="{{taskDetail}}">
-    <view class="section-title">任务信息</view>
+    <view class="section-title">{{taskDetail.coname}}</view>
     <view class="task-info">
       <view class="task-row">
         <text class="task-label">任务：</text>
-        <text class="task-value">{{taskDetail.coname || '--'}}</text>
+        <text class="task-value">{{taskDetail.name || '--'}}</text>
       </view>
       <view class="task-row">
         <text class="task-label">状态：</text>
