@@ -37,18 +37,18 @@
     <view class="todo-items">
       <view class="todo-item" wx:for="{{todoList}}" wx:key="id" data-id="{{item.id}}" bindtap="goToDetail">
         <view class="item-header">
-          <text class="title">{{item.name || '--'}}</text>
+          <text class="title">{{item.coname || '--'}}</text>
         </view>
         
         <view class="item-body">
           <view class="shop-row">
             <text class="shop-label">商铺</text>
-            <text class="shop-value">{{item.coname || '--'}}</text>
+            <text class="shop-value">{{item.name || '--'}}</text>
           </view>
         </view>
         
         <view class="item-footer">
-          <text class="footer-label">发布时间</text>
+          <text class="footer-label">发布日期</text>
           <text class="publish-time">{{item.publishDate || '--'}}</text>
         </view>
       </view>

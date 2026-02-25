@@ -157,8 +157,8 @@ page {
         .item-footer {
           display: flex;
           align-items: center;
-          justify-content: space-between;
           padding-top: 18rpx;
+          gap: 24rpx;
           border-top: 1rpx solid $color-border-base;
           .footer-label {
             font-size: 22rpx;
