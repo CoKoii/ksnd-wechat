@@ -1,6 +1,12 @@
 const NO_VALUE = "--";
 const COMPLETED_STATE = "10018090";
 const CHECK_ITEM_IGNORE = "ignore";
+const CHECK_ITEM_SORT_WEIGHT = {
+  ABNORMAL: 0,
+  NORMAL: 1,
+  PENDING: 2,
+  IGNORE: 3,
+};
 
 const createEmptyAbnormalState = () => ({
   showAbnormalDialog: false,
@@ -93,6 +99,25 @@ const buildCheckItems = (fields = [], vals = []) => {
     });
 };
 
+const getCheckItemSortWeight = (status) => {
+  if (status === false) return CHECK_ITEM_SORT_WEIGHT.ABNORMAL;
+  if (status === true) return CHECK_ITEM_SORT_WEIGHT.NORMAL;
+  if (status === CHECK_ITEM_IGNORE) return CHECK_ITEM_SORT_WEIGHT.IGNORE;
+  return CHECK_ITEM_SORT_WEIGHT.PENDING;
+};
+
+const sortCheckItemsForDetail = (checkItems = []) => {
+  const list = Array.isArray(checkItems) ? checkItems : [];
+  return list
+    .map((item, index) => ({
+      item,
+      index,
+      weight: getCheckItemSortWeight(item && item.status),
+    }))
+    .sort((a, b) => a.weight - b.weight || a.index - b.index)
+    .map((entry) => entry.item);
+};
+
 const buildSubmitPayload = ({
   taskDetail,
   checkResult,
@@ -139,5 +164,6 @@ module.exports = {
   toImageValues,
   toUploaderFiles,
   buildCheckItems,
+  sortCheckItemsForDetail,
   buildSubmitPayload,
 };

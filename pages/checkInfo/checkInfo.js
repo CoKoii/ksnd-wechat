@@ -27,6 +27,7 @@ const {
   toCheckResult,
   toUploaderFiles,
   buildCheckItems,
+  sortCheckItemsForDetail,
   buildSubmitPayload,
 } = require("./utils");
 
@@ -72,7 +73,10 @@ Page({
 
       const detail = (res && res.data) || {};
       const readonly = String(detail.state || "") === COMPLETED_STATE;
-      const checkItems = buildCheckItems(detail.fields, detail.vals);
+      const rawCheckItems = buildCheckItems(detail.fields, detail.vals);
+      const checkItems = readonly
+        ? sortCheckItemsForDetail(rawCheckItems)
+        : rawCheckItems;
       const images = toUploaderFiles(detail.ckpics);
       this.setData({
         taskDetail: {
