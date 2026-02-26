@@ -148,16 +148,12 @@
       multiple />
   </view>
 
-  <!-- 巡检人员姓名 -->
-  <view class="section">
-    <view class="section-title">巡检人员姓名</view>
-    <input
-      class="text-input"
-      value="{{inspector}}"
-      placeholder="请输入姓名"
-      disabled="{{readonly}}"
-      bindinput="onInspectorChange" />
-  </view>
+  <template
+    is="signatureSection"
+    data="{{title: '巡检人员签名', field: 'inspector', path: signatureImagePath, url: signatureImageUrl, readonly: readonly}}" />
+  <template
+    is="signatureSection"
+    data="{{title: '企业确认签字', field: 'company', path: companySignatureImagePath, url: companySignatureImageUrl, readonly: readonly}}" />
   
   <!-- 提交按钮 -->
   <view class="submit-section" wx:if="{{!readonly}}">
@@ -202,3 +198,30 @@
     </view>
   </view>
 </view>
+
+<template name="signatureSection">
+  <view class="section">
+    <view class="section-title">{{title}}</view>
+    <view
+      class="signature-display"
+      data-field="{{field}}"
+      bindtap="goToSignature">
+      <image
+        wx:if="{{!readonly && path}}"
+        class="signature-preview-image"
+        src="{{path}}"
+        mode="aspectFit" />
+      <image
+        wx:if="{{readonly && url}}"
+        class="signature-preview-image"
+        src="{{url}}"
+        mode="aspectFit" />
+      <view
+        wx:if="{{(!readonly && !path) || (readonly && !url)}}"
+        class="signature-empty">
+        <view class="signature-empty-icon">✍️</view>
+        <text class="signature-empty-text">{{readonly ? '暂无签名' : '点击开始签名'}}</text>
+      </view>
+    </view>
+  </view>
+</template>

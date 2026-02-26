@@ -32,6 +32,32 @@ const {
 } = require("./utils");
 
 const showToast = (title) => wx.showToast({ title, icon: "none" });
+const SIGNATURE_FIELD_CONFIG = {
+  inspector: {
+    field: "inspector",
+    pathKey: "signatureImagePath",
+    urlKey: "signatureImageUrl",
+    detailKeys: ["cssign", "cksign", "checker"],
+    requiredText: "请完成巡检人员签名",
+    uploadNamePrefix: "inspector-signature",
+  },
+  company: {
+    field: "company",
+    pathKey: "companySignatureImagePath",
+    urlKey: "companySignatureImageUrl",
+    detailKeys: ["cosign", "csign", "companysign"],
+    requiredText: "请完成企业签名",
+    uploadNamePrefix: "company-signature",
+  },
+};
+
+const normalizeSignaturePath = (value) => {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  const looksLikePath =
+    /^(https?:\/\/|wxfile:\/\/|data:)/i.test(text) || /[\\/]/.test(text);
+  return looksLikePath ? text : "";
+};
 
 Page({
   data: {
@@ -43,7 +69,10 @@ Page({
     checkItems: [],
     description: "",
     images: [],
-    inspector: "",
+    signatureImagePath: null,
+    signatureImageUrl: null,
+    companySignatureImagePath: null,
+    companySignatureImageUrl: null,
     casualShootList: [],
     casualShootLoading: false,
     ...createEmptyAbnormalState(),
@@ -78,6 +107,23 @@ Page({
         ? sortCheckItemsForDetail(rawCheckItems)
         : rawCheckItems;
       const images = toUploaderFiles(detail.ckpics);
+
+      const inspectorSignaturePath = this.getSignaturePathFromDetail(
+        detail,
+        "inspector",
+      );
+      const companySignaturePath = this.getSignaturePathFromDetail(
+        detail,
+        "company",
+      );
+      const signatureImageUrl = readonly && isAbsoluteImageUrl(inspectorSignaturePath)
+        ? inspectorSignaturePath
+        : null;
+      const companySignatureImageUrl =
+        readonly && isAbsoluteImageUrl(companySignaturePath)
+          ? companySignaturePath
+        : null;
+
       this.setData({
         taskDetail: {
           ...detail,
@@ -87,11 +133,21 @@ Page({
         readonly,
         checkResult: toCheckResult(detail.ckrs),
         checkItems,
-        inspector: detail.cssign || detail.cksign || detail.checker || "",
+        signatureImageUrl: signatureImageUrl,
+        signatureImagePath: null,
+        companySignatureImageUrl: companySignatureImageUrl,
+        companySignatureImagePath: null,
         description: detail.ckdesc || "",
         images,
         ...createEmptyAbnormalState(),
       });
+      if (readonly) {
+        this.hydrateSignaturePreview(inspectorSignaturePath, "signatureImageUrl");
+        this.hydrateSignaturePreview(
+          companySignaturePath,
+          "companySignatureImageUrl",
+        );
+      }
       this.hydrateDetailImagePreviews(checkItems, images);
     } catch (error) {
       showToast((error && error.message) || "加载详情失败");
@@ -118,7 +174,9 @@ Page({
         try {
           return await this.resolveUploaderFilePreview(file);
         } catch (error) {
-          const path = String((file && file.path) || (file && file.url) || "").trim();
+          const path = String(
+            (file && file.path) || (file && file.url) || "",
+          ).trim();
           const url = String((file && file.url) || "").trim();
           return {
             ...file,
@@ -126,7 +184,7 @@ Page({
             url: isAbsoluteImageUrl(url) ? url : "",
           };
         }
-      })
+      }),
     );
     return resolved.filter((item) => item && item.path);
   },
@@ -137,8 +195,8 @@ Page({
         this.resolveUploaderFilesPreview(images),
         Promise.all(
           (Array.isArray(checkItems) ? checkItems : []).map((item) =>
-            this.resolveUploaderFilesPreview(item.images || [])
-          )
+            this.resolveUploaderFilesPreview(item.images || []),
+          ),
         ),
       ]);
 
@@ -146,7 +204,7 @@ Page({
         (item, index) => ({
           ...item,
           images: resolvedCheckItemsImages[index] || [],
-        })
+        }),
       );
 
       this.setData({
@@ -156,6 +214,38 @@ Page({
     } catch (error) {
       // ignore preview hydration failures
     }
+  },
+
+  async hydrateSignaturePreview(signaturePath, targetField = "signatureImageUrl") {
+    const rawPath = String(signaturePath || "").trim();
+    if (!rawPath || isAbsoluteImageUrl(rawPath)) return;
+
+    try {
+      const previewUrl = await resolveImagePreview(rawPath);
+      if (!previewUrl) return;
+      if (this.data.readonly !== true) return;
+      this.setData({ [targetField]: previewUrl });
+    } catch (error) {
+      // ignore signature preview hydration failures
+    }
+  },
+
+  getSignatureFieldConfig(field) {
+    const target = String(field || "").trim();
+    return SIGNATURE_FIELD_CONFIG[target] || SIGNATURE_FIELD_CONFIG.inspector;
+  },
+
+  getSignaturePathFromDetail(detail, field) {
+    const config = this.getSignatureFieldConfig(field);
+    const source = detail && typeof detail === "object" ? detail : {};
+    const keys = Array.isArray(config.detailKeys) ? config.detailKeys : [];
+
+    for (let index = 0; index < keys.length; index += 1) {
+      const key = keys[index];
+      const candidate = normalizeSignaturePath(source[key]);
+      if (candidate) return candidate;
+    }
+    return "";
   },
 
   goToCasualShootCreate() {
@@ -255,7 +345,7 @@ Page({
 
   onCheckItemAction: editable(function (e) {
     const index = Number(e.currentTarget.dataset.index);
-    const action = String((e.currentTarget.dataset.action || "")).trim();
+    const action = String(e.currentTarget.dataset.action || "").trim();
     if (Number.isNaN(index) || !action) return;
 
     if (action === "normal") {
@@ -342,9 +432,103 @@ Page({
     this.removeUploaderFile("images", e.detail.index);
   }),
 
-  onInspectorChange: editable(function (e) {
-    this.setData({ inspector: getEventValue(e) });
-  }),
+  goToSignature(e) {
+    if (this.data.readonly) return;
+    const { pathKey, urlKey } = this.getSignatureFieldConfig(
+      e && e.currentTarget && e.currentTarget.dataset
+        ? e.currentTarget.dataset.field
+        : "",
+    );
+    wx.navigateTo({
+      url: "/pages/signature/signature",
+      success: (res) => {
+        // 从签名页返回时不刷新随手拍列表，避免无关接口请求
+        this._skipNextShowReload = true;
+        const eventChannel = res && res.eventChannel;
+        if (!eventChannel) return;
+        eventChannel.on("signatureSaved", ({ imagePath } = {}) => {
+          const nextPath = String(imagePath || "").trim();
+          if (!nextPath) return;
+          this.setData({
+            [pathKey]: nextPath,
+            [urlKey]: null,
+          });
+        });
+      },
+    });
+  },
+
+  async resolveSubmitSignaturePath(localPath, fileName) {
+    if (!localPath) return "";
+
+    const { uploaded, failedCount } = await uploadUploaderFiles(
+      {
+        path: localPath,
+        name: fileName,
+      },
+      {
+        showLoading: false,
+      },
+    );
+    if (failedCount > 0 || !uploaded.length) {
+      throw new Error("签名图片上传失败");
+    }
+
+    const uploadedPath = String((uploaded[0] && uploaded[0].path) || "").trim();
+    if (!uploadedPath) {
+      throw new Error("签名图片上传失败");
+    }
+    return uploadedPath;
+  },
+
+  getSubmitSignatureLocalPath(field) {
+    const { pathKey } = this.getSignatureFieldConfig(field);
+    return String(this.data[pathKey] || "").trim();
+  },
+
+  validateSubmitSignatures() {
+    const inspectorConfig = this.getSignatureFieldConfig("inspector");
+    const companyConfig = this.getSignatureFieldConfig("company");
+    if (!this.getSubmitSignatureLocalPath(inspectorConfig.field)) {
+      throw new Error(inspectorConfig.requiredText);
+    }
+    if (!this.getSubmitSignatureLocalPath(companyConfig.field)) {
+      throw new Error(companyConfig.requiredText);
+    }
+  },
+
+  async uploadSubmitSignatures() {
+    const inspectorConfig = this.getSignatureFieldConfig("inspector");
+    const companyConfig = this.getSignatureFieldConfig("company");
+    const inspectorLocalPath = this.getSubmitSignatureLocalPath(
+      inspectorConfig.field,
+    );
+    const companyLocalPath = this.getSubmitSignatureLocalPath(
+      companyConfig.field,
+    );
+    const timestamp = Date.now();
+
+    wx.showLoading({
+      title: "签名上传中",
+      mask: true,
+    });
+    try {
+      const [inspector, companySign] = await Promise.all([
+        this.resolveSubmitSignaturePath(
+          inspectorLocalPath,
+          `${inspectorConfig.uploadNamePrefix}-${timestamp}.png`,
+        ),
+        this.resolveSubmitSignaturePath(
+          companyLocalPath,
+          `${companyConfig.uploadNamePrefix}-${timestamp}.png`,
+        ),
+      ]);
+
+      return { inspector, companySign };
+    } finally {
+      wx.hideLoading();
+    }
+  },
 
   async onSubmit() {
     const {
@@ -353,7 +537,6 @@ Page({
       checkItems,
       description,
       images,
-      inspector,
       submitting,
       readonly,
     } = this.data;
@@ -367,19 +550,27 @@ Page({
     if (checkItems.some((item) => item.status === null)) {
       return showToast("请完成所有检查项");
     }
-    if (!String(inspector || "").trim()) return showToast("请输入巡检人员姓名");
-
-    const payload = buildSubmitPayload({
-      taskDetail,
-      checkResult,
-      checkItems,
-      description,
-      images,
-      inspector,
-    });
+    try {
+      this.validateSubmitSignatures();
+    } catch (error) {
+      return showToast((error && error.message) || "请完成签名");
+    }
 
     this.setData({ submitting: true });
     try {
+      const { inspector: signatureUrl, companySign: companySignatureUrl } =
+        await this.uploadSubmitSignatures();
+
+      const payload = buildSubmitPayload({
+        taskDetail,
+        checkResult,
+        checkItems,
+        description,
+        images,
+        inspector: signatureUrl,
+        companySign: companySignatureUrl,
+      });
+
       const res = await saveTaskForm(payload);
       if (String((res && res.code) || "") !== "0") {
         throw new Error((res && res.msg) || "提交失败");

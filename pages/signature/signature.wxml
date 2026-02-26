@@ -1,0 +1,21 @@
+<view class="signature-page">
+  <canvas
+    id="signature-canvas"
+    canvas-id="signature-canvas"
+    class="signature-canvas"
+    bindtouchstart="onTouchStart"
+    catchtouchmove="onTouchMove"
+    bindtouchend="onTouchEnd" />
+  <view class="float-actions">
+    <view class="float-btn back-btn" bindtap="onBack">
+      <text class="btn-text">取消</text>
+    </view>
+    <view class="float-btn clear-btn" bindtap="onClear">
+      <text class="btn-text">重置</text>
+    </view>
+    <view class="float-btn save-btn" bindtap="onSave">
+      <text class="btn-text">保存</text>
+    </view>
+  </view>
+  <view class="hint-text" wx:if="{{isEmpty}}">请在此处签名</view>
+</view>

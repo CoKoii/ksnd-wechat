@@ -1,0 +1,79 @@
+page {
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+.signature-page {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fff;
+  overflow: hidden;
+}
+
+.signature-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  background: #fff;
+}
+
+.float-actions {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  bottom: calc(12px + constant(safe-area-inset-bottom));
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.float-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 19px;
+  box-sizing: border-box;
+}
+
+.float-btn .btn-text {
+  font-size: 14px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.back-btn {
+  background: #fff;
+  color: #666;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+}
+
+.clear-btn {
+  background: #fff;
+  color: #ff4d4f;
+  border: 1px solid rgba(255, 77, 79, 0.32);
+}
+
+.save-btn {
+  background: #3a7afe;
+  color: #fff;
+}
+
+.hint-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: #c8c8c8;
+  pointer-events: none;
+  letter-spacing: 1px;
+}

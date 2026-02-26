@@ -125,6 +125,7 @@ const buildSubmitPayload = ({
   description,
   images,
   inspector,
+  companySign,
 }) => {
   const payload = {
     task: taskDetail.id || "",
@@ -132,7 +133,8 @@ const buildSubmitPayload = ({
     ckrs: checkResult === "normal" ? "1" : "0",
     ckdesc: String(description || "").trim(),
     ckpics: toCsv(images),
-    cssign: String(inspector || "").trim(),
+    cksign: String(inspector || "").trim(),
+    cosign: String(companySign || "").trim(),
   };
 
   checkItems.forEach((item, index) => {

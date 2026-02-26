@@ -48,25 +48,14 @@ page {
     margin-bottom: 24rpx;
   }
 
-  .textarea-input,
-  .text-input {
+  .textarea-input {
     width: 100%;
     font-size: 28rpx;
     color: $color-text-body;
     line-height: 1.6;
-  }
-
-  .textarea-input {
     min-height: 200rpx;
     background-color: transparent;
     border: none;
-  }
-
-  .text-input {
-    height: 80rpx;
-    background-color: $color-input-bg-soft;
-    border-radius: 8rpx;
-    padding: 0 16rpx;
   }
 
   .task-info {
@@ -398,4 +387,43 @@ page {
       }
     }
   }
+}
+
+// 签名显示区域
+.signature-display {
+  border: 1rpx solid $color-border-base;
+  border-radius: 12rpx;
+  background-color: $color-bg-page-alt;
+  overflow: hidden;
+  position: relative;
+  min-height: 260rpx;
+}
+
+.signature-preview-image {
+  width: 100%;
+  min-height: 260rpx;
+  max-height: 400rpx;
+  display: block;
+  background: #fff;
+}
+
+.signature-empty {
+  min-height: 260rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  gap: 12rpx;
+}
+
+.signature-empty-icon {
+  font-size: 48rpx;
+  opacity: 0.4;
+}
+
+.signature-empty-text {
+  font-size: 26rpx;
+  color: $color-text-muted;
+  letter-spacing: 1rpx;
 }
