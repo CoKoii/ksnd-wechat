@@ -150,7 +150,7 @@
 
   <template
     is="signatureSection"
-    data="{{title: '巡检人员签名', field: 'inspector', path: signatureImagePath, url: signatureImageUrl, readonly: readonly}}" />
+    data="{{title: '巡检人员签字', field: 'inspector', path: signatureImagePath, url: signatureImageUrl, readonly: readonly}}" />
   <template
     is="signatureSection"
     data="{{title: '企业确认签字', field: 'company', path: companySignatureImagePath, url: companySignatureImageUrl, readonly: readonly}}" />
