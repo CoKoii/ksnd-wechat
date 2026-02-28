@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
+    "svg": "/components/svg-icon/svg",
+    "Tabs": "/components/tab/Tabs",
+    "view-money": "/components/comp/view-money"
+  },
+  "navigationStyle": "default",
+  "navigationBarTitleText": "选择区域"
+}

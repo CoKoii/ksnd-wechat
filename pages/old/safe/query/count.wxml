@@ -1,0 +1,33 @@
+<!--pages/safe/query/danger.wxml-->
+<view class="box">
+  <view class="box_main">
+    <view class="box_title">
+      {{dataForm.shopName}}
+    </view>
+    <view class="box_title_red">
+      不合格项：{{dataForm.checkN}}
+    </view>
+    <view class="box_subtitle_red">
+      待整改：{{dataForm.toImprove}}
+    </view>
+    <view class="box_subtitle_red">
+      已整改：{{dataForm.improved}}
+    </view>
+    <view class="box_subtitle_red">
+      复核合格：{{dataForm.finalY}}
+    </view>
+    <view class="box_subtitle_red">
+      复核不合格：{{dataForm.finalN}}
+    </view>
+    <view class="box_title_green">
+      合格项：{{dataForm.checkY}}
+    </view>
+    <view class="box_title_blue">
+      不涉及项：{{dataForm.checkX}}
+    </view>
+
+  </view>
+</view>
+
+
+

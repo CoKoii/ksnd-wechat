@@ -1,0 +1,17 @@
+<wxs module="methods" src="./popicker.wxs"></wxs>
+<view wx:if='{{isShow}}' bind:tap="onCancel" style="background-color: rgba(0, 0, 0, 0.5);position: fixed;bottom: 0;left: 0;right: 0;height: 100%;width: 100%;z-index: 9998;"></view>
+<picker-view hidden="{{!isShow}}"
+    style="background-color: #ffffff;position: fixed;bottom: 0;left: 0;right: 0;height: 300px;width: 100%;z-index: 19999;"
+    indicator-style="height:50px;" value="{{methods.getListIndex(dataValue,dataList)}}" bindchange="selectChange">
+  <picker-view-column>
+    <!-- <view style="line-height: 50px; text-align: center;">
+      --请选择--
+    </view> -->
+    <view wx:for="{{dataList}}" wx:key="index" data-item="{{item}}" style="line-height: 50px; text-align: center;">
+      {{item.name}}{{item.number?'-'+item.number:''}}
+    </view>
+  </picker-view-column>
+  <view style="position: fixed;right: 50rpx;font-size: 30rpx;padding-top: 30rpx;font-weight: 600;" bind:tap="onConfirm">
+   确认
+  </view>
+</picker-view>

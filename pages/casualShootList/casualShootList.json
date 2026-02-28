@@ -2,6 +2,7 @@
   "usingComponents": {
     "casual-shoot-record-list": "/components/casualShootRecordList/casualShootRecordList"
   },
+  "navigationStyle": "default",
   "navigationBarTitleText": "随手拍",
   "disableScroll": true
 }

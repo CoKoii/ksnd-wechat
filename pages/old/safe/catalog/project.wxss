@@ -1,0 +1,25 @@
+@import '/pages/old/app.wxss';
+/* pages/safe/catalog/project.wxss */
+.box {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.box-content {
+  width: 100%;
+  padding: 0 20rpx 30rpx;
+  box-sizing: border-box;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 关键属性：创建3列等宽布局 */
+  gap: 0 50rpx; /* 元素间距 */
+  width: 100%; /* 容器宽度 */
+}
+ 
+.grid-item {
+  text-align: left;
+  padding: 0 10rpx;
+}

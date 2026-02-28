@@ -5,10 +5,11 @@ const {
   getPersistedProjectId,
 } = require("../../services/project/localState");
 const {
+  persistLoginId,
   getPersistedLoginId,
   clearPersistedLoginId,
 } = require("../../services/task/localState");
-const { getToken, clearToken } = require("../../utils/http");
+const { getToken, setToken, clearToken } = require("../../utils/http");
 
 const toText = (value) => String(value || "").trim();
 const SUCCESS_CODE = "0";
@@ -37,6 +38,13 @@ const getKeywordFromEvent = (event, fallbackValue = "") => {
       : fallbackValue;
   return toText(value);
 };
+const pickWelcomeNameFromUserInfo = (userInfo = {}) =>
+  toText(
+    userInfo.userName ||
+      userInfo.realName ||
+      userInfo.realname ||
+      userInfo.nickname,
+  );
 
 const pickProjectName = (item = {}) =>
   toText(item.name || item.pjname || item.label || item.title || item.mc);
@@ -82,6 +90,23 @@ const pickSelectedProject = (projectOptions = [], selectedProjectId = "") => {
   };
 };
 
+const pickSafeDataPagePath = (userType = "", authMap = {}) => {
+  if (userType === "10001002" || userType === "10001006") {
+    return "/pages/old/safe/catalog/region";
+  }
+  if (userType === "10001003" && authMap.grids && authMap.grids.length > 0) {
+    return "/pages/old/safe/catalog/grid";
+  }
+  if (
+    userType === "10001004" &&
+    authMap.projects &&
+    authMap.projects.length > 0
+  ) {
+    return "/pages/old/safe/catalog/project";
+  }
+  return "/pages/old/safe/catalog/shop";
+};
+
 Page({
   data: {
     statusBarHeight: 0,
@@ -94,6 +119,7 @@ Page({
     showProjectPanel: false,
     loadingProjectTree: false,
     authChecking: false,
+    authMap: null,
   },
 
   onLoad() {
@@ -114,10 +140,25 @@ Page({
   },
 
   async ensureLoginAndLoadProfile() {
-    const token = toText(getToken());
+    const token = toText(getToken() || wx.getStorageSync("access_token"));
     if (!token) {
       wx.reLaunch({ url: "/pages/login/login" });
       return false;
+    }
+    setToken(token);
+    wx.setStorageSync("access_token", token);
+
+    const cachedUserInfo = wx.getStorageSync("userInfo");
+    if (cachedUserInfo && typeof cachedUserInfo === "object") {
+      const welcomeName = pickWelcomeNameFromUserInfo(cachedUserInfo);
+      if (welcomeName) {
+        this.setData({ welcomeName });
+      }
+      const userId = toText(cachedUserInfo.userId);
+      if (userId) {
+        persistLoginId(userId);
+      }
+      return true;
     }
 
     const uid = toText(getPersistedLoginId());
@@ -158,8 +199,25 @@ Page({
       const ok = await this.ensureLoginAndLoadProfile();
       if (!ok) return;
       await this.loadProjectTree();
+      await this.loadAuthMap();
     } finally {
       this.setData({ authChecking: false });
+    }
+  },
+
+  async loadAuthMap() {
+    const app = getApp();
+    const oldApi = app && app.api;
+    if (!oldApi || typeof oldApi.reqAuthMap !== "function") return;
+    if (this.data.authMap) return;
+
+    try {
+      const res = await oldApi.reqAuthMap();
+      this.setData({
+        authMap: (res && res.authMap) || null,
+      });
+    } catch (error) {
+      console.error("[home] load authMap failed:", error);
     }
   },
 
@@ -271,6 +329,30 @@ Page({
       selectedProjectId: selected.id,
       selectedProjectName: selected.name,
       showProjectPanel: false,
+    });
+  },
+
+  async onGoSafeData() {
+    const userInfo = wx.getStorageSync("userInfo");
+    if (!userInfo || !userInfo.userType) {
+      wx.navigateTo({
+        url: "/pages/login/login",
+      });
+      return;
+    }
+
+    await this.loadAuthMap();
+    const authMap = this.data.authMap || {};
+    const userType = toText(userInfo.userType);
+    const urlPath = pickSafeDataPagePath(userType, authMap);
+    wx.navigateTo({
+      url: urlPath,
+    });
+  },
+
+  onGoImproveRecord() {
+    wx.navigateTo({
+      url: "/pages/old/safe/query/danger?action=1",
     });
   },
 });

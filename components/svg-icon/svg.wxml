@@ -1,0 +1,3 @@
+<view wx:if="{{svgData}}" class="svg-box" style="width: {{size}};height: {{size}};display: inline-block;" >
+  <view style="width: {{size}};height: {{size}};margin-left: {{shiftx}};margin-top: {{shifty}};background-image:url('{{svgData}}');display: block;  background-size: contain;"></view>
+</view>

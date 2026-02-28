@@ -1,0 +1,23 @@
+<view >
+  <view style="text-align: center;margin-top: 100rpx;">
+    <image style="width: 90%;" src='/assets/images/safe/login.png'></image>
+  </view>
+  <view style="position: fixed;bottom: 200rpx;width: 100vw;">
+      <view class='content'>
+        <view>本服务需要获取手机号,用于绑定账号并办理业务</view>
+        <text>若手机号未注册将进入注册流程，登录/注册即代表同意下方的用户使用协议与隐私政策</text>
+      </view>
+      <view style="margin: 30rpx 0;">
+        <button wx:if="{{!itemChecked}}" class='bottom' type='primary' bind:tap="onGetUserProfile">手机号注册/登录</button>
+        <button wx:if="{{itemChecked}}" class='bottom' type='primary' open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">手机号注册/登录</button>
+        <button wx:if="{{!phoneLogin}}" class='bottom' type='default' bind:tap="goBack">返回</button>
+      </view>
+      <view class='content'>
+        <checkbox checked="{{itemChecked}}" bindtap="onCheckItem"/>
+        我已阅读并同意
+        <view style='color: royalblue;display: inline;' bindtap="onUserItem">《用户使用协议》</view>
+        和
+        <view style='color: royalblue;display: inline;' bindtap="onPrivacyItem">《隐私政策》</view>
+      </view>
+  </view>
+</view>

@@ -1,0 +1,44 @@
+@import '/pages/old/app.wxss';
+/* pages/safe/mine/privacyItem.wxss */
+.item-page {
+  padding: 20rpx;
+}
+
+.item-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  text-align: center;
+  margin: 30rpx 0;
+  color: #333;
+  text-align: center;
+}
+
+.item-h1 {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin: 25rpx 0 15rpx 0;
+  color: #333;
+  text-align: left;
+}
+
+.item-h2 {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #555;
+  text-align: left;
+}
+
+.item-p {
+  font-size: 28rpx;
+  margin: 10rpx 0;
+  color: #666;
+  text-align: left;
+}
+
+.item-pi {
+  font-size: 28rpx;
+  margin: 10rpx 0;
+  color: #666;
+  text-align: left;
+  text-indent: 2em;
+}

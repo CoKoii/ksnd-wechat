@@ -1,0 +1,25 @@
+<!--pages/safe/query/danger.wxml-->
+  <view style="margin-top: 50rpx;"></view>
+<view wx:if="{{activeTab==2}}">
+  <view class="box" wx:for="{{datas[2].dataList}}" wx:key="index" >
+    <view class="box_main" bind:tap="onHandle" data-id="{{item.id}}">
+      <view class="box_title">
+        {{item.companyName}}
+      </view>
+      <!-- <view class="ctx_label" style="text-indent: 1em;font-size: 30rpx;color: crimson;" v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+      <view class="box_title" style="text-indent: 1em;line-height: 30rpx;">
+        {{item.itemName}}
+      </view> -->
+      <view class="box_subtitle_red" >
+        <view style="font-size: 30rpx;" v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+        <view class="ctx_label">
+          {{item.itemName}}
+        </view>
+      </view>
+    </view>
+    <view class="box_right">
+      <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+    </view>
+  </view>
+</view>
+

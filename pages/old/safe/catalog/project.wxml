@@ -1,0 +1,45 @@
+<!--pages/safe/catalog/project.wxml-->
+<view wx:for="{{dataList}}" wx:key="index" >
+  <view class="box" >
+    <view class="box-content">
+      <view style="display: flex;" bind:tap="onHandle" data-id="{{item.id}}" data-auth="{{item.auth}}">
+        <view class="box_main" style="padding-left: 0;">
+          <view class="box_title" style="font-size: 18px;">
+            {{item.name}}
+          </view>
+        </view>
+        <view class="box_right" >
+          <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+        </view>
+      </view>
+      <view class="grid-container">
+        <view class="grid-item">
+          <view class="box_title_red" bind:tap="onCheckN" data-id="{{item.id}}" data-auth="{{item.auth}}">
+            未整改：{{item.toImprove}}
+          </view>
+        </view>
+        <view class="grid-item">
+          <view class="box_title_red" bind:tap="onCheckY" data-id="{{item.id}}" data-auth="{{item.auth}}">
+            已整改{{item.improved}}
+          </view>        
+        </view>
+        <view class="grid-item">
+          <view class="box_title_red" bind:tap="onFinalY" data-id="{{item.id}}" data-auth="{{item.auth}}">
+            复核合格{{item.finalY}}
+          </view>
+        </view>
+        <view class="grid-item">
+          <view class="box_title_red" bind:tap="onFinalN" data-id="{{item.id}}" data-auth="{{item.auth}}">
+            复核不合格{{item.finalN}}
+          </view>
+        </view>
+        <view class="grid-item">
+          <view class="box_title_red" bind:tap="onFinalNtoFinal" data-id="{{item.id}}" data-auth="{{item.auth}}">
+            待再次复核{{item.finalNtoFinal}} 
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view wx:if="{{dataList.length==0}}" class="empty-tip">无数据</view>

@@ -1,0 +1,73 @@
+@import '/pages/old/app.wxss';
+/* pages/gwcustom/main/index.wxss */
+
+.top_banner{
+  width: 100%;height: 300px;
+}
+.todo_btn{
+  width: 80%;margin:0 auto;border: 1px solid #6933fd;border-radius: 5px;text-align: center;font-size: 22px;font-weight: 400;color: #6933fd;line-height: 60px;
+}
+.money_boxs{
+  display: flex;align-items: center;
+}
+.money_box{
+  width: 100vw;
+}
+.money_item{
+  width: 90%;margin:0 auto;border-radius: 5px;border: 1px solid #03529b;
+}
+.money_value{
+  font-size: 36rpx;text-align: center;font-weight: 800;color: #03529b;
+}
+.money_title{
+  font-size: 30rpx;text-align: center;color: #03529b;line-height: 60rpx;
+}
+.money_date{
+  font-size: 20rpx;text-align: center;
+}
+.form-title{
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 5px;
+  padding-left: 10px;
+  color: #03529b;
+  border-left: 5px solid #03529b;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.query_main{
+  border-top: 2px solid #eee;margin-top: 20px;
+}
+.info_box{
+  width: 90%;
+  padding-left: 20px;
+  height: 40px;
+  border-bottom: 1px solid #bbb;
+  margin: 0 auto;
+}
+.info_item{
+  margin: 0 auto;
+  margin-top: 20px;
+  height: 30px;
+  position: relative;
+}
+.item_icon{
+  width:28px;
+  height:28px;
+  position: absolute;
+}
+.item_context{
+  font-size: 20px;
+  line-height: 26px;
+  padding-left: 10px;
+  position: absolute;
+  left: 50px;
+  display: inline;
+}
+.item_icon_right{
+  position: absolute;
+  right: 0;
+  width:28px;
+  height:28px;
+}

@@ -1,0 +1,23 @@
+/* components/Tabs.wxss */
+
+/* 文字横向 */
+.tabs_title{
+  display: flex;
+  justify-content: space-around;
+}
+/* 每个文字居中，且占1份 */
+.title_item{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* flex: 1; */
+  padding: 10rpx 0rpx;
+  font-size: 24rpx;
+  font-weight: 800;
+}
+/* 选中样式 */
+.active{
+  /* color:var(--themeColor); */
+  color: #006eff;
+  border-bottom: 2px solid currentColor;
+}

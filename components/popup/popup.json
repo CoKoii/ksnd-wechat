@@ -1,0 +1,9 @@
+{
+  "component": true,
+  "usingComponents": {
+    "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
+    "mp-half-screen-dialog": "weui-miniprogram/half-screen-dialog/half-screen-dialog",
+    "mp-icon": "weui-miniprogram/icon/icon",
+    "mp-loading": "weui-miniprogram/loading/loading"
+  }
+}

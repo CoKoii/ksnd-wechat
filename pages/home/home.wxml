@@ -68,6 +68,9 @@
   <view class="container">
     <ProjectOverview />
     <TodayInspectSituation />
-    <MyTodo />
+    <MyTodo
+      bind:goSafeData="onGoSafeData"
+      bind:goImproveRecord="onGoImproveRecord"
+    />
   </view>
 </scroll-view>

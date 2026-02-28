@@ -1,0 +1,13 @@
+@import '/pages/old/app.wxss';
+/* pages/safe/catalog/region.wxss */
+.box {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.box-content {
+  width: 100%;
+  padding: 0 20rpx 30rpx;
+  box-sizing: border-box;
+}

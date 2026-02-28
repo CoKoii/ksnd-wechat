@@ -1,0 +1,111 @@
+<view class="box">
+    <view class="box_main">
+      <view class="box_title">
+        {{dataForm.companyName}}
+      </view>
+      <view class="box_title_blue">隐患信息</view>
+      <view class="box_subtitle_red" >
+        <view v-if="{{dataForm.itemMemo}}">{{dataForm.itemMemo}}</view>
+        <view class="ctx_label">
+          {{dataForm.itemName}}
+        </view>
+      </view>
+      <view class="box_ctxs">
+        <view class="ctx1" >
+          <view class="ctx_label">任务名称：</view>
+          <view class="ctx_value">{{dataForm.taskName}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">检查公司：</view>
+          <view class="ctx_value">{{dataForm.createName}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查人员：</view>
+          <view class="ctx_value">{{dataForm.checker}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查时间：</view>
+          <view class="ctx_value">{{dataForm.checkTime}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">隐患级别：</view>
+          <view class="ctx_value">{{dataForm.dangerLevel}}</view>
+        </view> 
+        <view class="ctx1" >
+          <view class="ctx_label">隐患分类：</view>
+          <view class="ctx_value">{{dataForm.categoryPname}}</view>
+          <view class="ctx_value" wx:if="{{dataForm.categoryName}}">->{{dataForm.categoryName}}</view>
+        </view> 
+        <view class="ctx1">
+          <view class="ctx_label">检查备注：</view>
+          <view class="ctx_value">{{dataForm.typeName}}</view>
+        </view>
+        <view class="ctx1">
+          <view class="ctx_label">判定依据：</view>
+          <view class="ctx_value">{{dataForm.dangerLaw}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">隐患图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{dataForm.dangerPics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" data-link="{{file.link}}" data-field='dangerPics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='dangerPics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view>
+        <view class="box_title_blue">整改信息</view>
+        <!-- <view class="ctx1">
+          <view class="ctx_label">整改人员：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-cell__bd">
+            <textarea  data-field="improveWorker" placeholder="请输入整改人员" class="gw_textarea_3" bindinput="formInputChange" value="{{dataForm.improveWorker}}">
+            </textarea>
+          </view>
+        </view> -->
+        <view class="ctx1" >
+          <view class="ctx_require">*</view>
+          <view class="ctx_label">整改说明：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-cell__bd">
+            <textarea  data-field="improveMemo" placeholder="请输入整改说明" class="gw_textarea_5" bindinput="formInputChange" value="{{dataForm.improveMemo}}">
+            </textarea>
+          </view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_require">*</view>
+          <view class="ctx_label" bind:tap="testPic">整改图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles2" style="width: 100%;">
+            <block wx:for="{{dataForm.improvePics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" data-link="{{file.link}}" data-field='improvePics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='improvePics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+            <view class="weui-uploader__input-box" hidden="">
+              <view class="weui-uploader__input" bindtap="chooseImage" data-field='improvePics' ></view>
+            </view>
+          </view>
+        </view>
+        <view class="btn-group" >
+          <view class="btn-red" bindtap="onSubmit">提交整改</view>
+        </view>
+        <view style="height: 100rpx;"></view>
+      </view>
+    </view>
+  </view>

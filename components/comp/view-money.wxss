@@ -1,0 +1,7 @@
+/* components/comp/view-money.wxss */
+.ctx_label{
+  line-height: 30px;word-break: break-all;color:#666;font-size: 12px;display: inline;
+}
+.ctx_value{
+  line-height: 30px;word-break: break-all;font-size: 12px;display: inline;
+}

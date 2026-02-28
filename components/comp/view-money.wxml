@@ -1,0 +1,3 @@
+<!--components/comp/view-money.wxml-->
+<wxs module="methods" src="./view-money.wxs"></wxs>
+<view style="display: inline;">{{methods.formatMoney(value)}}</view>

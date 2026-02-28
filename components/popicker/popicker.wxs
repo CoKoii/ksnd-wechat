@@ -1,0 +1,18 @@
+
+
+var methods = {
+  getListIndex: function(value,list){
+    var index = 0
+    for(var i=0;i<list.length;i++){
+      if(list[i].name===value){
+        index = i
+        break
+      }
+    }
+    return [index]
+  }
+}
+
+module.exports = {
+  getListIndex: methods.getListIndex
+}

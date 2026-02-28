@@ -1,0 +1,86 @@
+
+
+var methods = {
+  formatMoney: function(value){
+    var index = 0
+    for(var i=0;i<list.length;i++){
+      if(list[i].id===value){
+        index = i
+        break
+      }
+    }
+    return [index]
+  },
+  numberFormat: function(number, decimals, dec_point, thousands_sep){
+    var reg1= getRegExp('[^0-9+-Ee.]','g')
+    number = (number + '').replace(reg1, '');
+    var n = !isFinite(+number) ? 0 : +number,
+      prec = !isFinite(+decimals) ? 2 : Math.abs(decimals),
+      sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+      dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+      s = '',
+      toFixedFix = function (n, prec) {
+        var k = Math.pow(10, prec);
+        return '' + Math.ceil(n * k) / k;
+      };
+  
+    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    var reg2 = getRegExp('(-?\d+)(\d{3})');
+    while (reg2.test(s[0])) {
+      s[0] = s[0].replace(re, "$1" + sep + "$2");
+    }
+  
+    if ((s[1] || '').length < prec) {
+      s[1] = s[1] || '';
+      s[1] += new Array(prec - s[1].length + 1).join('0');
+    }
+    return s.join(dec);
+  },
+  
+  moneyFormat: function(num){
+    if(isNaN(num) || parseFloat(num) !== Number(num)){
+      return ''
+    }
+    num = parseFloat(num).toFixed(2)
+    var num = (num || 0).toString(), result = '';
+    while (num.length > 3) {
+      result = ',' + num.slice(-3) + result;
+      num = num.slice(0, num.length - 3);
+    }
+    if (num) { result = num + result; }
+    result = result.replace(',.', '.')
+    return result;
+    // var reg1= getRegExp('[^0-9+-Ee.]','g')
+    // number = (number + '').replace(reg1, '');
+    // var n = !isFinite(+number) ? 0 : +number,
+    // prec = 2,
+    // sep = ',',
+    // dec = '.',
+    // s = '',
+    // toFixedFix = function (n, prec) {
+    //   var k = Math.pow(10, prec);
+    //   return '' + Math.ceil(n * k) / k;
+    // };
+  
+    // s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+    // var reg2 = getRegExp('(-?\d+)(\d{3})');
+    // while (reg2.test(s[0])) {
+    //   s[0] = s[0].replace(reg2, "$1" + sep + "$2");
+    // }
+  
+    // if ((s[1] || '').length < prec) {
+    //   s[1] = s[1] || '';
+    //   s[1] += [prec - s[1].length + 1].join('0');
+    // }
+    // return s.join(dec);
+  },
+  
+  moneyParse: function(moneyStr){
+    //return Number(moneyStr.replace(/,/g, ''));
+  },
+}
+
+module.exports = {
+  formatMoney: methods.moneyFormat,
+  parseMoney: methods.moneyParse
+}

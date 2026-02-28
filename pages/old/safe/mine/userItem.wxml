@@ -1,0 +1,76 @@
+<view class="item-page">
+  <!-- 标题 -->
+  <view class="item-title">华远直巡用户使用协议</view>
+  <view class="item-p" style="float: right;">生效日期：2025年04月08日</view>
+
+  <!-- 协议确认与接受 -->
+  <view class="item-h1" style="margin-top: 100rpx;">一、协议确认与接受</view>
+  <view class="item-p">1. 本协议是用户（以下简称"您"）与华远直巡（以下简称"本平台"）之间关于使用本平台服务的法律协议。</view>
+  <view class="item-p">2. 您在使用本平台服务前，应当认真阅读并遵守本协议。请您务必审慎阅读、充分理解各条款内容。</view>
+
+  <!-- 账号注册与使用 -->
+  <view class="item-h1">二、账号注册与使用</view>
+  <view class="item-p">1. 您需使用中国大陆手机号进行账号注册，并通过短信验证码完成绑定。</view>
+  <view class="item-p">2. 您承诺提供的手机号真实、准确、完整，并及时更新注册信息。</view>
+  <view class="item-p">3. 本平台将根据您的身份认证信息为您分配相应权限：</view>
+  <view class="item-p">- <text class="item-h2">普通用户</text>：可提交隐患信息</view>
+  <view class="item-p">- <text class="item-h2">商铺用户</text>：可查看并整改与本商铺相关的隐患</view>
+  <view class="item-p">- <text class="item-h2">安全员</text>：可复核隐患整改情况</view>
+  <view class="item-p">- <text class="item-h2">管理员</text>：可查看所有隐患信息并进行统计分析</view>
+
+  <!-- 用户权限与责任 -->
+  <view class="item-h1">三、用户权限与责任</view>
+  
+  <view class="item-p">1. <text class="item-h2">普通用户权限</text>：</view>
+  <view class="item-p">- 可拍摄上传隐患照片</view>
+  <view class="item-p">- 可填写隐患描述信息</view>
+  <view class="item-p">- 可定位隐患位置</view>
+  <view class="item-p">- 可查看已提交隐患的处理进度</view>
+
+  <view class="item-p">2. <text class="item-h2">商铺用户权限</text>：</view>
+  <view class="item-p">- 可接收本商铺相关隐患通知</view>
+  <view class="item-p">- 可提交隐患整改方案</view>
+  <view class="item-p">- 可上传整改完成证明</view>
+  <view class="item-p">- 可申请隐患复核</view>
+
+  <view class="item-p">3. <text class="item-h2">安全员权限</text>：</view>
+  <view class="item-p">- 可审核隐患信息的真实性</view>
+  <view class="item-p">- 可复核整改完成情况</view>
+  <view class="item-p">- 可对整改不合格的隐患提出修改意见</view>
+  <view class="item-p">- 可关闭已整改完成的隐患</view>
+
+  <view class="item-p">4. <text class="item-h2">管理员权限</text>：</view>
+  <view class="item-p">- 可查看所有隐患信息</view>
+  <view class="item-p">- 可进行隐患数据统计分析</view>
+  <view class="item-p">- 可导出隐患报表</view>
+  <view class="item-p">- 可管理用户账号权限</view>
+
+  <!-- 隐私保护 -->
+  <view class="item-h1">四、隐私保护</view>
+  <view class="item-p">1. 本平台将严格保护您的手机号等个人信息，未经您同意不会向第三方披露。</view>
+  <view class="item-p">2. 为提供服务需要，您的部分信息可能会在隐患处理流程中向相关方展示。</view>
+
+  <!-- 使用规则 -->
+  <view class="item-h1">五、使用规则</view>
+  <view class="item-p">1. 您承诺提交的隐患信息真实、准确，不故意捏造或歪曲事实。</view>
+  <view class="item-p">2. 您不得利用本平台从事任何违法违规活动。</view>
+  <view class="item-p">3. 您应妥善保管账号密码，不得转让或出借给他人使用。</view>
+
+  <!-- 服务变更与终止 -->
+  <view class="item-h1">六、服务变更与终止</view>
+  <view class="item-p">1. 本平台有权根据业务需要调整服务内容或终止服务。</view>
+  <view class="item-p">2. 如您违反本协议规定，本平台有权暂停或终止为您提供服务。</view>
+
+  <!-- 法律适用与争议解决 -->
+  <view class="item-h1">七、法律适用与争议解决</view>
+  <view class="item-p">1. 本协议适用中华人民共和国法律。</view>
+  <view class="item-p">2. 因本协议引起的争议，双方应友好协商解决；协商不成的，任何一方可向本平台所在地有管辖权的人民法院提起诉讼。</view>
+
+  <!-- 其他条款 -->
+  <view class="item-h1">八、其他条款</view>
+  <view class="item-p">1. 本协议自您勾选"同意"并成功注册账号之日起生效。</view>
+  <view class="item-p">2. 本平台有权根据需要修改本协议条款，修改后的协议将在平台公布后生效。</view>
+
+  <view class="item-h1">请您再次确认已阅读并同意上述全部条款后再使用本平台服务。</view>
+  <view style="height: 100rpx;"></view>
+</view>

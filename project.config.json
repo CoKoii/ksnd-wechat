@@ -29,13 +29,15 @@
     "swc": false,
     "disableSWC": true,
     "disableUseStrict": false,
-    "useCompilerPlugins": ["sass"]
+    "useCompilerPlugins": [
+      "sass"
+    ]
   },
   "condition": {},
   "editorSetting": {
     "tabIndent": "auto",
     "tabSize": 2
   },
-  "appid": "wx10804721566a0c18",
+  "appid": "wx1cb63856d303ebac",
   "simulatorPluginLibVersion": {}
 }

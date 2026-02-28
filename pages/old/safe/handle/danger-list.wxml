@@ -1,0 +1,347 @@
+<view class="tabs-wrap">
+  <Tabs tabs="{{tablist}}" active="{{activeTab}}" bindtabSwitch="getTabsItemChange"></Tabs>
+</view>
+<view wx:if="{{activeTab==0}}">
+  <view class="box" wx:for="{{datas[0].dataList}}" wx:key="index" >
+    <view class="box_main" bind:tap="onHandle" >
+      <view class="box_title">
+        {{item.companyName}}
+      </view>
+      <view class="box_title_blue">隐患信息</view>
+      <view class="box_subtitle_red" >
+        <view v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+        <view class="ctx_label">
+          {{item.itemName}}
+        </view>
+      </view>
+      <view class="box_ctxs">
+        <view class="ctx1" >
+          <view class="ctx_label">任务名称：</view>
+          <view class="ctx_value">{{item.taskName}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">检查公司：</view>
+          <view class="ctx_value">{{item.createName}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查人员：</view>
+          <view class="ctx_value">{{item.checker}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查时间：</view>
+          <view class="ctx_value">{{item.checkTime}}</view>
+        </view>
+        <!-- <view class="ctx" >
+          <view class="ctx_label">隐患级别：</view>
+          <view class="ctx_value">{{item.dangerLevel}}</view>
+        </view> 
+        <view class="ctx1" >
+          <view class="ctx_label">隐患分类：</view>
+          <view class="ctx_value">{{item.categoryPname}}</view>
+          <view class="ctx_value" wx:if="{{item.categoryName}}">->{{item.categoryName}}</view>
+        </view> 
+        <view class="ctx1">
+          <view class="ctx_label">检查备注：</view>
+          <view class="ctx_value">{{item.typeName}}</view>
+        </view>
+        <view class="ctx1">
+          <view class="ctx_label">判定依据：</view>
+          <view class="ctx_value">{{item.dangerLaw}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">隐患图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{item.dangerPics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" id="{{file.link}}" data-index='{{index}}' data-field='dangerPics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='dangerPics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view> -->
+        <view class="btn-group" >
+          <view wx:if="{{showImproveBtn}}" class="btn-red" bindtap="onImprove" data-id="{{item.id}}" data-auth="{{showImproveBtn}}">整改</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{datas[0].dataList.length==0}}" class="empty-tip">无数据</view>
+</view>
+<view wx:if="{{activeTab==1}}">
+  <view class="box" wx:for="{{datas[1].dataList}}" wx:key="index" >
+    <view class="box_main" bind:tap="onHandle" >
+      <view class="box_title">
+        {{item.companyName}}
+      </view>
+      <view class="box_title_blue">隐患信息</view>
+      <view class="box_subtitle_red" >
+        <view v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+        <view class="ctx_label">
+          {{item.itemName}}
+        </view>
+      </view>
+      <view class="box_ctxs">
+        <view class="ctx1" >
+          <view class="ctx_label">任务名称：</view>
+          <view class="ctx_value">{{item.taskName}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">检查公司：</view>
+          <view class="ctx_value">{{item.createName}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查人员：</view>
+          <view class="ctx_value">{{item.checker}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查时间：</view>
+          <view class="ctx_value">{{item.checkTime}}</view>
+        </view>
+        <!-- <view class="ctx" >
+          <view class="ctx_label">隐患级别：</view>
+          <view class="ctx_value">{{item.dangerLevel}}</view>
+        </view> 
+        <view class="ctx1" >
+          <view class="ctx_label">隐患分类：</view>
+          <view class="ctx_value">{{item.categoryPname}}</view>
+          <view class="ctx_value" wx:if="{{item.categoryName}}">->{{item.categoryName}}</view>
+        </view> 
+        <view class="ctx1">
+          <view class="ctx_label">检查备注：</view>
+          <view class="ctx_value">{{item.typeName}}</view>
+        </view>
+        <view class="ctx1">
+          <view class="ctx_label">判定依据：</view>
+          <view class="ctx_value">{{item.dangerLaw}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">隐患图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{item.dangerPics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" id="{{file.link}}" data-index='{{index}}' data-field='dangerPics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='dangerPics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view>
+        <view class="box_title_blue">整改信息</view>
+        <view class="ctx1" >
+          <view class="ctx_label">整改图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{item.improvePics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" id="{{file.link}}" data-index='{{index}}' data-field='improvePics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='improvePics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view> -->
+        <view class="btn-group" >
+          <view wx:if="{{showImproveBtn}}" class="btn-red" bindtap="onImprove" data-id="{{item.id}}" data-auth="{{showImproveBtn}}">重新整改</view>
+          <view wx:if="{{showFinalBtn}}" class="btn-blue" bindtap="onFinal" data-id="{{item.id}}" data-auth="{{showFinalBtn}}">复核</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{datas[1].dataList.length==0}}" class="empty-tip">无数据</view>
+</view>
+<view wx:if="{{activeTab==2}}">
+  <view class="box" wx:for="{{datas[2].dataList}}" wx:key="index" >
+    <view class="box_main" bind:tap="onHandle" >
+      <view class="box_title">
+        {{item.companyName}}
+      </view>
+      <view class="box_title_blue">隐患信息</view>
+      <view class="box_subtitle_red" >
+        <view v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+        <view class="ctx_label">
+          {{item.itemName}}
+        </view>
+      </view>
+      <view class="box_ctxs">
+        <view class="ctx1" >
+          <view class="ctx_label">任务名称：</view>
+          <view class="ctx_value">{{item.taskName}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">检查公司：</view>
+          <view class="ctx_value">{{item.createName}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查人员：</view>
+          <view class="ctx_value">{{item.checker}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查时间：</view>
+          <view class="ctx_value">{{item.checkTime}}</view>
+        </view>
+        <!-- <view class="ctx" >
+          <view class="ctx_label">隐患级别：</view>
+          <view class="ctx_value">{{item.dangerLevel}}</view>
+        </view> 
+        <view class="ctx1" >
+          <view class="ctx_label">隐患分类：</view>
+          <view class="ctx_value">{{item.categoryPname}}</view>
+          <view class="ctx_value" wx:if="{{item.categoryName}}">->{{item.categoryName}}</view>
+        </view> 
+        <view class="ctx1">
+          <view class="ctx_label">检查备注：</view>
+          <view class="ctx_value">{{item.typeName}}</view>
+        </view>
+        <view class="ctx1">
+          <view class="ctx_label">判定依据：</view>
+          <view class="ctx_value">{{item.dangerLaw}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">隐患图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{item.dangerPics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" data-link="{{file.link}}" data-field='dangerPics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='dangerPics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view>
+        <view class="box_title_blue">整改信息</view>
+        <view class="ctx1" >
+          <view class="ctx_label">整改图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{item.improvePics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" id="{{file.link}}" data-index='{{index}}' data-field='improvePics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='improvePics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view>
+        <view class="box_title_blue">复核信息</view>
+        <view class="ctx1" >
+          <view class="ctx_label">复核图片：</view>
+        </view>
+        <view class="ctx1" >
+          <view class="weui-uploader__files" id="uploaderFiles" style="width: 100%;">
+            <block wx:for="{{item.finalPics_files}}" wx:for-item="file" wx:key="*this">
+              <view wx:if="{{file.type==='image'}}" class="weui-uploader__file" >
+                <image class="weui-uploader__img" src="{{file.link}}" mode="aspectFill" id="{{file.link}}" data-index='{{index}}' data-field='finalPics'  bindtap="previewImage"/>
+              </view>
+              <view wx:else class="weui-uploader__file" bindtap="downloadFile" data-file='{{file.file}}' data-field='finalPics' data-link='{{file.link}}'>
+                <text style="color: royalblue;font-size: small;word-break: break-all;">
+                  {{file.name}}
+                </text>
+              </view>
+            </block>
+          </view>
+        </view> -->
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{datas[2].dataList.length==0}}" class="empty-tip">无数据</view>
+</view>
+<view wx:if="{{activeTab==3}}">
+  <view class="box" wx:for="{{datas[3].dataList}}" wx:key="index" >
+    <view class="box_main" bind:tap="onHandle" >
+      <view class="box_title">
+        {{item.companyName}}
+      </view>
+      <view class="box_title_blue">隐患信息</view>
+      <view class="box_subtitle_red" >
+        <view v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+        <view class="ctx_label">
+          {{item.itemName}}
+        </view>
+      </view>
+      <view class="box_ctxs">
+        <view class="ctx1" >
+          <view class="ctx_label">任务名称：</view>
+          <view class="ctx_value">{{item.taskName}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">检查公司：</view>
+          <view class="ctx_value">{{item.createName}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查人员：</view>
+          <view class="ctx_value">{{item.checker}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查时间：</view>
+          <view class="ctx_value">{{item.checkTime}}</view>
+        </view>
+      </view>
+      <view class="btn-group" >
+        <view wx:if="{{showImproveBtn}}" class="btn-red" bindtap="onImprove" data-id="{{item.id}}" data-auth="{{showImproveBtn}}">重新整改</view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{datas[3].dataList.length==0}}" class="empty-tip">无数据</view>
+</view>
+<view wx:if="{{activeTab==4}}">
+  <view class="box" wx:for="{{datas[4].dataList}}" wx:key="index" >
+    <view class="box_main" bind:tap="onHandle" >
+      <view class="box_title">
+        {{item.companyName}}
+      </view>
+      <view class="box_title_blue">隐患信息</view>
+      <view class="box_subtitle_red" >
+        <view v-if="{{item.itemMemo}}">{{item.itemMemo}}</view>
+        <view class="ctx_label">
+          {{item.itemName}}
+        </view>
+      </view>
+      <view class="box_ctxs">
+        <view class="ctx1" >
+          <view class="ctx_label">任务名称：</view>
+          <view class="ctx_value">{{item.taskName}}</view>
+        </view>
+        <view class="ctx1" >
+          <view class="ctx_label">检查公司：</view>
+          <view class="ctx_value">{{item.createName}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查人员：</view>
+          <view class="ctx_value">{{item.checker}}</view>
+        </view>
+        <view class="ctx" >
+          <view class="ctx_label">检查时间：</view>
+          <view class="ctx_value">{{item.checkTime}}</view>
+        </view>
+      </view>
+      <view class="btn-group" >
+        <view wx:if="{{showImproveBtn}}" class="btn-red" bindtap="onImprove" data-id="{{item.id}}" data-auth="{{showImproveBtn}}">重新整改</view>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{datas[4].dataList.length==0}}" class="empty-tip">无数据</view>
+</view>

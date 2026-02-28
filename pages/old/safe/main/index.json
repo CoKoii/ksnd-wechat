@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "view-money": "/components/comp/view-money",
+    "svg": "/components/svg-icon/svg"
+  },
+  "navigationStyle": "default",
+  "navigationBarTitleText": ""
+}

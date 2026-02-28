@@ -1,0 +1,65 @@
+<!--pages/safe/catalog/shop.wxml-->
+<view class="page__bd">
+  <view class="search">
+    <mp-searchbar ext-class="search-bar" placeholder="商铺名称或地址关键词" cancelText="取消"  throttle="1000" bindselectresult="onSelectResult" search="{{doSearch}}"/>
+  </view>
+  <view wx:for="{{dataList}}" wx:key="index" >
+    <view class="box" bind:tap="onHandle" data-id="{{item.id}}" data-auth="{{item.auth}}">
+      <view class="box_main" >
+        <view class="box_title">
+          {{item.name}}
+          <!-- <view wx:if="{{item.auth}}" class="tag_normal">可查阅</view>
+          <view wx:if="{{item.check}}" class="tag_normal">可复核</view> -->
+        </view>
+        <view class="box_ctxs">
+          <view class="ctx1" >
+            <view class="ctx_label">地址：</view>
+            <view class="ctx_value">{{item.address}}</view>
+          </view>
+          <view class="ctx" >
+            <view class="ctx_label">联系人：</view>
+            <view class="ctx_value">{{item.linkman}}</view>
+          </view>
+          <view class="ctx" >
+            <view class="ctx_label">电话：</view>
+            <view class="ctx_value">{{item.phone}}</view>
+          </view> 
+          <view class="ctx1">
+            <view class="ctx_label">商铺类型：</view>
+            <view class="ctx_value">{{item.typeName}}</view>
+          </view>
+          <view class="ctx1 box_title_red">
+            不合格项：{{item.checkN}}
+          </view>
+          <view class="tab2" >
+            <view class="tab_label">待整改：</view>
+            <view class="tab_value">{{item.toImprove}}</view>
+          </view>
+          <view class="tab2" >
+            <view class="tab_label">已整改：</view>
+            <view class="tab_value">{{item.improved}}</view>
+          </view>
+          <view class="tab2" >
+            <view class="tab_label">复核合格：</view>
+            <view class="tab_value">{{item.finalY}}</view>
+          </view>
+          <view class="tab2" >
+            <view class="tab_label">复核不合格：</view>
+            <view class="tab_value">{{item.finalN}}</view>
+          </view>
+          <view class="ctx1 box_title_green">
+            合格项：{{item.checkY}}
+          </view>
+          <view class="ctx1 box_title_blue">
+            不涉及项：{{item.checkX}}
+          </view>
+        </view>
+      </view>
+      <view class="box_right">
+        <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{dataList.length==0}}" class="empty-tip">无数据</view>
+</view>
+

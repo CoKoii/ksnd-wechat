@@ -1,22 +1,18 @@
 <view class="my-todo">
-  <view class="todo-entry" bindtap="goToTodoList" hover-class="todo-entry-hover" hover-stay-time="90">
+  <view
+    class="todo-entry"
+    wx:for="{{entries}}"
+    wx:key="key"
+    data-action="{{item.action}}"
+    bindtap="onEntryTap"
+    hover-class="todo-entry-hover"
+    hover-stay-time="90"
+  >
     <view class="entry-content">
       <view class="entry-title-row">
-        <view class="entry-title">我的任务</view>
+        <view class="entry-title">{{item.title}}</view>
       </view>
-      <view class="entry-desc">查看并处理当前待办任务</view>
-    </view>
-    <view class="entry-arrow">
-      <van-icon name="arrow" color="#999" size="20px" />
-    </view>
-  </view>
-
-  <view class="todo-entry" bindtap="goToCasualShootList" hover-class="todo-entry-hover" hover-stay-time="90">
-    <view class="entry-content">
-      <view class="entry-title-row">
-        <view class="entry-title">随手拍</view>
-      </view>
-      <view class="entry-desc">进入随手拍列表</view>
+      <view class="entry-desc">{{item.desc}}</view>
     </view>
     <view class="entry-arrow">
       <van-icon name="arrow" color="#999" size="20px" />

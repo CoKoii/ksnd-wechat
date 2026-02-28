@@ -1,0 +1,30 @@
+<!--pages/gwcustom/main/index.wxml-->
+<view>
+  <image class="top_banner" src="/assets/images/safe/banner.jpg"/>
+</view>
+<view class="todo_box">
+  <view class="todo_btn" bind:tap="onHandleDanger">安全隐患数据</view>
+</view>
+<view class="query_main">
+  <view class="info_box" bind:tap="onImproveRecord">
+    <view class="info_item">
+      <svg src="/assets/svgs/improve.svg" color="#6933fd" size="50rpx"></svg>
+      <view class="item_context" >整改记录</view>
+      <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+    </view>
+  </view>
+  <!-- <view class="info_box" bind:tap="onFinalRecord">
+    <view class="info_item">
+      <svg src="/assets/svgs/final.svg" color="#6933fd" size="50rpx"></svg>
+      <view class="item_context" >复核记录</view>
+      <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+    </view>
+  </view>
+  <view class="info_box" bind:tap="onShopCount">
+    <view class="info_item">
+      <svg src="/assets/svgs/shop.svg" color="#6933fd" size="50rpx"></svg>
+      <view class="item_context" >商铺隐患统计</view>
+      <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+    </view>
+  </view> -->
+</view>

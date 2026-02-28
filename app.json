@@ -8,7 +8,24 @@
     "pages/signature/signature",
     "pages/casualShootList/casualShootList",
     "pages/casualShootCreate/casualShootCreate",
-    "pages/chat/chat"
+    "pages/chat/chat",
+    "pages/old/safe/mine/index",
+    "pages/old/safe/mine/welcome",
+    "pages/old/safe/mine/bindUser",
+    "pages/old/safe/main/index",
+    "pages/old/safe/query/danger",
+    "pages/old/safe/query/shop",
+    "pages/old/safe/catalog/region",
+    "pages/old/safe/catalog/grid",
+    "pages/old/safe/catalog/project",
+    "pages/old/safe/catalog/shop",
+    "pages/old/safe/handle/danger-list",
+    "pages/old/safe/handle/danger-improve",
+    "pages/old/safe/handle/danger-final",
+    "pages/old/safe/query/detail",
+    "pages/old/safe/query/count",
+    "pages/old/safe/mine/privacyItem",
+    "pages/old/safe/mine/userItem"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -38,10 +55,19 @@
         "pagePath": "pages/chat/chat",
         "iconPath": "/assets/chat.png",
         "selectedIconPath": "/assets/chat-active.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/old/safe/mine/index",
+        "iconPath": "/assets/images/tab/mine.png",
+        "selectedIconPath": "/assets/images/tab/mine_active.png"
       }
     ]
   },
   "componentFramework": "glass-easel",
+  "useExtendedLib": {
+    "weui": true
+  },
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"
 }

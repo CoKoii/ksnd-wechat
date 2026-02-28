@@ -2,5 +2,6 @@
   "usingComponents": {
     "van-uploader": "@vant/weapp/uploader/index"
   },
+  "navigationStyle": "default",
   "navigationBarTitleText": "随手拍"
 }

@@ -1,0 +1,54 @@
+<!--pages/gwcustom/mine/index.wxml-->
+<mp-toptips msg="{{error}}" type="error" show="{{error}}"></mp-toptips>
+<view >
+  <view class="bg_top"></view>
+  <view class="info_box">
+    <view wx:if="{{!isLogin}}" bind:tap="onLogin">
+      <view class="head_box" style="background-image: url('{{avatarUrl}}');background-size: contain;"></view>
+      <view class="info_title">点击登录</view>
+    </view>
+    <view wx:if="{{isLogin}}" style="margin-top: 80rpx;">
+      <!-- <view wx:if="{{avatar}}" class="head_box" style="background-image: url('{{avatar}}');background-size: contain;"></view>
+      <view wx:if="{{userName}}" class="info_title">{{userName}}</view> -->
+      <button open-type="chooseAvatar" style="background: none;" bind:chooseavatar="onAlterAvatar">
+        <view class="head_box"  style="background-image: url('{{avatarUrl}}');background-size: contain;"></view>
+      </button> 
+      <input type="nickname" class="info_title" value="{{userName}}" placeholder="请输入昵称" bindblur="onAlterName"/>
+      <view style="height: 50rpx;"></view>
+      <view class="info_item">
+        <svg src="/assets/svgs/number.svg" color="#666" size="35rpx"></svg>
+        <view class="item_title"></view>
+        <view class="item_context">{{userCode}}</view>
+      </view>
+      <view class="info_item">
+        <svg src="/assets/svgs/phone.svg" color="#666" size="35rpx"></svg>
+        <view class="item_title"></view>
+        <view class="item_context">{{phone}}</view>
+      </view>
+      <view class="info_item">
+        <svg src="/assets/svgs/role.svg" color="#666" size="35rpx"></svg>
+        <view class="item_title"></view>
+        <view class="item_context">{{userTypeName}}</view>
+      </view>
+      <!-- <view class="oper_box">
+        <view bind:tap="onLogout" style="border:1px solid #000;padding: 20rpx;border-radius: 10rpx;">
+          <svg src="/assets/svgs/logout.svg" color="#666" size="35rpx"></svg>注销
+        </view>
+      </view> -->
+    </view>
+    <view style="margin-top: 380rpx;">
+      <!-- <view wx:if="{{!isLogin}}" class="todo_box">
+        <view class="todo_btn" bind:tap="onLogin">
+          <svg src="/assets/svgs/login.svg" color="#6933fd" shifty="5rpx" shiftx="-5rpx" size="40rpx"></svg>
+          授权登录
+        </view>
+      </view> -->
+      <view  wx:if="{{isLogin}}" class="todo_box">
+        <view class="todo_btn" bind:tap="onUnBindUser">
+          <svg src="/assets/svgs/logout.svg" color="#6933fd" size="40rpx" shifty="10rpx" shiftx="-10rpx" ></svg>
+          注销
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

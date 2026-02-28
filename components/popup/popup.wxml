@@ -1,0 +1,41 @@
+<!--components/select/common/popup.wxml-->
+<mp-half-screen-dialog 
+    extClass="popup-dialog"
+    buttons="{{dialogBtns}}"
+    bindbuttontap="onDialogBtnTab"
+    show="{{isShow}}"
+    maskClosable="{{true}}" 
+    title="{{name}}" 
+  >
+  <view slot="desc" class="page__bd">
+    <scroll-view style="height: 45vh;" scroll-y="true">
+      <view class="weui-search-bar {{searchUrl ? 'weui-search-bar_focusing' : ''}}" wx:if="{{searchUrl}}">
+        <form class="weui-search-bar__form" aria-role="combobox" aria-haspopup="true"
+          aria-expanded="{{inputVal.length > 0 ? 'true' : 'false'}}" aria-owns="searchResult">
+          <view class="weui-search-bar__box">
+            <icon class="weui-icon-search" size="12" type="search" role="img"></icon>
+            <input aria-controls="searchResult" type="text" class="weui-search-bar__input" placeholder="搜索"
+              value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+            <view aria-role="button" aria-label="清除" class="weui-icon-clear" wx:if="{{inputVal.length > 0}}"
+              bindtap="clearInput"></view>
+          </view>
+          <label class="weui-search-bar__label" bindtap="showInput">
+            <icon class="weui-icon-search" size="12" type="search" role="img"></icon>
+            <span class="weui-search-bar__text">搜索</span>
+          </label>
+        </form>
+        <view aria-role="button" class="weui-search-bar__cancel-btn" bindtap="hideInput">取消</view>
+      </view>
+      <view aria-role="listbox" id="searchResult" class="weui-cells searchbar-result" wx:if="{{dataList.length > 0}}">
+        <radio-group bindchange="radioChange">
+            <label class="radio-label" wx:for="{{dataList}}" wx:key="name">
+              <view role="option" class="weui-cell weui-cell_active weui-cell_access" data-item="{{item}}">
+                <radio value="{{item.id}}" checked="{{dataValue===item.id||item.checked}}">{{item.name}}-{{item.number}}</radio>
+              </view>
+            </label>
+        </radio-group>
+      </view>
+    </scroll-view>
+  </view>
+  <mp-loading show="{{loading}}"></mp-loading>
+</mp-half-screen-dialog>

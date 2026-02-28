@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
+    "svg": "/components/svg-icon/svg",
+    "Tabs": "/components/tab/Tabs",
+    "view-money": "/components/comp/view-money"
+  },
+  "onReachBottomDistance": 100,
+  "enablePullDownRefresh": true,
+  "navigationStyle": "default",
+  "navigationBarTitleText": "选择项目"
+}

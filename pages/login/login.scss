@@ -57,26 +57,14 @@
   color: $color-text-weak;
 }
 
-.field {
-  margin-top: 22rpx;
-}
-
-.label {
-  display: block;
-  margin-bottom: 12rpx;
-  font-size: 24rpx;
-  color: $color-text-weak;
-}
-
-.input {
-  height: 88rpx;
-  padding: 0 24rpx;
+.tip-block {
+  padding: 20rpx;
   border-radius: $radius-sm;
-  border: 1px solid $color-border-input;
-  font-size: 30rpx;
-  color: $color-text-main;
-  box-sizing: border-box;
-  background: $color-input-bg;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 24rpx;
+  color: #475569;
+  line-height: 1.6;
 }
 
 .submit-btn {
@@ -92,4 +80,21 @@
 
 .submit-btn::after {
   border: none;
+}
+
+.agreement-row {
+  margin-top: 24rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 10rpx;
+}
+
+.agreement-text {
+  color: $color-text-weak;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.agreement-link {
+  color: #1d4ed8;
 }

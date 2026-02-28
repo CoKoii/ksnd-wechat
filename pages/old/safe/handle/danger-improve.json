@@ -1,0 +1,12 @@
+{
+  "usingComponents": {
+    "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
+    "svg": "/components/svg-icon/svg",
+    "Tabs": "/components/tab/Tabs",
+    "view-money": "/components/comp/view-money",
+    "popup": "/components/popup/popup",
+    "popicker": "/components/popicker/popicker"
+  },
+  "navigationStyle": "default",
+  "navigationBarTitleText": "隐患整改"
+}

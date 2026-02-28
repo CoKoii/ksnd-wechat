@@ -1,0 +1,29 @@
+<!--pages/safe/catalog/shop.wxml-->
+<view wx:for="{{dataList}}" wx:key="index" >
+  <view class="box" >
+    <view class="box-content">
+      <view style="display: flex;" bind:tap="onHandle" data-id="{{item.id}}" data-auth="{{item.auth}}">
+        <view class="box_main" style="padding-left: 0;">
+          <view class="box_title" style="font-size: 18px;">
+            {{item.name}}
+          </view>
+        </view>
+        <view class="box_right" >
+          <svg class="item_icon_right" src="/assets/svgs/go_right.svg" color="#bbb" size="60rpx"></svg>
+        </view>
+      </view>
+      <view bind:tap="onCheckN" data-id="{{item.id}}" data-auth="{{item.auth}}">
+        <view class="box_title_red" style="display: inline;">
+          未整改：{{item.toImprove}}
+        </view>
+        <view class="box_title_red" style="display: inline;margin-left: 80rpx;">
+          已整改{{item.improved}}
+        </view>
+        <view class="box_title_red" style="display: inline;margin-left: 80rpx;">
+          复核合格{{item.finalY}}
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+<view wx:if="{{dataList.length==0}}" class="empty-tip">无数据</view>

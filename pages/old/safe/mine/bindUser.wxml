@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="page__bd">
+    <view style="text-align: center;">
+      <image style="width: 70%;" src='/assets/images/portal.svg'></image>
+    </view>
+    <mp-cells>
+      <mp-cell ext-class="weui-cell_vcode">
+        <radio-group bindchange="userTypeChange"
+          style="position: absolute;left: 0;display: flex;flex-direction: row; justify-content: start;align-items: center;align-self: flex-start;">
+          <label class="weui-cell weui-check__label" wx:for="{{userTypeItems}}" wx:key="{{item.id}}">
+            <view class="weui-cell__hd">
+              <radio value="{{item.id}}" checked="{{item.checked}}" />
+            </view>
+            <view class="weui-cell__bd">{{item.name}}</view>
+          </label>
+        </radio-group>
+      </mp-cell>
+      <view style="margin-top:58px;" />
+      <mp-cell prop="number" title="{{t['userName']}}" ext-class="">
+        <input bindinput="inputChange" data-field="number" class="weui-input" placeholder="{{t['pleaseEnter']}} {{t['userName']}}" />
+      </mp-cell>
+      <mp-cell prop="password" title="{{t['password']}}" ext-class="weui-cell_vcode">
+        <input wx:if="{{showPwd}}" bindinput="inputChange" type="text" value="{{password}}" data-field="password" class="weui-input" placeholder="{{t['pleaseEnter']}} {{t['password']}}" />
+        <input wx:if="{{!showPwd}}" bindinput="inputChange" type="password" value="{{password}}" data-field="password" class="weui-input" placeholder="{{t['pleaseEnter']}} {{t['password']}}" />
+        <view slot="footer" class="weui-pwd-btn" 
+         style="width: 60px; text-align: center;"
+         bindtap="onTogglePwdShow">
+          <view style="height: 56px; line-height: 56px;">
+            <image wx:if="{{showPwd}}" class="item_icon" src="/assets/images/gw/icon_show.png"/>
+            <image wx:if="{{!showPwd}}" class="item_icon" src="/assets/images/gw/icon_hide.png"/>
+          </view>
+        </view>
+      </mp-cell>
+      <mp-cell prop="phone" title="{{t['phoneNumber']}}" ext-class=" weui-cell_vcode">
+        <input bindinput="inputChange" data-field="phone" class="weui-input" placeholder="{{t['pleaseEnter']}} {{t['phoneNumber']}}" />
+        <view slot="footer" class="weui-vcode-btn" 
+         style="width: 100px;text-align: center;color: {{canClick?'#444':'#ddd'}}"
+         bindtap="getVCode">{{sendMg}}</view>
+      </mp-cell>
+      <mp-cell prop="vcode" title="{{t['verificationCode']}}" ext-class="">
+        <input bindinput="inputChange" data-field="vcode" class="weui-input" placeholder="{{t['pleaseEnter']}} {{t['verificationCode']}}" />
+      </mp-cell>
+    </mp-cells>
+    <button type="primary" bindtap="onBindUser">{{t['bind']}}</button>
+    <label class="weui-cell weui-check__label" ></label>
+    <label class="weui-cell weui-check__label" >
+      {{t['bindUserTip']}}
+    </label>
+  </view>
+</view>

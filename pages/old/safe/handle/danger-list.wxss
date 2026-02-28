@@ -1,0 +1,14 @@
+@import '/pages/old/app.wxss';
+/* pages/handle/danger-list.wxss */
+
+.tabs-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  width: 100%;
+  background: #fff;
+}
+
+.empty-tip {
+  margin-top: 120rpx;
+}

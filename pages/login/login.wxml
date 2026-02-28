@@ -5,39 +5,41 @@
   </view>
 
   <view class="login-card">
-    <view class="card-title">账号登录</view>
-    <view class="subtitle">请输入账号和密码</view>
+    <view class="card-title">手机号登录</view>
+    <view class="subtitle">授权手机号后自动登录并绑定账号</view>
 
-    <view class="field">
-      <text class="label">账号</text>
-      <input
-        class="input"
-        placeholder="请输入账号"
-        value="{{form.uname}}"
-        data-field="uname"
-        bindinput="onInput"
-      />
-    </view>
-
-    <view class="field">
-      <text class="label">密码</text>
-      <input
-        class="input"
-        password
-        placeholder="请输入密码"
-        value="{{form.pwd}}"
-        data-field="pwd"
-        bindinput="onInput"
-      />
+    <view class="tip-block">
+      本服务需要获取手机号用于账号身份识别，若手机号未注册将进入绑定流程。
     </view>
 
     <button
+      wx:if="{{!itemChecked}}"
       class="submit-btn"
       loading="{{submitting}}"
       disabled="{{submitting}}"
-      bindtap="onSubmit"
+      bindtap="onPhoneLoginTap"
     >
-      登录
+      手机号授权登录
     </button>
+    <button
+      wx:if="{{itemChecked}}"
+      class="submit-btn"
+      open-type="getPhoneNumber"
+      bindgetphonenumber="getPhoneNumber"
+      loading="{{submitting}}"
+      disabled="{{submitting}}"
+    >
+      手机号授权登录
+    </button>
+
+    <view class="agreement-row">
+      <checkbox checked="{{itemChecked}}" bindtap="onCheckItem" />
+      <view class="agreement-text">
+        我已阅读并同意
+        <text class="agreement-link" bindtap="onUserProtocol">《用户使用协议》</text>
+        和
+        <text class="agreement-link" bindtap="onPrivacyProtocol">《隐私政策》</text>
+      </view>
+    </view>
   </view>
 </view>

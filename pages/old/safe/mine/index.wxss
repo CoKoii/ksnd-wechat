@@ -1,0 +1,66 @@
+@import '/pages/old/app.wxss';
+/* pages/gwcustom/mine/index.wxss */
+.bg_top{
+  background-color: #936dfa;
+  height:200px;
+}
+.info_box{
+  background-color: #fff;
+  width:90%;
+  height:800rpx;
+  position: fixed;
+  top:200rpx;
+  border-radius: 50px;
+  left:5%;
+}
+.oper_box{
+  width:200rpx;
+  height:600rpx;
+  position: fixed;
+  top:380rpx;
+  right:20rpx;
+  color: #6933fd;
+}
+.head_box{
+  width: 100px;
+  height:100px;
+  border-radius: 100px;
+  border:1px solid #eee;
+  margin:0 auto;
+  margin-top: 20px;
+}
+.head_pic{
+  width:80px;
+  height:80px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.info_title{
+  position: relative;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 40px;
+  height: 50px;
+  text-align: center;
+}
+.info_item{
+  font-size: 18px;
+  line-height: 40px;
+  padding-left: 20px;
+}
+.item_icon{
+  width:18px;
+  height:18px;
+}
+.item_title{
+  color:#666;
+  display: inline;
+  padding-left: 10px;
+}
+.item_context{
+  padding-left: 10px;
+  display: inline;
+}
+.todo_btn{
+  width: 40%;margin:0 auto;border: 1px solid #6933fd;border-radius: 5px;text-align: center;font-size: 16px;font-weight: 400;color: #6933fd;line-height: 30px;height: 30px;
+}
