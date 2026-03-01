@@ -1,39 +1,28 @@
-let localChatConfig = {};
-try {
-  localChatConfig = require("./chat.local.config");
-} catch (error) {
-  localChatConfig = {};
-}
-
 const UI_TEXT = {
   title: "新对话",
   sidebarTitle: "历史对话",
   sidebarEmpty: "暂无历史对话",
-  placeholder: "发消息或按住说话",
+  placeholder: "请输入一段隐患描述",
   emptyTitle: "今天有什么可以帮到你?",
-  think: "思考",
-  search: "搜索",
+  uploadHint: "上传图片（限 1 张）",
+  inputLimitTip: "发消息限制为 1 张图片 + 1 段文字",
+  send: "发送",
+  requireImage: "请先上传 1 张图片",
+  requireText: "请输入一段文字",
+  imagePickFailed: "图片选择失败",
+  imageUploadFailed: "图片上传失败",
   errorFallback: "请求失败，请稍后再试。",
 };
 
 const CHAT_CONFIG = {
-  apiKey: "",
-  baseUrl: "https://api.deepseek.com",
-  chatPath: "/chat/completions",
+  hazardPath: "/api/safe/ai/notes",
   timeout: 60000,
-  modelChat: "deepseek-chat",
-  systemPrompt: "You are a helpful assistant.",
-  temperature: 0.7,
-  top_p: 1,
-  max_tokens: 1024,
-  ...localChatConfig,
 };
 
 const UI_CONFIG = {
   maxMessages: 50,
   maxConversations: 30,
   titleMaxLength: 12,
-  streamThrottleMs: 60,
 };
 
 const STORAGE_KEYS = {

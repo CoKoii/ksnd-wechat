@@ -1,7 +1,8 @@
-const { BASE_URL, getToken } = require("../../utils/http");
+const { BASE_URL, getToken, get } = require("../../utils/http");
 
 const OSS_UPLOAD_PATH = "/ksnd/api/oss/upload";
 const OSS_PROXY_DOWNLOAD_PATH = "/ksnd/api/proxy/download";
+const OSS_SHOW_PATH = "/ksnd/api/oss/show";
 
 const normalizeText = (value) => String(value || "").trim();
 const isAbsoluteUrl = (value) => /^(https?:\/\/|wxfile:\/\/|data:)/i.test(value);
@@ -209,8 +210,20 @@ const resolveImagePreview = async (path) => {
 
   try {
     return await downloadImageTempFile(rawPath);
-  } catch (error) {
-    console.error("resolveImagePreview failed:", rawPath, error);
+  } catch (downloadError) {
+    try {
+      const response = await get(OSS_SHOW_PATH, {
+        objname: rawPath,
+      });
+      const showUrl = normalizeText(
+        (response && (response.url || (response.data && response.data.url) || response.data)) ||
+          ""
+      );
+      if (showUrl) return showUrl;
+    } catch (showError) {
+      console.error("resolveImagePreview show fallback failed:", rawPath, showError);
+    }
+    console.error("resolveImagePreview failed:", rawPath, downloadError);
     return "";
   }
 };
@@ -227,9 +240,28 @@ const resolveImagePreviewByProxy = async (path) => {
   }
 };
 
+const resolveImageShowUrl = async (path) => {
+  const rawPath = normalizeText(path);
+  if (!rawPath) return "";
+  if (isAbsoluteUrl(rawPath)) return rawPath;
+
+  try {
+    const response = await get(OSS_SHOW_PATH, {
+      objname: rawPath,
+    });
+    return normalizeText(
+      (response && (response.url || (response.data && response.data.url) || response.data)) || ""
+    );
+  } catch (error) {
+    console.error("resolveImageShowUrl failed:", rawPath, error);
+    return "";
+  }
+};
+
 module.exports = {
   uploadImage,
   uploadUploaderFiles,
   resolveImagePreview,
   resolveImagePreviewByProxy,
+  resolveImageShowUrl,
 };

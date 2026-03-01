@@ -60,12 +60,71 @@
         <block wx:for="{{messages}}" wx:key="id">
           <view class="message message--{{item.role}}" id="msg-{{item.id}}">
             <view class="bubble">
-              <view wx:if="{{item.pending && !item.html}}" class="typing">
+              <view wx:if="{{item.pending && !item.html && !item.structured}}" class="typing">
                 <view class="typing-dot"></view>
                 <view class="typing-dot typing-dot--middle"></view>
                 <view class="typing-dot"></view>
               </view>
-              <rich-text wx:else class="markdown" nodes="{{item.html}}"></rich-text>
+              <block wx:else>
+                <image
+                  wx:if="{{item.imageUrl}}"
+                  class="bubble-image"
+                  src="{{item.imageUrl}}"
+                  mode="aspectFill"
+                  data-url="{{item.imageUrl}}"
+                  bindtap="onPreviewMessageImage"
+                />
+
+                <view wx:if="{{item.structured}}" class="result-card">
+                  <view class="result-row">
+                    <text class="result-label">1. 设备类型</text>
+                    <text class="result-value">{{item.structured.deviceType || '--'}}</text>
+                  </view>
+                  <view class="result-row">
+                    <text class="result-label">2. 隐患归类详情</text>
+                    <text class="result-value">{{item.structured.hazardDetail || '--'}}</text>
+                  </view>
+                  <view class="result-row result-row--block">
+                    <text class="result-label">3. 截取的法规</text>
+                    <view wx:if="{{item.structured.regulations.length > 0}}" class="result-regulation-list">
+                      <block wx:for="{{item.structured.regulations}}" wx:key="index" wx:for-item="regulation">
+                        <text class="result-regulation">{{index + 1}}. {{regulation}}</text>
+                      </block>
+                    </view>
+                    <text wx:else class="result-value">--</text>
+                  </view>
+                  <view wx:if="{{item.structured.referenceImages.length > 0}}" class="result-row result-row--block">
+                    <text class="result-label">法规图示</text>
+                    <view class="result-image-list">
+                      <block wx:for="{{item.structured.referenceImages}}" wx:key="url" wx:for-item="refImage">
+                        <view class="result-image-card">
+                          <image
+                            class="result-image"
+                            src="{{refImage.url}}"
+                            mode="aspectFill"
+                            data-url="{{refImage.url}}"
+                            bindtap="onPreviewMessageImage"
+                          />
+                          <text class="result-image-label">{{refImage.label}}</text>
+                        </view>
+                      </block>
+                    </view>
+                  </view>
+                  <view class="result-row">
+                    <text class="result-label">4. 位置</text>
+                    <text class="result-value">{{item.structured.location || '--'}}</text>
+                  </view>
+                  <view class="result-row result-row--block">
+                    <text class="result-label">5. 图片解析</text>
+                    <text class="result-value">{{item.structured.imageAnalysis || '--'}}</text>
+                    <text wx:if="{{item.structured.imageItem}}" class="result-sub">
+                      识别对象：{{item.structured.imageItem}}
+                    </text>
+                  </view>
+                </view>
+
+                <rich-text wx:if="{{item.html && !item.structured}}" class="markdown" nodes="{{item.html}}"></rich-text>
+              </block>
             </view>
           </view>
         </block>
@@ -77,6 +136,18 @@
 
   <view class="composer" style="padding-bottom: {{safeAreaBottom}}px;">
     <view class="composer-card">
+      <view class="composer-limit">{{uiText.inputLimitTip}}</view>
+
+      <view wx:if="{{selectedImage.url}}" class="composer-selected">
+        <image
+          class="composer-selected__image"
+          src="{{selectedImage.url}}"
+          mode="aspectFill"
+          bindtap="onPreviewSelectedImage"
+        />
+        <view class="composer-selected__remove" catchtap="onRemoveSelectedImage">x</view>
+      </view>
+
       <view class="composer-input-row">
         <input
           class="composer-input"
@@ -88,27 +159,15 @@
           bindconfirm="onConfirm"
         />
       </view>
+
       <view class="composer-actions">
-        <view class="chip {{thinkEnabled ? 'chip--active' : ''}}" bindtap="toggleThink">
-          <view class="chip-icon chip-icon--think"></view>
-          <text>{{uiText.think}}</text>
-        </view>
-        <view class="chip {{searchEnabled ? 'chip--active' : ''}}" bindtap="toggleSearch">
-          <view class="chip-icon chip-icon--search"></view>
-          <text>{{uiText.search}}</text>
+        <view class="chip" bindtap="onAttachTap">
+          <view class="chip-icon chip-icon--upload"></view>
+          <text>{{uiText.uploadHint}}</text>
         </view>
         <view class="composer-spacer"></view>
-        <view class="action-btn" bindtap="onAttachTap">
-          <view class="icon-circle icon-circle--small">
-            <view class="icon-plus icon-plus--h"></view>
-            <view class="icon-plus icon-plus--v"></view>
-          </view>
-        </view>
-        <view class="action-btn" bindtap="onVoiceTap">
-          <view class="icon-voice">
-            <view class="icon-voice__ring"></view>
-            <view class="icon-voice__dot"></view>
-          </view>
+        <view class="send-btn {{isSending ? 'send-btn--disabled' : ''}}" bindtap="onSendTap">
+          <text>{{uiText.send}}</text>
         </view>
       </view>
     </view>

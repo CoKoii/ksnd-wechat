@@ -7,6 +7,9 @@ const sanitizeMessages = (messages = []) =>
     id: message.id,
     role: message.role,
     content: message.content,
+    imageUrl: message.imageUrl || '',
+    imagePath: message.imagePath || '',
+    structured: message.structured || null,
   }));
 
 const sanitizeConversations = (conversations = []) =>
